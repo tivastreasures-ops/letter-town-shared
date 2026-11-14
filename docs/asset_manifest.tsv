@@ -1,0 +1,156 @@
+filename	category	subject	variant	view	background	size	status	alpha_verified	notes
+Letter_Town_Asset_Pack/01_Residents/character_hudson_welcome_fullbody_alpha.png	01_Residents	hudson welcome fullbody	cutout	front full body	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack/01_Residents/character_hudson_welcome_fullbody_green_key.png	01_Residents	hudson welcome fullbody	chroma master	front full body	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack/01_Residents/character_kit_seedmerchant_fullbody_alpha.png	01_Residents	kit seedmerchant fullbody	cutout	front full body	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack/01_Residents/character_kit_seedmerchant_fullbody_magenta_key.png	01_Residents	kit seedmerchant fullbody	chroma master	front full body	magenta_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack/01_Residents/character_mayor_ren_fullbody_alpha.png	01_Residents	mayor ren fullbody	cutout	front full body	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack/01_Residents/character_mayor_ren_fullbody_green_key.png	01_Residents	mayor ren fullbody	chroma master	front full body	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack/01_Residents/character_merry_gardener_fullbody_alpha.png	01_Residents	merry gardener fullbody	cutout	front full body	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack/01_Residents/character_merry_gardener_fullbody_green_key.png	01_Residents	merry gardener fullbody	chroma master	front full body	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack/01_Residents/character_phineas_carpenter_fullbody_alpha.png	01_Residents	phineas carpenter fullbody	cutout	front full body	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack/01_Residents/character_phineas_carpenter_fullbody_green_key.png	01_Residents	phineas carpenter fullbody	chroma master	front full body	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack/01_Residents/character_snowy_deputy_fullbody_alpha.png	01_Residents	snowy deputy fullbody	cutout	front full body	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack/01_Residents/character_snowy_deputy_fullbody_green_key.png	01_Residents	snowy deputy fullbody	chroma master	front full body	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack/02_House/house_empty_beige_two_rooms_alpha.png	02_House	house empty beige two rooms	cutout	cutaway	alpha	1536x1024	PROPOSED	yes	
+Letter_Town_Asset_Pack/02_House/house_empty_beige_two_rooms_green_key.png	02_House	house empty beige two rooms	chroma master	cutaway	green_key	1536x1024	PROPOSED	n-a	
+Letter_Town_Asset_Pack/02_House/house_module_plain_floor_alpha.png	02_House	house module plain floor	cutout	flat module	alpha	1774x887	PROPOSED	yes	
+Letter_Town_Asset_Pack/02_House/house_module_plain_floor_green_key.png	02_House	house module plain floor	chroma master	flat module	green_key	1774x887	PROPOSED	n-a	
+Letter_Town_Asset_Pack/02_House/house_module_plain_wall_alpha.png	02_House	house module plain wall	cutout	flat module	alpha	1774x887	PROPOSED	yes	
+Letter_Town_Asset_Pack/02_House/house_module_plain_wall_green_key.png	02_House	house module plain wall	chroma master	flat module	green_key	1774x887	PROPOSED	n-a	
+Letter_Town_Asset_Pack/03_Garden/garden_eight_blank_plots.png	03_Garden	garden eight blank plots	cutout	elevated	alpha	1776x608	PROPOSED	yes	Composed or extracted from the existing soil tile.
+Letter_Town_Asset_Pack/03_Garden/soil_tile_reused.png	03_Garden	soil tile reused	cutout	elevated	alpha	1670x933	PROPOSED	yes	Composed or extracted from the existing soil tile.
+Letter_Town_Asset_Pack/04_Carts/cart_blank_inventory_panel_alpha.png	04_Carts	cart blank inventory panel	cutout	front	alpha	1672x941	PROPOSED	yes	
+Letter_Town_Asset_Pack/04_Carts/cart_blank_inventory_panel_green_key.png	04_Carts	cart blank inventory panel	chroma master	front	green_key	1672x941	PROPOSED	n-a	
+Letter_Town_Asset_Pack/04_Carts/cart_generic_wheeled_market_empty_alpha.png	04_Carts	cart generic wheeled market empty	cutout	three-quarter	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack/04_Carts/cart_generic_wheeled_market_empty_green_key.png	04_Carts	cart generic wheeled market empty	chroma master	three-quarter	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack/05_Facades/PROPOSED_facade_kit_seed_shop_alpha.png	05_Facades	kit seed shop	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack/05_Facades/PROPOSED_facade_kit_seed_shop_magenta_key.png	05_Facades	kit seed shop	chroma master	front	magenta_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack/05_Facades/PROPOSED_facade_mayor_ren_town_hall_alpha.png	05_Facades	mayor ren town hall	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack/05_Facades/PROPOSED_facade_mayor_ren_town_hall_magenta_key.png	05_Facades	mayor ren town hall	chroma master	front	magenta_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack/05_Facades/PROPOSED_facade_merry_green_room_alpha.png	05_Facades	merry green room	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack/05_Facades/PROPOSED_facade_merry_green_room_magenta_key.png	05_Facades	merry green room	chroma master	front	magenta_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack/05_Facades/PROPOSED_facade_phineas_carpentry_alpha.png	05_Facades	phineas carpentry	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack/05_Facades/PROPOSED_facade_phineas_carpentry_green_key.png	05_Facades	phineas carpentry	chroma master	front	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack/06_Blooms/PROPOSED_bloom_foxglove_style_test_alpha.png	06_Blooms	foxglove style test	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack/06_Blooms/PROPOSED_bloom_foxglove_style_test_magenta_key.png	06_Blooms	foxglove style test	chroma master	front	magenta_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack/06_Blooms/PROPOSED_bloom_zinnia_v2_style_test_alpha.png	06_Blooms	zinnia v2 style test	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack/06_Blooms/PROPOSED_bloom_zinnia_v2_style_test_green_key.png	06_Blooms	zinnia v2 style test	chroma master	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack/08_ReviewSheets/PROPOSED_bloom_contact_sheet.jpg	08_ReviewSheets	contact sheet	production image	comparison	other	688x422	PROPOSED	n-a	
+Letter_Town_Asset_Pack/08_ReviewSheets/PROPOSED_facade_scale_comparison.jpg	08_ReviewSheets	scale comparison	production image	comparison	other	1224x393	PROPOSED	n-a	
+Letter_Town_Asset_Pack/08_ReviewSheets/PROPOSED_three_existing_cottages.jpg	08_ReviewSheets	three existing cottages	production image	comparison	other	1272x515	PROPOSED	n-a	Existing cottage art assembled into a proposed selection sheet.
+Letter_Town_Asset_Pack/08_ReviewSheets/resident_lineup.jpg	08_ReviewSheets	resident lineup	production image	comparison	other	948x632	PROPOSED	n-a	
+Letter_Town_Asset_Pack_Update/04_Carts/cart_market_front_solid_wheels_polka_dots_alpha.png	04_Carts	cart market front solid wheels polka dots	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Asset_Pack_Update/04_Carts/cart_market_front_solid_wheels_polka_dots_green_key.png	04_Carts	cart market front solid wheels polka dots	chroma master	front	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_buttercup_alpha.png	06_Blooms	buttercup	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_buttercup_green_key.png	06_Blooms	buttercup	chroma master	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_chrysanthemum_alpha.png	06_Blooms	chrysanthemum	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_chrysanthemum_green_key.png	06_Blooms	chrysanthemum	chroma master	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_foxglove_style_test_alpha.png	06_Blooms	foxglove style test	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_foxglove_style_test_magenta_key.png	06_Blooms	foxglove style test	chroma master	front	magenta_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_jasmine_alpha.png	06_Blooms	jasmine	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_jasmine_green_key.png	06_Blooms	jasmine	chroma master	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_kalanchoe_alpha.png	06_Blooms	kalanchoe	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_kalanchoe_magenta_key.png	06_Blooms	kalanchoe	chroma master	front	magenta_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_marigold_alpha.png	06_Blooms	marigold	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_marigold_green_key.png	06_Blooms	marigold	chroma master	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_queen_annes_lace_alpha.png	06_Blooms	queen annes lace	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_queen_annes_lace_magenta_key.png	06_Blooms	queen annes lace	chroma master	front	magenta_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_sunflower_alpha.png	06_Blooms	sunflower	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_sunflower_green_key.png	06_Blooms	sunflower	chroma master	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_zinnia_v2_style_test_alpha.png	06_Blooms	zinnia v2 style test	cutout	front	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/06_Blooms/PROPOSED_bloom_zinnia_v2_style_test_green_key.png	06_Blooms	zinnia v2 style test	chroma master	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+Letter_Town_Asset_Pack_Update/08_ReviewSheets/PROPOSED_nine_blooms.jpg	08_ReviewSheets	nine blooms	production image	comparison	other	834x834	PROPOSED	n-a	
+Letter_Town_Bloom_Cutouts/bloom_buttercup_alpha.png	06_Blooms	buttercup	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Bloom_Cutouts/bloom_buttercup_green_key.png	06_Blooms	buttercup	chroma master	front	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Bloom_Cutouts/bloom_chrysanthemum_alpha.png	06_Blooms	chrysanthemum	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Bloom_Cutouts/bloom_chrysanthemum_green_key.png	06_Blooms	chrysanthemum	chroma master	front	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Bloom_Cutouts/bloom_foxglove_alpha.png	06_Blooms	foxglove	cutout	front	alpha	1254x1254	PROPOSED	yes	Lilac petals on magenta key because the stem is green.
+Letter_Town_Bloom_Cutouts/bloom_foxglove_magenta_key.png	06_Blooms	foxglove	chroma master	front	magenta_key	1254x1254	PROPOSED	n-a	Lilac petals on magenta key because the stem is green.
+Letter_Town_Bloom_Cutouts/bloom_marigold_alpha.png	06_Blooms	marigold	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Bloom_Cutouts/bloom_marigold_green_key.png	06_Blooms	marigold	chroma master	front	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Bloom_Cutouts/bloom_red_begonia_cluster_alpha.png	06_Blooms	red begonia cluster	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Bloom_Cutouts/bloom_red_begonia_cluster_magenta_key.png	06_Blooms	red begonia cluster	chroma master	front	magenta_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Bloom_Cutouts/bloom_sunflower_alpha.png	06_Blooms	sunflower	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Bloom_Cutouts/bloom_sunflower_green_key.png	06_Blooms	sunflower	chroma master	front	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Bloom_Cutouts/bloom_white_star_flower_alpha.png	06_Blooms	white star flower	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Bloom_Cutouts/bloom_white_star_flower_green_key.png	06_Blooms	white star flower	chroma master	front	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Bloom_Cutouts/bloom_yarrow_alpha.png	06_Blooms	yarrow	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Bloom_Cutouts/bloom_yarrow_magenta_key.png	06_Blooms	yarrow	chroma master	front	magenta_key	1254x1254	PROPOSED	n-a	
+Letter_Town_Bloom_Cutouts/bloom_zinnia_dahlia_alpha.png	06_Blooms	zinnia dahlia	cutout	front	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_Bloom_Cutouts/bloom_zinnia_dahlia_green_key.png	06_Blooms	zinnia dahlia	chroma master	front	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_UX_Batch/floor_sample_alpha.png	07_UI	floor sample	cutout	flat	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_UX_Batch/floor_sample_green_key.png	07_UI	floor sample	chroma master	flat	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_UX_Batch/furniture_side_table_alpha.png	07_UI	furniture side table	cutout	three-quarter	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_UX_Batch/furniture_side_table_green_key.png	07_UI	furniture side table	chroma master	three-quarter	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_UX_Batch/furniture_stool_alpha.png	07_UI	furniture stool	cutout	three-quarter	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_UX_Batch/furniture_stool_green_key.png	07_UI	furniture stool	chroma master	three-quarter	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_UX_Batch/gift_package_alpha.png	07_UI	gift package	cutout	flat	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_UX_Batch/gift_package_green_key.png	07_UI	gift package	chroma master	flat	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_UX_Batch/inventory_card_alpha.png	07_UI	inventory card	cutout	flat	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_UX_Batch/inventory_card_green_key.png	07_UI	inventory card	chroma master	flat	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_UX_Batch/inventory_panel_alpha.png	07_UI	inventory panel	cutout	flat	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_UX_Batch/inventory_panel_green_key.png	07_UI	inventory panel	chroma master	flat	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_UX_Batch/noticeboard_alpha.png	07_UI	noticeboard	cutout	flat	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_UX_Batch/noticeboard_green_key.png	07_UI	noticeboard	chroma master	flat	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_UX_Batch/shop_panel_alpha.png	07_UI	shop panel	cutout	flat	alpha	1254x1254	PROPOSED	yes	
+Letter_Town_UX_Batch/shop_panel_green_key.png	07_UI	shop panel	chroma master	flat	green_key	1254x1254	PROPOSED	n-a	
+Letter_Town_UX_Batch/wallpaper_sample_alpha.png	07_UI	wallpaper sample	cutout	flat	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+Letter_Town_UX_Batch/wallpaper_sample_green_key.png	07_UI	wallpaper sample	chroma master	flat	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-05c551bf-7429-4ac5-8155-ee3827105e77.png	06_Blooms	white star flower	original render	front	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-09acaef0-6d4b-4201-b009-c4e9a0d32119.png	06_Blooms	zinnia tile mockup	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-0da94d44-ca31-4bbc-8413-2e69134969e5.png	04_Carts	striped cart	original render	three-quarter	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-1b6a623e-8453-450d-a433-7a9565666ecc.png	04_Carts	solid wheel cart	original render	front	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-1d316d5b-0eef-48c5-b169-d69817f6e44c.png	05_Facades	kit seed shop	original render	front	magenta_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-202fd4c0-1cdf-4a10-b511-b841b4b7912d.png	04_Carts	tucked wheel cart	original render	three-quarter	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-2090955e-9687-4e07-808b-a2ccf227c8c2.png	07_UI	inventory card	original render	flat	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-2c8d1354-3c15-4f86-bdb7-3fc4cc612d2c.png	01_Residents	merry	original render	front full body	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-2f885a33-1f97-4c87-b0b8-13d528259528.png	04_Carts	cart inventory	original render	front	green_key	1672x941	PROPOSED	n-a	
+generated_images/exec-3209035a-9fd8-4849-867b-e54107e3cd2c.png	07_UI	noticeboard	original render	flat	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-39ce5f96-63ea-4eba-9d7c-fa17ec34ce4a.png	06_Blooms	kalanchoe	original render	front	magenta_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-3b2c76cc-d14c-46d9-b8f7-c5f42289f786.png	06_Blooms	zinnia hole	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-472da652-02b4-43a6-8cd6-0ffc4b7ab47c.png	06_Blooms	buttercup	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-4932a45f-3403-4048-8d37-75c97a63421d.png	06_Blooms	painted foxglove x	original render	front	green_key	1024x1536	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-5389bcf1-3780-42f2-82e7-7350d30d7d35.png	06_Blooms	marigold	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-54044ad5-8cbb-4ab8-a706-107080a2383c.png	06_Blooms	letter free zinnia	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-593c17b9-732d-4a28-a39c-0c3f0cbc81ae.png	06_Blooms	glossy foxglove	original render	front	magenta_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-5b0ee5fa-40c6-4f93-9672-7e6004ebe3cc.png	07_UI	stool	original render	three-quarter	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-608d414d-5188-4510-86f4-69877bd20ad5.png	02_House	house cutaway	original render	cutaway	green_key	1536x1024	PROPOSED	n-a	
+generated_images/exec-62d67722-9cac-4a54-9a87-f5228c0ec14a.png	02_House	plaster wall	original render	flat module	green_key	1774x887	PROPOSED	n-a	
+generated_images/exec-634d2634-31a0-4570-b3ad-259a90fe8b2d.png	04_Carts	polka dot spoked cart	original render	three-quarter	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-636d782a-f1b3-4184-adf8-534186393abb.png	06_Blooms	gloss zinnia v1	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-647871d3-327f-4c4d-89d8-bd59b63fee3e.png	01_Residents	kit	original render	front full body	magenta_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-66b2e284-236b-44cf-ada7-fcacf0d5177b.png	05_Facades	merry green room	original render	front	magenta_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-69eace95-1808-4438-98d5-1e9284c05373.png	06_Blooms	sunflower	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-775d0e31-2ca2-4eb9-8d79-20d064f72081.png	06_Blooms	begonia	original render	front	magenta_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-7d1a26ff-4e0b-42fd-9c25-0388d980291b.png	01_Residents	mayor	original render	front full body	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-7fbdf1a0-a151-47a8-9b14-7673d04d925f.png	06_Blooms	yarrow	original render	front	magenta_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-87d184c6-e459-45c6-855b-1a69cff72ce9.png	01_Residents	phineas	original render	front full body	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-8a197992-e933-4b28-9983-45d3c53136ad.png	07_UI	floral wallpaper generation study	original render	flat	flat_beige	1254x1254	SUPERSEDED	n-a	Repeat study replaced by the exact periodic reconstruction.
+generated_images/exec-97ac2d66-9de1-4544-a06e-717cc1ea1dd7.png	02_House	beige floor	original render	flat module	green_key	1774x887	PROPOSED	n-a	
+generated_images/exec-a8f374ec-f72c-415b-bb4f-86e450de6142.png	07_UI	inventory panel	original render	flat	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-a958d4cc-4436-4401-8d19-3cabe20e7322.png	05_Facades	town hall	original render	front	magenta_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-b1ecdf04-6a61-4e9d-a188-8698ece718a4.png	06_Blooms	felt foxglove x	original render	front	green_key	1024x1536	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-b4001cfc-2e0a-40ae-ae31-9aae4640ae1c.png	06_Blooms	felt zinnia z	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-b49b4f57-d8a9-4bb9-bd5c-10452761d4af.png	07_UI	oak floor	original render	flat	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-b87d4125-35d7-4309-b93d-919e05c983ec.png	07_UI	shop panel	original render	flat	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-bd5b1528-0d6b-47cc-a47c-78c36afdd28f.png	01_Residents	snowy	original render	front full body	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-cfb40bee-c382-48c5-847a-f59384eb426f.png	05_Facades	carpentry	original render	front	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-d16a1caf-7a60-441b-8f5f-953d6ee6bca3.png	06_Blooms	letter free foxglove	original render	front	green_key	1024x1536	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-d675ede5-ef4b-44a7-b238-a9ebb6e7b1c8.png	07_UI	side table	original render	three-quarter	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-d6a172ef-1064-4ffa-86b6-68385be664fc.png	06_Blooms	queen annes lace	original render	front	magenta_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-d9dd05f7-201e-4c97-b907-12c167576530.png	01_Residents	hudson	original render	front full body	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-db53e951-44a3-4b1d-b97b-0a6567c4330a.png	07_UI	gift package	original render	flat	green_key	1254x1254	PROPOSED	n-a	
+generated_images/exec-dbf643a4-3028-42e6-a639-4a75abc9d56d.png	06_Blooms	chrysanthemum	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-eb056787-1dfa-4994-ba5f-827f2c0d2432.png	07_UI	wallpaper swatch	original render	flat	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-f1b23335-4511-4b9d-9931-f37f71b6a9f7.png	06_Blooms	painted zinnia z	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+generated_images/exec-f71a26d0-e5f4-4812-8bf2-d71590f00e85.png	06_Blooms	jasmine	original render	front	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+wallpaper_revision/wallpaper_floral_ivory_tile.png	07_UI	wallpaper floral ivory tile	production image	flat	flat_beige	1254x1254	PROPOSED	n-a	Full-bleed periodic reconstruction using the original floral and vine motifs.
+wallpaper_revision/wallpaper_floral_ivory_tile_2x2_preview.png	07_UI	wallpaper floral ivory tile 2x2 preview	production image	flat	flat_beige	2508x2508	PROPOSED	n-a	Full-bleed periodic reconstruction using the original floral and vine motifs.
+wallpaper_revision/wallpaper_plain_ivory_tile.png	07_UI	wallpaper plain ivory tile	production image	flat	flat_beige	1254x1254	PROPOSED	n-a	Solid ivory base matched to floral tile.
+cart_market_coral_polka_dots_v2_alpha.png	04_Carts	cart market coral polka dots v2	cutout	three-quarter	alpha	1254x1254	SUPERSEDED	yes	Replaced by a later production version.
+cart_market_coral_polka_dots_v2_green_key.png	04_Carts	cart market coral polka dots v2	chroma master	three-quarter	green_key	1254x1254	SUPERSEDED	n-a	Replaced by a later production version.
+# OPEN QUESTIONS
+# Which three cottage exteriors are approved for Chapter One?
+# Which proposed façades, resident portraits and UX pieces are approved for integration?
+# What are the final flower palettes and complete letter pools?
+# What wallpaper repeat scale reads best in the Quest build?
