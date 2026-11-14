@@ -4,7 +4,7 @@
 **Purpose:** Actual player-facing story template. Not a summary or build addendum.
 
 ## Fillable story
-On Welcome Day, Mayor Ren discovered a **[1. adjective]** **[2. singular noun]** beside the garden gate, exactly where the town's welcome sign was supposed to be.
+On Welcome Day, Mayor Ren discovered a/an **[1. adjective]** **[2. singular noun]** beside the garden gate, exactly where the town's welcome sign was supposed to be.
 
 Before anyone could explain it, the whole town began to **[3. base-form verb]**.
 
@@ -14,11 +14,11 @@ Snowy opened her notebook and announced that this was a very **[5. adjective]** 
 
 Meanwhile, Merry gathered flowers for the celebration. Unfortunately, someone had filled her favorite watering can with **[6. plural noun]**. She decided not to ask questions.
 
-At Kit's seed shop, customers were arriving with increasingly unusual suggestions. One insisted that the new welcome sign should feature a **[7. singular noun]**. Another wanted every visitor to **[8. base-form verb]** before entering town.
+At Kit's seed shop, customers were arriving with increasingly unusual suggestions. One insisted that the new welcome sign should feature a/an **[7. singular noun]**. Another wanted every visitor to **[8. base-form verb]** before entering town.
 
 Phineas examined the empty signposts, measured the wooden frame, and declared that the replacement would have to be especially **[9. adjective]**.
 
-Mayor Ren listened to everyone's ideas while attempting to maintain his dignity. Unfortunately, just as he began his official speech, a **[10. singular noun]** appeared in the middle of the town square.
+Mayor Ren listened to everyone's ideas while attempting to maintain his dignity. Unfortunately, just as he began his official speech, a/an **[10. singular noun]** appeared in the middle of the town square.
 
 Nobody could agree whether this was a disaster, a decoration, or an unexpected guest.
 
@@ -53,6 +53,7 @@ But they were delighted to have been there.
 12. base-form verb (verb)
 
 ## Implementation notes
+- (Added Nov 14 by the Professor on Director instruction.) 'a/an' before blanks 1, 7 and 10 is chosen from the word the player picks: 'an' before a vowel sound, otherwise 'a'. Blank 6 must be a plural noun. The data file carries both rules. Story wording is unchanged.
 - Render actual story with explicit numbered blank placeholders before completion.
 - Allow users to read/preview the whole unfinished story early; Mayor Ren may gently nudge when enough suitable discovered words exist; do not auto-complete.
 - Eligible words come from the player's discovered-word collection (not necessarily unspent Letter Bank tiles). When requested, optional 'Surprise Me' randomly chooses known words matching each grammatical category.
