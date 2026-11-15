@@ -1,0 +1,47 @@
+LETTER TOWN - CHAPTER ONE (Quest 3 / WebXR edition)
+Built Nov 14, 2026 by the Professor (Claude) after the Director's GO.
+
+HOW TO PUT IT ONLINE
+1. Unzip. You get one folder called "lettertown".
+2. Upload the whole folder to GreenGeeks inside public_html.
+3. On the Quest 3, open the Quest browser and go to  https://YOUR-SITE/lettertown/   (must be https)
+4. Put the controllers down so hand tracking takes over. Press "Enter VR".
+It also runs on a computer or phone at the same address: click or tap everything.
+
+HOW YOU PLAY
+- The story board in front of you: poke a button with a fingertip, or point at it and pinch.
+- The garden table (open the Garden tab first): pinch to pick up.
+    Seeds: carry over an empty plot and let go.     Watering can: tilt the spout down over a plant.
+    Super Grow: shake it over a plant.               Finished flower: pinch and pull.
+  Every hand action also has a button on the Garden screen (choose a tool, then a plot).
+- Settings tab: text size, volume, sound on/off, table height, reach, recenter, exit VR, erase save.
+- The game saves by itself after every action. "Continue" on the title screen picks up where you left off.
+
+WHAT IS IN THIS BUILD
+- Hudson's welcome tour with all six residents, name entry, and the FLOWER / MILK practice orders.
+  Practice uses its own coins, seeds and letters. Nothing in practice touches your real ones.
+- Your garden: 8 plots, 4 random starters, 100 coins, 25 starting letters, 5 picks per seed, growth while away.
+- Kit's shop: seeds 5/7/10, five-packs 20/30/45, Super Grow 4. Every purchase asks first.
+- Spelling Book: craft real dictionary words, Word Inventory, and a Discovered list that remembers every word.
+- Word Cart (6 shown + queue, oldest first, cashbox) and Flower Cart (bouquets of 3, 6 or 9, coins go straight to you).
+- Noticeboard requests from neighbors.
+- Mayor Ren: your garden, a choice of three cottages, a choice of three gifts, and your two-room home to decorate.
+  Craft BED, CHAIR, LAMP, TABLE and other household words and place them.
+- The 12-blank story "The Day the Welcome Went Missing": choose words, Surprise Me, finish, reread, retell.
+- Finishing the story the first time restores the Welcome Sign (in the world and on the title screen) and
+  adds Cat Girl's journal entry. After that you keep playing.
+- 85 recorded voice lines play. The 20 lines without a recording show as text.
+
+STAND-INS AND KNOWN GAPS (see the Professor's message for the full list)
+- Which letters each seed grows, word payouts and sale timing are test values in rules/game.js (CFG at the top).
+- The three cottages are simple drawn pictures. Cat Girl's journal words are a first draft with no voice.
+- Seeds, watering can and Super Grow on the table are plain shapes.
+- Nothing has been tested on a Quest yet.
+
+FOR TESTING ONLY
+Add ?speed=20 to the address to make plants and carts run 20 times faster.
+Hand tuning: ?pullDist=0.12&shakeFlips=3&pinchIn=0.025
+
+CREDITS
+Three.js r170 (MIT licence, in vendor/three). Word list from the earlier Letter Town build
+(hand list + WordNet 3.0 parts of speech). No Meta code or art is used.

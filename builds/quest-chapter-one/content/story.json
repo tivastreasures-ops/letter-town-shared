@@ -1,0 +1,116 @@
+{
+  "id": "welcome_went_missing_ch1",
+  "title": "The Day the Welcome Went Missing",
+  "version": "draft-2026-11-14b",
+  "status": "DRAFT",
+  "chapter": 1,
+  "slots": [
+    {
+      "id": 1,
+      "key": "slot_1",
+      "category": "adjective",
+      "prompt": "adjective"
+    },
+    {
+      "id": 2,
+      "key": "slot_2",
+      "category": "noun",
+      "prompt": "singular noun"
+    },
+    {
+      "id": 3,
+      "key": "slot_3",
+      "category": "verb",
+      "prompt": "base-form verb"
+    },
+    {
+      "id": 4,
+      "key": "slot_4",
+      "category": "noun",
+      "prompt": "singular noun"
+    },
+    {
+      "id": 5,
+      "key": "slot_5",
+      "category": "adjective",
+      "prompt": "adjective"
+    },
+    {
+      "id": 6,
+      "key": "slot_6",
+      "category": "plural_noun",
+      "prompt": "plural noun"
+    },
+    {
+      "id": 7,
+      "key": "slot_7",
+      "category": "noun",
+      "prompt": "singular noun"
+    },
+    {
+      "id": 8,
+      "key": "slot_8",
+      "category": "verb",
+      "prompt": "base-form verb"
+    },
+    {
+      "id": 9,
+      "key": "slot_9",
+      "category": "adjective",
+      "prompt": "adjective"
+    },
+    {
+      "id": 10,
+      "key": "slot_10",
+      "category": "noun",
+      "prompt": "singular noun"
+    },
+    {
+      "id": 11,
+      "key": "slot_11",
+      "category": "adjective",
+      "prompt": "adjective"
+    },
+    {
+      "id": 12,
+      "key": "slot_12",
+      "category": "verb",
+      "prompt": "base-form verb"
+    }
+  ],
+  "paragraphs": [
+    "On Welcome Day, Mayor Ren discovered {{article:1}} {{1}} {{2}} beside the garden gate, exactly where the town's welcome sign was supposed to be.",
+    "Before anyone could explain it, the whole town began to {{3}}.",
+    "Hudson was the first to investigate. He searched beneath benches, behind flowerpots, and inside an old {{4}}. He found three lost buttons, a ribbon, and something suspiciously sticky, but absolutely no welcome sign.",
+    "Snowy opened her notebook and announced that this was a very {{5}} mystery. She carefully recorded everyone's observations, although she had to remind Hudson twice that guessing was not the same as finding evidence.",
+    "Meanwhile, Merry gathered flowers for the celebration. Unfortunately, someone had filled her favorite watering can with {{6}}. She decided not to ask questions.",
+    "At Kit's seed shop, customers were arriving with increasingly unusual suggestions. One insisted that the new welcome sign should feature {{article:7}} {{7}}. Another wanted every visitor to {{8}} before entering town.",
+    "Phineas examined the empty signposts, measured the wooden frame, and declared that the replacement would have to be especially {{9}}.",
+    "Mayor Ren listened to everyone's ideas while attempting to maintain his dignity. Unfortunately, just as he began his official speech, {{article:10}} {{10}} appeared in the middle of the town square.",
+    "Nobody could agree whether this was a disaster, a decoration, or an unexpected guest.",
+    "By afternoon, the square was filled with petals, paint, ribbons, and laughter. Everyone contributed something, even if some contributions were a little {{11}}.",
+    "Finally, the new welcome sign was ready. Mayor Ren climbed onto the platform, lifted his ceremonial ribbon, and invited the entire town to {{12}}.",
+    "For a moment, everyone fell silent.",
+    "Then the celebration began.",
+    "The path was lined with flowers, the windows glowed warmly, and the newly restored sign stood proudly above the garden gate.",
+    "The townspeople agreed that nobody would ever forget this Welcome Day.",
+    "They weren't entirely sure what had happened.",
+    "But they were delighted to have been there."
+  ],
+  "completion_event": "restore_welcome_sign",
+  "collection": "player_storybook",
+  "notes": [
+    "No forced completion when eligible word collection sufficient",
+    "Journal is distinct from Mad Lib",
+    "Completed stories store chosen words and rendered text",
+    "Director approval pending",
+    "2026-11-14 Professor, on Director instruction ('fix the easy parts'): added a/an article tokens for slots 1, 7, 10 and plain-language category rules. Story wording unchanged."
+  ],
+  "article_rule": "{{article:N}} renders 'an' when the word chosen for slot N starts with a vowel sound (a, e, i, o, u; treat 'hour', 'honest', 'honor', 'heir' as vowel sound and 'one', 'uni-', 'use', 'eu-' as consonant sound), otherwise 'a'. Slots using it: 1, 7, 10.",
+  "category_rules": {
+    "adjective": "dictionary adjective",
+    "noun": "singular common noun",
+    "plural_noun": "plural common noun: accept a dictionary plural, or a known singular noun shown in its plural form; never accept a singular noun as-is",
+    "verb": "base form (no -s, -ed, -ing)"
+  }
+}
