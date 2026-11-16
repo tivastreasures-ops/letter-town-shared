@@ -1,0 +1,65 @@
+# Letter Town (Quest 3) — Handoff for a fresh Professor chat
+
+Written Mon Nov 16 2026, ~8:00 AM, by the Professor (Claude). Read this first, then do what the "Start here" section says.
+
+## Start here
+1. The Director (Tiva) said HOLD. Do not build anything until she says "go". She asked for fixes only after the Librarian has seen the playtest.
+2. Say plainly what you are about to do in one sentence, then act. No self-praise: she is tired of it. Report results plainly.
+3. Her rules apply: verify before saying something is impossible; label facts, estimates, risks and recommendations; her corrections are changed requirements; don't silently cut scope; "done" means a user can actually do it; test from the player's view; don't make her copy and paste; she cannot read .md files (give her a readable document or open it in the side panel); expect typos.
+
+## Where everything is
+- Game code (my workspace, may be gone in a new chat): /home/claude/lt1 (plain JavaScript + Three.js r170, no build step). Rules in rules/game.js, screens in app/screens.js, 3D and input in app/main.js, dialogue in content/dialogue.json.
+- Delivered builds on her PC, Downloads folder: lettertown-chapter-one-round4.zip (~110 MB) and lettertown-chapter-one-round5.zip (~118 MB). Round 5 is the current one she played.
+- Her playtest video: Downloads\fdbe267b0c229be5225bfa7aa4245e26.mp4 (553 MB original) and letter-town-playtest-small.mp4 (64 MB, shrunk by me, 960x540, 5 fps, mono audio). Chunk files pt_0..pt_4.mp4 are leftovers she can delete (I can't delete on her PC without asking permission).
+- Private GitHub repos (I can push): tivastreasures-ops/letter-town-shared (asset repo; my frames and notes are in docs/playtest-2026-11-16/), tivastreasures-ops/faculty-dreamlab-test (Faculty mailbox; my message to the Librarian is messages/2026-11-16-professor-to-librarian-round5-playtest-review-request.md).
+- Her PC is reachable through the device bridge (connected folder C:\Users\swing\Downloads). device_bash there is Linux-like and has ffmpeg 4.4.2. Staging limit is 400 MB per file. Background jobs die when a call ends, so run long jobs in chunks under the 3-minute limit.
+- Blender: installed in my workspace as the Python module (pip install bpy, version 5.3). A new chat must reinstall it. It can open, change and re-export her GLB files headlessly. Her PC also has the Blender 5.3 installer in Downloads.
+- 3D tools: gltf-transform at /home/claude/work/node_modules/.bin/gltf-transform. Characters with skeletons need --simplify false.
+- Testing: Playwright with google-chrome --use-gl=swiftshader and python3 -m http.server 8099 in the game folder. window.__lt exposes game objects. None of this proves anything about the Quest.
+
+## What the game is (short)
+Letter Town: a word-garden game for Quest 3 in the browser (WebXR hand tracking). The player sits at a table, plants and waters flowers, picks letters from flowers whose names contain them, spells words in the Spelling Book, sells things at carts, and neighbors' requests drive the story. There is a separate, visually stronger "arcade" version she likes better; Replit (Agent 4) builds a 2D edition that stays untouched until she asks.
+
+Round 5 gave her: a 3D town (cobblestone roads, fountain, Town Hall, cottages, trees, shrubs), stone plots on the table, a fenced community garden (slow growth; the community plants too and nobody can tell who), child-size kids walking between spots, carved letter tiles popping up, her Welcome Map as the map screen, and new reach and tool-tray spacing.
+
+## What she said about Round 5 (7:00-7:20 AM Nov 16)
+She loves: the town ("gorgeous"), the carved letters popping up, touching the book opens the letters page.
+She reports problems (all unbuilt):
+- Spade too big. Seeds are still flat; she gave 3D seed models.
+- Her own garden sits right in front of her; it should be anchored away from her like the community garden. Cute, so keep the current version available.
+- Carts: she cannot use them. LATER she said hold off on making carts useful right now. Carts show nothing.
+- Watering can: faces the wrong way; she grabs the nozzle and pours from the handle, then it snaps back. Rotate the shelf with the tools by 90 degrees.
+- Panel: should close so she can see the whole town; there is no exit-game button. The intro "click to change the sound" does nothing.
+- Sky: she misses the sky colors and fluffy clouds (the backdrop photo was hidden and nothing replaced it).
+- Mayor fires every time she checks the community board.
+- Teleport: tap the map picture, or use the finger-thumb pinch to move; the town should be more spread out.
+- Flower arranging: she is upset it is still not real 3D arranging; the arcade has it.
+- Where are the new flower packets? I do not believe they were built; I don't know what she means. Ask her.
+- Seed box is out of place.
+- Blender asks: Snowy's star looks black (make it bright gold, else bright yellow); present is a mis-colored rectangle; town book too thick; letter tile lost its purple corner scrollwork; rig her gloves (her first goal; she says Meta's files are huge); frog and cat girl files too big; smooth and recolor kids and townies; one kid's shoes are too close together.
+- Townies grow, shrink and walk through the desk. Wanted: appear from inside a house or store, walk, enter another and vanish. Players are fine; she hasn't checked other townies. Picking flowers by townies: later.
+- Old Welcome sign and the community board sign overlap.
+- Old flat buds and stems still show; when a flower blooms only the flower should remain. New stems and buds need to be taller.
+- Word bank too small: rejected RUM and FILMY, no spelling suggestion. Letters per pick: common and uncommon 4, rare 3. If there was a 10-letter cap make it 15.
+- Characters: where can she get different positions? Snowy seems to stand in front of the wrong building. (Today positions are fixed spots in the code. Proposal: let her place each character herself.)
+- House choices are still flat. She asks why any placeholders remain.
+- Tray (tool tray) can only be moved by board buttons; town book not grabbable (touching works); both still open from earlier.
+
+## What I saw in her video (frames only, no audio heard)
+Sky flat dark blue; carts empty with flat white squares; blank sign beside the Welcome sign (overlapping); plot cards show old flat art beside new 3D plants; her table garden is in front of her; watering can floating by the spout; spade huge; menu panels cover the town with no close button; townies: faces fine, textures look soft, hair flat, shoes a dark blob, one kid against the desk edge, paths run along the table edge. I did not catch the growing and shrinking in the frames I sampled.
+
+## Proposed order of work (my advice, her call)
+1. Panel close button and exit-game button; watering can facing/pivot (Blender); spade size; shelf rotation; sky and clouds.
+2. Townies appear and vanish through houses, spread the town, teleport.
+3. Hands-on 3D flower arranging; 3D seeds; remove old flat buds and stems; community-garden-style anchoring of her own garden.
+4. Gloves rigging (she calls it first); Snowy's star, present, book thickness, tile scrollwork; smooth and recolor townies.
+5. Word bank size and spelling help; letters per pick (4/4/3, cap 15).
+6. Carts for the player: only when she says go.
+
+## Open items and risks
+- Nothing has been tested on a Quest by me. Hand feel, performance (400+ draw calls estimated) and night/dusk look are unverified.
+- Flat flower art for 10 species is placeholder; the 3D models are the real art.
+- 24 voice lines still have no audio (including H28, H29, M17, P14, K15, X01). The Librarian did not get the ids.
+- Rarity and prices are unapproved test values.
+- The Librarian may not read the mailbox on its own; she may have to tell it a message is waiting.
+- She wants the Librarian's review of the playtest before fixes start.
