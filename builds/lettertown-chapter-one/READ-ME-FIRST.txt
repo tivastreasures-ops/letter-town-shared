@@ -108,4 +108,5 @@ ROUND 7 (all on top of Round 6)
 - Letters per pick: 4 for common and uncommon seeds, 3 for rare. Super Grow doubles it. Letter cap is 15.
 - Intro: tap anywhere to turn the sound on or off.
 - Town book and notice board open when your hand touches them.
-NOT DONE YET: 3D flower arranging, tray/board grab by hand, character placement tool, the Blender fixes (Snowy star, present colors, book thickness, tile scrollwork, kid shoes/smoothing), player garden anchor toggle.
+ALSO DONE LATER IN ROUND 7: 3D flower arranging (vase + flower shelf on the Carts screen) and grab-and-drag for the tool tray.
+NOT DONE YET: character placement tool, the Blender fixes (Snowy star, present colors, book thickness, tile scrollwork, kid shoes/smoothing), player garden anchor toggle.
