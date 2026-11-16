@@ -1,0 +1,23 @@
+Letter Town Round 5 - Tiva's Quest playtest, Mon Nov 16 2026, ~7:00-7:25 AM
+Source: 23:29 Quest screen recording (full copy stays on Tiva's PC, Downloads: letter-town-playtest-small.mp4, 64 MB).
+Files here: sheet_01..08.jpg = one frame every 20 s, 9 per sheet, left-to-right, top-to-bottom (sheet N frame K = ((N-1)*9+K-1)*20 s).
+four.jpg = four full-size frames (t = 100, 360, 600, 640 s) showing kids/townies. dense.jpg = frames every 0.5 s from t=628 s.
+Audio was NOT reviewed. Claude reviewed frames only; items below are what the frames show or what Tiva reported.
+
+SEEN IN FRAMES
+- Sky is flat dark blue: no clouds or sky color.
+- Community board is a blank parchment sign next to the old Welcome sign; the two overlap.
+- Cart shelves are empty; flat white squares stand in for stocked letters.
+- Plot cards still show old flat bud/stem art next to the new 3D plants.
+- Table garden sits directly in front of the player (not anchored away like the community garden).
+- Watering can hangs by the spout and floats loose; spade is oversized in first person.
+- Menu panels cover most of the town; no close button seen.
+- Townies: faces/clothes good; textures look soft/low-res; hair is a flat dark mass; shoes read as one dark blob when walking; one kid stands tight against the desk edge, one behind the book. Walking path runs along the table edge.
+- Letter tiles pop up as carved tiles (Tiva loves it). Welcome Map is in. Spelling Book / Letter Bank work.
+
+TIVA REPORTED (not confirmed in frames)
+- Townies grow/shrink and walk through the desk; wants them to appear from a house/store, walk, and vanish into another.
+- Snowy's star renders black; present is a mis-colored rectangle; town book too thick; carved tile lost its purple corner scrollwork.
+- Word bank too small (rejected rum, filmy; no spelling suggestion). Wants 4 letters per pick for common/uncommon, 3 for rare; cap 15.
+- Mayor triggers every time the community board is checked.
+- Wants teleport (tap map picture / finger-thumb), a more spread-out town, 3D flower arranging (the arcade has it), 3D seeds, 3D house choices, no placeholders, rigged gloves first.
