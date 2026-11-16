@@ -1,0 +1,552 @@
+{
+  "H01": {
+    "who": "HUDSON",
+    "text": "Oh! Hello! You're new! Welcome to Letter Town! I'm Hudson, your community ambassador, and I'm very glad you're here.",
+    "file": "LT_CH01_HUDSON_H01_first_enter.mp3"
+  },
+  "H02": {
+    "who": "HUDSON",
+    "text": "Around here, flowers grow letters, letters make words, and words can become wonderful things.",
+    "file": "LT_CH01_HUDSON_H02_first_enter.mp3"
+  },
+  "H03": {
+    "who": "HUDSON",
+    "text": "What should we call you? You can choose a name for your town book.",
+    "file": "LT_CH01_HUDSON_H03_name_entry.mp3"
+  },
+  "H04": {
+    "who": "HUDSON",
+    "text": "Wonderful! It's a pleasure to meet you. Let's get you acquainted with the town.",
+    "file": "LT_CH01_HUDSON_H04_name_confirm.mp3"
+  },
+  "H05": {
+    "who": "HUDSON",
+    "text": "You can take each lesson when you're ready. You can always return to me, and you can repeat a lesson whenever you like.",
+    "file": "LT_CH01_HUDSON_H05_tour_choice.mp3"
+  },
+  "H06": {
+    "who": "HUDSON",
+    "text": "First, our deputy mayor, Snowy, would love to show you your town book and map.",
+    "file": "LT_CH01_HUDSON_H06_snowy_intro.mp3"
+  },
+  "H07": {
+    "who": "HUDSON",
+    "text": "Ready for our next stop? Or would you like more time here? There's no rush.",
+    "file": "LT_CH01_HUDSON_H07_return_prompt.mp3"
+  },
+  "S01": {
+    "who": "SNOWY",
+    "text": "Welcome. I'm Snowy, deputy mayor. I help keep the town records and make sure nobody gets lost. Usually.",
+    "file": "LT_CH01_SNOWY_S01_snowy_first.mp3"
+  },
+  "S02": {
+    "who": "SNOWY",
+    "text": "This is your town book. It keeps your map, useful information, and the important things you've learned.",
+    "file": "LT_CH01_SNOWY_S02_book_open.mp3"
+  },
+  "S03": {
+    "who": "SNOWY",
+    "text": "Try turning a page. You may use the page controls or the quick tabs, whichever is more comfortable.",
+    "file": "LT_CH01_SNOWY_S03_turn_page.mp3"
+  },
+  "S04": {
+    "who": "SNOWY",
+    "text": "Now choose the map tab. The map will help you find the places you're welcome to visit.",
+    "file": "LT_CH01_SNOWY_S04_open_map.mp3"
+  },
+  "S05": {
+    "who": "SNOWY",
+    "text": "You'll find the garden, shops, town square, and the mayor's office here. More places will become available as the town grows.",
+    "file": "LT_CH01_SNOWY_S05_map_regions.mp3"
+  },
+  "S06": {
+    "who": "SNOWY",
+    "text": "You can close or minimize the book without losing your place. Open it again whenever you need it.",
+    "file": "LT_CH01_SNOWY_S06_minimize_book.mp3"
+  },
+  "S07": {
+    "who": "SNOWY",
+    "text": "Would you like to practice page turns and tabs again? That's what practice is for.",
+    "file": "LT_CH01_SNOWY_S07_book_repeat.mp3"
+  },
+  "S08": {
+    "who": "SNOWY",
+    "text": "Excellent. I've marked the lesson complete. You can review these instructions in your book later.",
+    "file": "LT_CH01_SNOWY_S08_book_success.mp3"
+  },
+  "S09": {
+    "who": "SNOWY",
+    "text": "Return to Hudson whenever you're ready. He'll be waiting.",
+    "file": "LT_CH01_SNOWY_S09_back_hudson.mp3"
+  },
+  "H08": {
+    "who": "HUDSON",
+    "text": "Next up is Merry's Green Room! She'll show you how to grow a letter flower, water it, and pick it.",
+    "file": null
+  },
+  "H09": {
+    "who": "HUDSON",
+    "text": "Everything in practice stays in practice. You won't spend your real coins or use up your own seeds here.",
+    "file": "LT_CH01_HUDSON_H09_practice_stays.mp3"
+  },
+  "M01": {
+    "who": "MERRY",
+    "text": "Hello, new friend! I'm Merry. Welcome to the Green Room! Every wonderful word begins somewhere.",
+    "file": null
+  },
+  "M02": {
+    "who": "MERRY",
+    "text": "Let's start with a seed. Choose one, then pick an empty garden plot.",
+    "file": null
+  },
+  "M03": {
+    "who": "MERRY",
+    "text": "There we go! A tiny beginning! Now we'll help it grow.",
+    "file": null
+  },
+  "M04": {
+    "who": "MERRY",
+    "text": "Take the watering can and give the plant a drink. Water helps our letter flowers grow faster.",
+    "file": "LT_CH01_MERRY_M04_water_prompt.mp3"
+  },
+  "M05": {
+    "who": "MERRY",
+    "text": "Perfect! You don't have to hurry a flower, but you can help it along.",
+    "file": null
+  },
+  "M06": {
+    "who": "MERRY",
+    "text": "See the bud? When the flower is ready, you'll be able to harvest it.",
+    "file": null
+  },
+  "M07": {
+    "who": "MERRY",
+    "text": "Now pick the bloom. You can use a simple selection or the hand controls if you have them.",
+    "file": null
+  },
+  "M08": {
+    "who": "MERRY",
+    "text": "Lovely! You've collected a letter for your Letter Bank and a cut flower for your flower collection.",
+    "file": null
+  },
+  "M09": {
+    "who": "MERRY",
+    "text": "The letter and the flower are separate keepsakes. You can spend the letter without losing the flower.",
+    "file": null
+  },
+  "M10": {
+    "who": "MERRY",
+    "text": "Practice here as often as you like. Nothing from this practice garden costs your real supplies.",
+    "file": null
+  },
+  "M11": {
+    "who": "MERRY",
+    "text": "Would you like another try? Gardens are very patient teachers.",
+    "file": null
+  },
+  "M12": {
+    "who": "MERRY",
+    "text": "You've got it! Return to Hudson when you're ready, and we'll see you again anytime.",
+    "file": null
+  },
+  "H10": {
+    "who": "HUDSON",
+    "text": "You've grown a flower! Now let's visit Kit. She knows practically everything about seeds.",
+    "file": null
+  },
+  "H11": {
+    "who": "HUDSON",
+    "text": "Kit has a practice wallet for you. Try different seeds without spending your actual coins.",
+    "file": null
+  },
+  "K01": {
+    "who": "KIT",
+    "text": "Oh! A customer! Welcome to my seed shop! I'm Kit. Please mind the seedlings. They're very nosy.",
+    "file": null
+  },
+  "K02": {
+    "who": "KIT",
+    "text": "See those seed packets? Pick whichever one interests you. This is a practice visit, so experiment!",
+    "file": null
+  },
+  "K03": {
+    "who": "KIT",
+    "text": "Those are practice coins, not your real money. Go on, try something fancy!",
+    "file": null
+  },
+  "K04": {
+    "who": "KIT",
+    "text": "A fine choice! Every seed is a little promise waiting to happen.",
+    "file": null
+  },
+  "K05": {
+    "who": "KIT",
+    "text": "When you shop for real, basic seeds have prices, and five-packs give you more for your coins.",
+    "file": "LT_CH01_KIT_K05_price_hint.mp3"
+  },
+  "K06": {
+    "who": "KIT",
+    "text": "Basic seeds are always available. Some special things take a little longer to return.",
+    "file": "LT_CH01_KIT_K06_stock_hint.mp3"
+  },
+  "K07": {
+    "who": "KIT",
+    "text": "Sold out for now, but don't worry. More are on their way!",
+    "file": "LT_CH01_KIT_K07_restock_hint.mp3"
+  },
+  "K08": {
+    "who": "KIT",
+    "text": "Want to try another seed? I promise the practice wallet won't complain.",
+    "file": "LT_CH01_KIT_K08_practice_repeat.mp3"
+  },
+  "K09": {
+    "who": "KIT",
+    "text": "Lovely doing business with you! Tell Hudson I sent you back with all your pockets intact.",
+    "file": "LT_CH01_KIT_K09_shop_finish.mp3"
+  },
+  "H12": {
+    "who": "HUDSON",
+    "text": "Next is Phineas, our carpenter. He'll show you the cart and how useful a crafted word can be.",
+    "file": "LT_CH01_HUDSON_H12_phineas_intro.mp3"
+  },
+  "P01": {
+    "who": "PHINEAS",
+    "text": "Hello there. I'm Phineas. I make things, mend things, and sometimes discover where I put my pencil.",
+    "file": "LT_CH01_PHINEAS_P01_workshop_first.mp3"
+  },
+  "P02": {
+    "who": "PHINEAS",
+    "text": "In Letter Town, a good word can become something useful. Letters are materials, and spelling is your craft.",
+    "file": "LT_CH01_PHINEAS_P02_word_crafting.mp3"
+  },
+  "P03": {
+    "who": "PHINEAS",
+    "text": "When you successfully craft a word, that crafted item goes into your Word Inventory. The letters you used are spent.",
+    "file": "LT_CH01_PHINEAS_P03_word_inventory.mp3"
+  },
+  "P04": {
+    "who": "PHINEAS",
+    "text": "Here's the cart. Select it to open a larger display where you can see what you're stocking. No need to poke at tiny shelves.",
+    "file": "LT_CH01_PHINEAS_P04_cart_intro.mp3"
+  },
+  "P05": {
+    "who": "PHINEAS",
+    "text": "The Word Cart holds crafted goods. The Flower Cart handles bouquets. They serve different purposes, so mind which one you're using.",
+    "file": "LT_CH01_PHINEAS_P05_two_carts.mp3"
+  },
+  "P06": {
+    "who": "PHINEAS",
+    "text": "One day you'll have a home to furnish. Come see me when you're ready for furniture and other household work.",
+    "file": "LT_CH01_PHINEAS_P06_house_future.mp3"
+  },
+  "P07": {
+    "who": "PHINEAS",
+    "text": "That's enough tools for today. Hudson will guide you through an order next.",
+    "file": "LT_CH01_PHINEAS_P07_practice_finish.mp3"
+  },
+  "H13": {
+    "who": "HUDSON",
+    "text": "Time to put all that practice together! We'll complete two little orders: first FLOWER, then MILK.",
+    "file": "LT_CH01_HUDSON_H13_practice_start.mp3"
+  },
+  "H14": {
+    "who": "HUDSON",
+    "text": "Our first practice customer needs FLOWER. Gather or use the practice letters, then spell F-L-O-W-E-R.",
+    "file": "LT_CH01_HUDSON_H14_flower_goal.mp3"
+  },
+  "H15": {
+    "who": "HUDSON",
+    "text": "Need more letters? Go back to the practice garden. You can repeat without spending your real resources.",
+    "file": "LT_CH01_HUDSON_H15_flower_bank_hint.mp3"
+  },
+  "H16": {
+    "who": "HUDSON",
+    "text": "That's FLOWER! You've crafted the item. Now hand it straight to the practice customer.",
+    "file": "LT_CH01_HUDSON_H16_flower_valid.mp3"
+  },
+  "H17": {
+    "who": "HUDSON",
+    "text": "Perfect delivery! This one goes directly to the customer, not onto the sales cart.",
+    "file": "LT_CH01_HUDSON_H17_flower_handover.mp3"
+  },
+  "H18": {
+    "who": "HUDSON",
+    "text": "Second order: MILK. Gather what you need, spell M-I-L-K, and craft the item.",
+    "file": "LT_CH01_HUDSON_H18_milk_goal.mp3"
+  },
+  "H19": {
+    "who": "HUDSON",
+    "text": "Excellent! This time, we'll stock the finished MILK in the Word Cart.",
+    "file": "LT_CH01_HUDSON_H19_milk_valid.mp3"
+  },
+  "H20": {
+    "who": "HUDSON",
+    "text": "Open the Word Cart, choose MILK from your practice Word Inventory, then select Stock.",
+    "file": "LT_CH01_HUDSON_H20_milk_stock.mp3"
+  },
+  "H21": {
+    "who": "HUDSON",
+    "text": "There it goes! Your customer bought the stocked MILK. You did it!",
+    "file": "LT_CH01_HUDSON_H21_milk_sale.mp3"
+  },
+  "H22": {
+    "who": "HUDSON",
+    "text": "FLOWER delivered and MILK sold! Your book has a completion stamp to remember the lesson.",
+    "file": "LT_CH01_HUDSON_H22_lesson_stamp.mp3"
+  },
+  "H23": {
+    "who": "HUDSON",
+    "text": "There's no hurry. Repeat anything you like, then return to me when you're ready to meet Mayor Ren.",
+    "file": "LT_CH01_HUDSON_H23_practice_exit.mp3"
+  },
+  "H24": {
+    "who": "HUDSON",
+    "text": "You've learned the basics! Time to meet Mayor Ren. He has something important to show you.",
+    "file": "LT_CH01_HUDSON_H24_mayor_intro.mp3"
+  },
+  "R01": {
+    "who": "MAYOR",
+    "text": "Ah, our newest resident! Mayor Ren, at your service. What an extraordinary pleasure to welcome you to Letter Town.",
+    "file": "LT_CH01_MAYOR_R01_mayor_first.mp3"
+  },
+  "R02": {
+    "who": "MAYOR",
+    "text": "Snowy has already shown you the town map, I trust. Excellent. We'll use it to get you settled without another lecture.",
+    "file": "LT_CH01_MAYOR_R02_mayor_book.mp3"
+  },
+  "R03": {
+    "who": "MAYOR",
+    "text": "First, your garden: eight plots of your very own. Four are already growing, and four are ready for whatever you choose to plant.",
+    "file": "LT_CH01_MAYOR_R03_garden_award.mp3"
+  },
+  "R04": {
+    "who": "MAYOR",
+    "text": "And to help you begin, you'll have your starting Letter Bank and one hundred coins.",
+    "file": "LT_CH01_MAYOR_R04_starter_resources.mp3"
+  },
+  "R05": {
+    "who": "MAYOR",
+    "text": "Next, a home! You'll choose from three cottage exteriors. The interior is modest, but it's yours to make extraordinary.",
+    "file": "LT_CH01_MAYOR_R05_house_award.mp3"
+  },
+  "R06": {
+    "who": "MAYOR",
+    "text": "Take a look at the three cottages. Choose the exterior that feels like home to you.",
+    "file": "LT_CH01_MAYOR_R06_cottage_select.mp3"
+  },
+  "R07": {
+    "who": "MAYOR",
+    "text": "Inside you'll find one large room and a smaller adjoining room. Both begin empty. Think of it as a blank page.",
+    "file": "LT_CH01_MAYOR_R07_house_interior.mp3"
+  },
+  "R08": {
+    "who": "MAYOR",
+    "text": "Naturally, a mayor cannot welcome a neighbor empty-handed. Please choose one of these three housewarming gifts.",
+    "file": "LT_CH01_MAYOR_R08_housewarming.mp3"
+  },
+  "R09": {
+    "who": "MAYOR",
+    "text": "A delightful choice! You may place it now or keep it safely in Home Storage until you're ready.",
+    "file": "LT_CH01_MAYOR_R09_gift_selection.mp3"
+  },
+  "R10": {
+    "who": "MAYOR",
+    "text": "Craft a useful word, trade for furnishings, or visit our talented residents. In time, you'll put your own stamp on every room.",
+    "file": "LT_CH01_MAYOR_R10_decoration_intro.mp3"
+  },
+  "R11": {
+    "who": "MAYOR",
+    "text": "There is, however, one small matter. Our town's welcome sign could use some attention.",
+    "file": "LT_CH01_MAYOR_R11_town_problem.mp3"
+  },
+  "R12": {
+    "who": "MAYOR",
+    "text": "When you're ready, help restore the welcome sign. It's a fine first project for a new neighbor.",
+    "file": "LT_CH01_MAYOR_R12_sign_invite.mp3"
+  },
+  "R13": {
+    "who": "MAYOR",
+    "text": "You may now browse the town improvement board. It shows projects and the materials they require.",
+    "file": "LT_CH01_MAYOR_R13_board_unlock.mp3"
+  },
+  "R14": {
+    "who": "MAYOR",
+    "text": "Craft the words and gather the materials the project calls for. Keep them in your inventory until you choose to contribute.",
+    "file": "LT_CH01_MAYOR_R14_sign_how.mp3"
+  },
+  "R15": {
+    "who": "MAYOR",
+    "text": "Everything we need is here. Shall we restore our welcome sign?",
+    "file": "LT_CH01_MAYOR_R15_sign_ready.mp3"
+  },
+  "R16": {
+    "who": "MAYOR",
+    "text": "Splendid! Letter Town's welcome sign shines again. You have given our village a wonderful beginning.",
+    "file": "LT_CH01_MAYOR_R16_sign_restored.mp3"
+  },
+  "R17": {
+    "who": "MAYOR",
+    "text": "Friends and neighbors, a little celebration is in order! Here's to fresh letters, new flowers, and our newest resident.",
+    "file": "LT_CH01_MAYOR_R17_celebration.mp3"
+  },
+  "R18": {
+    "who": "MAYOR",
+    "text": "Our welcome sign is restored, but there's much more to enjoy. Your home, your garden, your neighbors—Letter Town is yours to explore.",
+    "file": "LT_CH01_MAYOR_R18_after_chapter.mp3"
+  },
+  "H25": {
+    "who": "HUDSON",
+    "text": "If you're wondering what to do next, the welcome sign is a good place to begin. Or explore a little first!",
+    "file": "LT_CH01_HUDSON_H25_sign_before.mp3"
+  },
+  "H26": {
+    "who": "HUDSON",
+    "text": "Welcome back! Where would you like to begin: Home, Garden, or Town Square?",
+    "file": "LT_CH01_HUDSON_H26_returning_menu.mp3"
+  },
+  "H27": {
+    "who": "HUDSON",
+    "text": "While you were away, your cart may have made some sales. Check the cart for the latest update.",
+    "file": "LT_CH01_HUDSON_H27_returning_sales.mp3"
+  },
+  "S10": {
+    "who": "SNOWY",
+    "text": "Everything important is in your town book. Open the map tab to find your next stop.",
+    "file": "LT_CH01_SNOWY_S10_help_book.mp3"
+  },
+  "S11": {
+    "who": "SNOWY",
+    "text": "Need the instructions again? You can replay a conversation or review the lesson in your book.",
+    "file": "LT_CH01_SNOWY_S11_help_repeat.mp3"
+  },
+  "S12": {
+    "who": "SNOWY",
+    "text": "Your notes are up to date. The town is becoming easier to navigate already.",
+    "file": "LT_CH01_SNOWY_S12_progress_note.mp3"
+  },
+  "M13": {
+    "who": "MERRY",
+    "text": "This plot is empty and ready for a seed.",
+    "file": "LT_CH01_MERRY_M13_garden_empty.mp3"
+  },
+  "M14": {
+    "who": "MERRY",
+    "text": "Not quite ready yet. Watering can help it along, but it will keep growing while you're away.",
+    "file": "LT_CH01_MERRY_M14_garden_growing.mp3"
+  },
+  "M15": {
+    "who": "MERRY",
+    "text": "A lovely bloom! Your letter goes to the Letter Bank, and the cut flower goes to your flower collection.",
+    "file": "LT_CH01_MERRY_M15_garden_harvest.mp3"
+  },
+  "M16": {
+    "who": "MERRY",
+    "text": "That was this plant's fifth harvest. The plot is free for a new seed!",
+    "file": "LT_CH01_MERRY_M16_garden_fifth.mp3"
+  },
+  "K10": {
+    "who": "KIT",
+    "text": "Welcome back! Looking for the everyday seeds, or something a little special?",
+    "file": "LT_CH01_KIT_K10_shop_greeting.mp3"
+  },
+  "K11": {
+    "who": "KIT",
+    "text": "I can offer coins, or perhaps a trade. Let's see what you've got!",
+    "file": "LT_CH01_KIT_K11_trade_offer.mp3"
+  },
+  "K12": {
+    "who": "KIT",
+    "text": "All yours! I've placed it in your inventory.",
+    "file": "LT_CH01_KIT_K12_purchase_success.mp3"
+  },
+  "K13": {
+    "who": "KIT",
+    "text": "Not enough coins for that one just yet. Your other choices will still be here.",
+    "file": "LT_CH01_KIT_K13_purchase_insufficient.mp3"
+  },
+  "K14": {
+    "who": "KIT",
+    "text": "A special trade! Here's a little package for you. Just select it to open.",
+    "file": "LT_CH01_KIT_K14_special_trade_reward.mp3"
+  },
+  "K15": {
+    "who": "KIT",
+    "text": "Would you like to keep shopping, or are you ready to check out?",
+    "file": null
+  },
+  "P08": {
+    "who": "PHINEAS",
+    "text": "Back for a little building? Let's see what we can make.",
+    "file": "LT_CH01_PHINEAS_P08_shop_return.mp3"
+  },
+  "P09": {
+    "who": "PHINEAS",
+    "text": "Choose an available spot for your item. You can move it or put it back in inventory whenever you like.",
+    "file": "LT_CH01_PHINEAS_P09_home_place.mp3"
+  },
+  "P10": {
+    "who": "PHINEAS",
+    "text": "Windows belong in the marked wall spots. Curtains attach separately, so you can change them later.",
+    "file": "LT_CH01_PHINEAS_P10_window_place.mp3"
+  },
+  "P11": {
+    "who": "PHINEAS",
+    "text": "For now, one wall finish and one flooring style per room. More precise decorating comes later.",
+    "file": "LT_CH01_PHINEAS_P11_wall_floor.mp3"
+  },
+  "P12": {
+    "who": "PHINEAS",
+    "text": "Choose a finished item, then Stock. Only goods you deliberately place on a cart can be sold.",
+    "file": "LT_CH01_PHINEAS_P12_cart_stock.mp3"
+  },
+  "P13": {
+    "who": "PHINEAS",
+    "text": "Looks like the cart is empty. Stock it when you're ready; no need to rush.",
+    "file": "LT_CH01_PHINEAS_P13_cart_out_of_stock.mp3"
+  },
+  "R19": {
+    "who": "MAYOR",
+    "text": "Our town noticeboard has announcements, neighborly requests, and special trade offers. A useful little institution.",
+    "file": "LT_CH01_MAYOR_R19_noticeboard.mp3"
+  },
+  "R20": {
+    "who": "MAYOR",
+    "text": "You may help a resident, trade something they've requested, or simply continue your day. Good neighbors have choices.",
+    "file": "LT_CH01_MAYOR_R20_town_trade.mp3"
+  },
+  "R21": {
+    "who": "MAYOR",
+    "text": "The welcome sign will wait until you're ready. A proper restoration deserves care, not hurry.",
+    "file": "LT_CH01_MAYOR_R21_project_pending.mp3"
+  },
+  "R22": {
+    "who": "MAYOR",
+    "text": "The plaza is looking splendid. I suspect this is only the beginning of our town's story.",
+    "file": "LT_CH01_MAYOR_R22_post_restore.mp3"
+  },
+  "H28": {
+    "who": "HUDSON",
+    "text": "To press a button, point at it with one finger, then pinch and let go. You can also tap it with a fingertip.",
+    "file": null
+  },
+  "H29": {
+    "who": "HUDSON",
+    "text": "Take your time. Nothing happens until you let go of the pinch, so you can aim first.",
+    "file": null
+  },
+  "M17": {
+    "who": "MERRY",
+    "text": "To pick a flower, pinch it and pull gently. You can also poke the board in front of you and choose Pick.",
+    "file": null
+  },
+  "P14": {
+    "who": "PHINEAS",
+    "text": "Until you've crafted something, flower arranging makes good practice. Pick up to nine flowers and keep the bouquet with you, or set it on the Flower Cart.",
+    "file": null
+  },
+  "X01": {
+    "who": "HUDSON",
+    "text": "A neighbor has a little story to share. Look for it at the noticeboard.",
+    "file": null
+  }
+}

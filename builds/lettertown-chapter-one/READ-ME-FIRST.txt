@@ -1,0 +1,111 @@
+LETTER TOWN - CHAPTER ONE (Quest 3 / WebXR edition) - ROUND 1
+Built Nov 14-15, 2026 by the Professor (Claude) after the Director's GO. Round 1 added Nov 15.
+
+HOW TO PUT IT ONLINE
+1. Unzip. You get one folder called "lettertown-ch1" (a different name on purpose, so it does not replace the Arcade's "lettertown" folder).
+2. Upload the whole folder to GreenGeeks inside public_html.
+3. On the Quest 3, open the Quest browser and go to  https://YOUR-SITE/lettertown-ch1/   (must be https)
+4. The opening film plays first. Then press "Enter VR" (or "Enter" to play on the flat screen).
+5. Put the controllers down so hand tracking takes over. The first thing you see in VR is the Make it comfortable screen.
+It also runs on a computer or phone at the same address: click or tap everything.
+
+HOW YOU PLAY
+- The story board in front of you: poke a button with a fingertip, or point at it and pinch.
+- The garden table (open the Garden tab first): pinch to pick up.
+    Seeds: carry over an empty plot and let go.     Watering can: tilt the spout down over a plant.
+    Super Grow: shake it over a plant.               Finished flower: pinch and pull.
+  Every hand action also has a button on the Garden screen (choose a tool, then a plot).
+- Settings tab: text size, volume, sound on/off, table height, reach, recenter, exit VR, erase save.
+- The game saves by itself after every action. "Continue" on the title screen picks up where you left off.
+
+WHAT CHANGED IN ROUND 1
+- First visit plays landing-page-opening-video. Every later visit plays letter-town-start. Both end on the Ivy entrance picture with Enter and Enter VR.
+- The end-chapter-one film plays on the story board when the Welcome Sign is restored (Skip works).
+- Tutorial lines now advance by themselves (Auto is on; you can turn it off). The speech box is small; the resident stands in 3D in front of their home.
+- Stops can be taken in any order. Mayor Ren unlocks after the other five. Each lesson ends with an I'm finished button, the resident's send-off, and an automatic return to Hudson.
+- The whole scene starts farther away. Make it comfortable (screen distance, height, size, table height, reach, pinch, fingertip poke on/off) opens before the tour and from Settings.
+- Pinch needs 3 steady frames to start, fingertip poke is ignored while pinching, and the cursor turns green and grows while you pinch.
+- Dictionary tab and Map card. Home is look-only with an inventory list.
+- Residents are 3D models (shrunk to 1.4 to 8 MB each). Seed shop, carpenter shop and greenhouse buildings are not 3D yet: stand-in cottages are used for Snowy, Merry, Kit and Phineas.
+- NOT in Round 1: town-square carts, community plot, new map, other 3D art swaps, sky by clock, flower-name letters. Those are Round 2.
+- Nothing here has been tested on a Quest. Checked in a desktop browser only.
+
+WHAT IS IN THIS BUILD
+- Hudson's welcome tour with all six residents, name entry, and the FLOWER / MILK practice orders.
+  Practice uses its own coins, seeds and letters. Nothing in practice touches your real ones.
+- Your garden: 8 plots, 4 random starters, 100 coins, 25 starting letters, 5 picks per seed, growth while away.
+- Kit's shop: seeds 5/7/10, five-packs 20/30/45, Super Grow 4. Every purchase asks first.
+- Spelling Book: craft real dictionary words, Word Inventory, and a Discovered list that remembers every word.
+- Word Cart (6 shown + queue, oldest first, cashbox) and Flower Cart (bouquets of 3, 6 or 9, coins go straight to you).
+- Noticeboard requests from neighbors.
+- Mayor Ren: your garden, a choice of three cottages, a choice of three gifts, and your two-room home to decorate.
+  Craft BED, CHAIR, LAMP, TABLE and other household words and place them.
+- The 12-blank story "The Day the Welcome Went Missing": choose words, Surprise Me, finish, reread, retell.
+- Finishing the story the first time restores the Welcome Sign (in the world and on the title screen) and
+  adds Cat Girl's journal entry. After that you keep playing.
+- 85 recorded voice lines play. The 20 lines without a recording show as text.
+
+STAND-INS AND KNOWN GAPS (see the Professor's message for the full list)
+- Which letters each seed grows, word payouts and sale timing are test values in rules/game.js (CFG at the top).
+- The three cottages are simple drawn pictures. Cat Girl's journal words are a first draft with no voice.
+- Seeds, watering can and Super Grow on the table are plain shapes.
+- Nothing has been tested on a Quest yet.
+
+FOR TESTING ONLY
+Add ?speed=20 to the address to make plants and carts run 20 times faster.
+Hand tuning: ?pullDist=0.12&shakeFlips=3&pinchIn=0.025
+
+CREDITS
+Three.js r170 (MIT licence, in vendor/three). Word list from the earlier Letter Town build
+(hand list + WordNet 3.0 parts of speech). No Meta code or art is used.
+
+
+ROUND 2 (this build)
+- Pinch: a board button now fires when you let go of the pinch (aim first). Fingertip poke needs one pointing finger and a deliberate push.
+- Slidable tool tray (Garden screen, Table buttons), can lifted by its handle, 3D can and Super Grow box.
+- Characters stand on a pedestal. Letter tile and confetti when you pick a flower.
+- Plain lined page with arrows for stories, the letter and the journal. Letter Bank naming. Kit asks: keep shopping or check out.
+- Flower arranging at the Flower Cart (up to 9). Notice board and town book are 3D objects you can point at.
+- Four mini stories (adventure, town, seasonal, fantasy) offered after two of a resident's requests are done.
+- Videos: Settings > Watch the videos (Replay on every video). Put your 8-second celebration at assets/video/celebration.mp4. It plays after the sign film in place of the mayor's speech, then Cat Girl's letter opens.
+
+ROUND 3 additions
+- The sky follows your real clock (dawn 5-8, day 8-17, dusk 17-20, night after 20). Preview with ?hour=19 on the address.
+- Gifts: after each guide's lesson, a present opens with letter tiles spelling a word (they go to your Letter Bank). The first two word or bouquet sales leave presents from Anna and Timmy.
+- Community garden (Map card): 12 shared plots with 3D sunflowers and violets; three neighbors stroll through at a time.
+- celebration.mp4 is in assets/video and plays after the sign film.
+
+ROUND 4
+- Community garden is playable: Plant / Water / Pick on its screen. Plots grow 3x slower than at home (CFG.commGrowMult). Neighbors plant a seed in a free plot every 25-70 minutes (CFG.commNeighborMins); nobody can tell who planted what.
+- Picking in the community garden gives one letter from the flower's own name plus one cut flower, and frees the plot.
+- Flower set is now 15: chrysanthemum (Pink Dahlia), kopsia (White Plumeria), jonquil (Yellow Daffodil), marigold, zinnia, rose, peony, lily, poppy, daisy, buttercup, flax, plumeria, violet, sunflower. A flower can only give letters in its own name. Rose/daisy/poppy/peony/lily get a random color (CFG.flowerColors); the rest are one fixed color.
+- 3D models for every flower (assets/models/flowers). Roses show your 3D rosebud at the bud stage; other flowers show a flat bud picture.
+- Growth looks: seed, sprout, bud, bloom (home plots and community plots).
+- Voice lines added: Hudson "stays in practice" (H09) and Merry's water prompt (M04).
+- Flat flower pictures for kopsia/jonquil/rose/peony/lily/poppy/daisy/flax/plumeria/violet are simple placeholders used on the board; the 3D models are the real art.
+
+ROUND 5 (the town)
+- The flat backdrop photo is gone. Letter Town is now 3D all around you: cobblestone plaza and roads, tiered fountain, Town Hall, cottages, trees, shrubs, grass, flowers and fences. Turn your head to look around.
+- Community garden is at your left, fenced, on stone plots. Table plots are stone plots too.
+- Neighbors (the kids) are child size (about 1.15 m), walk on the cobblestones, and walk to the carts when something sells.
+- Letters pop as your carved letter tile (letter-tile.glb).
+- The Map screen uses the Welcome Map: tap a place on it.
+- Table is smaller, plots are further out (reach 0.62), tool tray sits closer (x 0.5). Saves that were never adjusted are moved to the new values.
+- Not placed yet: Frog Gardener (25 MB, needs a smaller version), Cat Girl, tray grabbing with hands.
+
+ROUND 6 (gloves only, Nov 16)
+- Your garden gloves are now rigged 3D models that follow your tracked hands: flowers on the back of the hand, green stitched fingertips, pink piping, purple cuff with a pink bow. The old plain finger dots stay only as a fallback if a glove file fails to load.
+- Files: assets/models/gloves/glove_left.glb and glove_right.glb (about 1.5 MB each). Bones are named exactly like the Quest hand joints, so they ride the tracked hand directly.
+- Nothing else changed from Round 5.
+
+
+ROUND 7 (all on top of Round 6)
+- Carts: both are 3D, tappable (point and pinch, or touch), and show their stock: word plaques and coins on the Word Cart, small bouquets on the Flower Cart.
+- Seed packets: your 15 packet pictures are in the seed shop (rarity versions) and the seed packet on the table changes with the seed you hold.
+- Houses: the cottage choice screen shows 3D renders of the three cottages.
+- Townies: step out of a door, walk, go in through another door and are gone. No growing or shrinking. They stay away from the desk, also after you teleport.
+- Words: about 36,000 words now, including RUM and FILMY. Near-miss spellings get up to five suggestions, even when your letters can't spell them yet.
+- Letters per pick: 4 for common and uncommon seeds, 3 for rare. Super Grow doubles it. Letter cap is 15.
+- Intro: tap anywhere to turn the sound on or off.
+- Town book and notice board open when your hand touches them.
+NOT DONE YET: 3D flower arranging, tray/board grab by hand, character placement tool, the Blender fixes (Snowy star, present colors, book thickness, tile scrollwork, kid shoes/smoothing), player garden anchor toggle.

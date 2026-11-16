@@ -21,3 +21,6 @@ Notes
 ## Added Nov 14 (afternoon) by the Professor
 - `assets/clean/professor/ui` and `assets/clean/professor/scene`: the Nov 14 images with status tags removed, as used in the Quest build (signs, books, quest board, word cart, a panel and three buttons sliced from the sheet, three town backgrounds cropped). Status belongs in filenames and this README only, never in visible art.
 - `builds/quest-chapter-one`: source of the Quest 3 / WebXR Chapter One game (plain JavaScript + Three.js). Voice files are not duplicated there: copy `assets/audio/*/*.mp3` flat into `builds/quest-chapter-one/assets/audio/` to run it. Rules and test values are in `rules/game.js` (CFG at the top).
+
+## builds/lettertown-chapter-one (Round 7, full game source)
+Open `builds/lettertown-chapter-one/READ-ME-FIRST.txt` for what changed and what is still open.

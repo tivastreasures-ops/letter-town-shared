@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Letter Town</title>
+<script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js" } }</script>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #cfe6f5; font-family: Georgia, serif; }
+  canvas { display: block; touch-action: none; }
+  #bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 8px 14px; background: rgba(255, 248, 234, 0.92); color: #5a3b22; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  #vr { font: bold 20px Georgia, serif; padding: 10px 22px; border-radius: 12px; border: 3px solid #c99a5b; background: #ffd9e6; color: #5a3b22; }
+  #vr:disabled { opacity: 0.6; }
+  #note { font-size: 15px; flex: 1; min-width: 220px; }
+  #intro { position: fixed; inset: 0; z-index: 10; background: #1d1630; display: flex; align-items: center; justify-content: center; }
+  #intro video, #intro .still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  #intro .still { background: #1d1630 center / cover no-repeat url(assets/scene/ivy_entrance.jpg); }
+  #intro .row { position: absolute; left: 0; right: 0; bottom: 7%; display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; }
+  #intro button { font: bold clamp(22px, 3.2vw, 40px) Georgia, serif; padding: 0.55em 1.6em; border-radius: 18px; border: 4px solid #c99a5b; color: #5a3b22; box-shadow: 0 6px 18px rgba(40, 20, 10, 0.45); cursor: pointer; }
+  #intro #enter { background: #bfe0a8; }
+  #intro #entervr { background: #dccdf5; }
+  #intro button:disabled { opacity: 0.55; cursor: default; }
+  #intro #skip { position: absolute; right: 18px; bottom: 18px; font-size: 20px; padding: 0.4em 1em; background: rgba(255, 248, 234, 0.9); }
+  #intro #hint { position: absolute; left: 0; right: 0; bottom: 2%; text-align: center; color: #fff8ea; font-size: 18px; text-shadow: 0 2px 6px #000; }
+  .hide { display: none !important; }
+</style>
+</head>
+<body>
+<div id="bar" class="hide">
+  <button id="vr" disabled>Checking for VR…</button>
+  <div id="note">Letter Town, Chapter One. In the headset: poke the board with a fingertip, or point and pinch. In the garden: pinch to pick things up.</div>
+</div>
+<div id="intro">
+  <video id="introvid" playsinline preload="auto" class="hide"></video>
+  <div class="still hide" id="introstill"></div>
+  <div class="row hide" id="introrow"><button id="enter">Enter</button><button id="entervr" disabled>Enter VR</button></div>
+  <button id="skip" class="hide">Skip</button>
+  <div id="hint" class="hide"></div>
+</div>
+<script type="module" src="app/main.js"></script>
+</body>
+</html>
