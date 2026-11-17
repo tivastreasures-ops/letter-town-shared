@@ -106,9 +106,11 @@ const FCOL = { rose: '#e88aa5', daisy: '#fffdf4', poppy: '#e8453c', peony: '#f2a
 const arrG = new THREE.Group(); arrG.visible = false; stage.add(arrG);
 const vase = new THREE.Group(); { const v = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.04, 0.14, 20, 1, true), new THREE.MeshLambertMaterial({ color: '#cfe6f2', transparent: true, opacity: 0.8, side: THREE.DoubleSide })); v.position.y = 0.07; vase.add(v); const bt = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.01, 20), new THREE.MeshLambertMaterial({ color: '#9dc3d8' })); bt.position.y = 0.005; vase.add(bt); } vase.position.set(0.58, TABLE, 0.02); arrG.add(vase);
 const vaseRec = { holder: vase, kind: 'vase', radius: 0.09, cy: 0.1 }; props.push(vaseRec);
-const vaseFl = new THREE.Group(); vase.add(vaseFl); const pickRecs = []; const SPKEY = { rose: 'rose_pink', daisy: 'daisy_white', poppy: 'poppy_blue', peony: 'peony_pink', lily: 'lily_pink' }; let arrSig = '';
+const vaseFl = new THREE.Group(); vase.add(vaseFl); const pickRecs = []; const SPKEY = { rose: 'rose_pink', daisy: 'daisy_white', peony: 'peony_pink', lily: 'lily_pink' }; let arrSig = '';
+const vaseFluted = new THREE.Group(); vase.add(vaseFluted); let vaseLoaded = false; const vaseGlass = vase.children.filter((c) => c.isMesh);
+function applyVase() { const f = UI.state.vase === 'fluted'; vaseGlass.forEach((m) => { m.visible = !f; }); vaseFluted.visible = f; if (f && !vaseLoaded) { vaseLoaded = true; flowerModel('vase_fluted', 0.16, (m) => vaseFluted.add(m)); } }
 function refreshArr() {
-  const on = !!S && UI.state.screen === 'carts'; arrG.visible = on; if (!on) { arrSig = ''; return; }
+  const on = !!S && UI.state.screen === 'carts'; arrG.visible = on; if (!on) { arrSig = ''; return; } applyVase();
   const PP = R.pouch(S), arr = UI.state.arr || {}, sig = JSON.stringify([PP.flowers, PP.basket, arr]); if (sig === arrSig) return; arrSig = sig;
   pickRecs.splice(0).forEach((r) => { arrG.remove(r.holder); const i = props.indexOf(r); if (i >= 0) props.splice(i, 1); });
   while (vaseFl.children.length) vaseFl.remove(vaseFl.children[0]);
@@ -271,12 +273,13 @@ function hush() { voiceDone = null; try { voice.pause(); } catch (e) { /* fine *
 const UP = new THREE.Vector3(0, 1, 0), BLOOM_HOME = new THREE.Vector3(0, 0.15, 0);
 const bloomTex = {}; [...R.CFG.species, 'buttercup', 'foxglove', 'red_begonia_cluster', 'white_star_flower', 'yarrow', 'zinnia_dahlia'].forEach((s) => { bloomTex[s] = tex(`assets/blooms/${s}.png`); });
 const plots = [];
+const soilTex = tex('assets/blooms/soil_tile.jpg'); soilTex.wrapS = soilTex.wrapT = THREE.MirroredRepeatWrapping; soilTex.repeat.set(2, 1);   // her soil tile; mirrored so the seam in the picture does not show
 const stageTex = { seed: tex('assets/blooms/pseed.png'), sprout: tex('assets/blooms/psprout.png') };   // her glowing seed and sprout art
 for (let i = 0; i < 8; i++) {
   const g = new THREE.Group();
   const soil = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.058, 0.02, 20), new THREE.MeshLambertMaterial({ color: '#7a5236' })); soil.position.y = 0.01; soil.name = 'soil'; g.add(soil);
   const ring = new THREE.Mesh(new THREE.TorusGeometry(0.062, 0.006, 8, 28), new THREE.MeshBasicMaterial({ color: '#58c06a' })); ring.rotation.x = Math.PI / 2; ring.position.y = 0.022; ring.visible = false; g.add(ring);
-  const mound = new THREE.Mesh(new THREE.SphereGeometry(0.022, 12, 8), new THREE.MeshLambertMaterial({ color: '#5b3a24' })); mound.scale.y = 0.6; mound.position.y = 0.024; g.add(mound);
+  const mound = new THREE.Mesh(new THREE.SphereGeometry(0.022, 12, 8), new THREE.MeshLambertMaterial({ color: '#a08068', map: soilTex })); mound.scale.y = 0.6; mound.position.y = 0.024; g.add(mound);
   const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.005, 1, 8), new THREE.MeshLambertMaterial({ color: '#5a9a48' })); g.add(stem);
   const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.016, 10, 8), new THREE.MeshLambertMaterial({ color: '#6fb45a' })); leaf.scale.set(1.3, 0.35, 0.8); g.add(leaf);
   const bud = new THREE.Mesh(new THREE.SphereGeometry(0.014, 10, 8), new THREE.MeshLambertMaterial({ color: '#f08cb4' })); bud.scale.y = 1.4; bud.visible = false; g.add(bud);
@@ -313,9 +316,9 @@ const tools = [];
 const TRAY = { z: -0.14, y: 0.025, offs: { seeds: -0.17, shaker: 0, can: 0.17 } };   // the shelf runs front-to-back; the tools sit along it
 const trayX = () => (S && S.settings.toolX != null ? S.settings.toolX : 0.5);
 function makeTool(kind, home, yaw, build) { const g = new THREE.Group(); build(g); g.position.copy(home); g.rotation.y = yaw; stage.add(g); const t = { kind, g, home: home.clone(), homeQ: g.quaternion.clone(), heldBy: null, flips: [], lastDir: null, cool: 0, prev: new THREE.Vector3() }; tools.push(t); return t; }
-const PK = { common: ['rose'], uncommon: ['buttercup', 'chrysanthemum', 'daisy', 'lily', 'marigold', 'peony', 'plumeria', 'poppy', 'sunflower', 'violet'], rare: ['flax', 'jonquil', 'kopsia', 'zinnia'] };
+const PK = R.SPECIES_BY_TIER;
 const packetMat = new THREE.MeshLambertMaterial({ transparent: true, alphaTest: 0.1, side: THREE.DoubleSide }); let packetTier = '';
-function packetFor(tier) { if (tier === packetTier) return; packetTier = tier; const L = PK[tier] || PK.common, f = L[Math.floor(Math.random() * L.length)]; packetMat.map = tex(`assets/seeds/${f}.png`); packetMat.needsUpdate = true; }
+function packetFor(tier) { if (tier === packetTier) return; packetTier = tier; const L = PK[tier] || PK.common, f = R.TIER_OF[tier] ? tier : L[Math.floor(Math.random() * L.length)]; packetMat.map = tex(`assets/seeds/${f}.png`); packetMat.needsUpdate = true; }
 makeTool('seeds', new THREE.Vector3(0, TABLE + 0.05, -0.2), 0, (g) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.096), packetMat); m.position.y = 0.01; g.add(m); const m2 = m.clone(); m2.position.z = -0.002; g.add(m2); packetFor('common'); });
 const canTool = makeTool('can', new THREE.Vector3(0, TABLE + 0.045, -0.2), Math.PI / 2, (g) => {
   const mat = new THREE.MeshLambertMaterial({ color: '#8fb8d8' }); g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.046, 0.085, 18), mat));
@@ -376,7 +379,7 @@ const G = {
   cPlant(i) { const t = G.seedTier(); const r = R.commPlant(S, i, t); UI.note(r); if (r.ok) beep(520, 0.08); return r; },
   cWater(i) { const r = R.commWater(S, i); UI.note(r); if (r.ok) beep(660, 0.08); return r; },
   cPick(i) { const r = R.commPick(S, i); UI.note(r); if (r.ok) { beep(740, 0.07); setTimeout(() => beep(990, 0.1), 80); save(); } return r; },
-  seedTier() { const g = R.pouch(S); if (g.seeds[UI.state.tier] > 0) return UI.state.tier; return ['common', 'uncommon', 'rare'].find((t) => g.seeds[t] > 0) || UI.state.tier; },
+  seedTier() { const g = R.pouch(S), k = R.ownedSeedKeys(g); return k.includes(UI.state.tier) ? UI.state.tier : (k[0] || UI.state.tier); },
   plant(i) { const r = R.plant(S, i, G.seedTier()); UI.note(r); if (r.ok) { beep(520, 0.08); UI.emit('planted'); } else if (r.code === 'noseed') UI.cue('M13'); return r; },
   water(i) { const r = R.water(S, i); UI.note(r); if (r.ok) { beep(660, 0.08); UI.emit('watered'); } return r; },
   boost(i) { const r = R.superGrow(S, i); UI.note(r); if (r.ok) { beep(880, 0.1); burst(plots[i], '#ffd34d', 10); UI.emit('boosted'); } return r; },
@@ -574,7 +577,7 @@ layout(); UI.start();
 const clock = new THREE.Clock(); let slow = 0;
 function tick(dt, simOnly) {
   if (!simOnly) readXR();
-  stepPointers(dt, performance.now() / 1000); stepBits(dt); stepTiles(dt); stepKids(dt); stepSky(dt); packetFor(UI.state.tier); if (giftHolder.visible) { giftHolder.rotation.y += dt * 0.8; giftHolder.position.y = TABLE + 0.02 + Math.abs(Math.sin(clock.elapsedTime * 2)) * 0.03; }
+  stepPointers(dt, performance.now() / 1000); stepBits(dt); stepTiles(dt); stepKids(dt); stepSky(dt); packetFor(G.seedTier()); if (giftHolder.visible) { giftHolder.rotation.y += dt * 0.8; giftHolder.position.y = TABLE + 0.02 + Math.abs(Math.sin(clock.elapsedTime * 2)) * 0.03; }
   const t = clock.elapsedTime; plots.forEach((p) => drawPlot(p, t, dt));
   if (vig.visible) { const v = VIG[vigWho]; if (v && v.char) { const talking = !voice.paused && !voice.ended; v.char.position.y = Math.abs(Math.sin(t * (talking ? 7 : 1.6))) * (talking ? 0.014 : 0.004); v.char.rotation.y = Math.sin(t * 0.9) * (talking ? 0.16 : 0.07); } }
   slow += dt; if (slow > 0.5 && S) { slow = 0; refreshStock(); refreshArr(); { const evn = R.advance(S, now()); kidBuys(evn); UI.everyHalfSecond(evn); } }

@@ -82,6 +82,14 @@ export function makeScreens(c) {
       if (look === 'stage_bud') { g.fillStyle = '#f08cb4'; g.beginPath(); g.ellipse(cx, top - h * 0.06, h * 0.08, h * 0.13, 0, 0, 7); g.fill(); g.fillStyle = '#e07aa6'; g.beginPath(); g.ellipse(cx + h * 0.02, top - h * 0.05, h * 0.04, h * 0.1, 0, 0, 7); g.fill(); } }
     g.restore();
   }
+  // the seed picker: choose which packet to plant (a specific flower, or a mixed packet of one tier)
+  function seedPicker(x, y, bw, h, size) {
+    const p = P(), keys = R.ownedSeedKeys(p), cur = keys.includes(st.tier) ? st.tier : (keys[0] || st.tier), idx = Math.max(0, keys.indexOf(cur)), cyc = (d) => { if (keys.length) st.tier = keys[(idx + d + keys.length) % keys.length]; };
+    B(x, y, 70, h, '◀', () => cyc(-1), { size, style: 'cream', off: keys.length < 2 }); rr(x + 78, y, bw, h, 14, '#fffdf6', COL.edge, 3);
+    if (!keys.length) text('No seeds yet. Kit sells them.', x + 78 + bw / 2, y + h / 2, size - 2, COL.soft, 'center');
+    else { const sp = !!R.TIER_OF[cur], pi = sp ? img(`seeds/${cur}.png`) : null; if (pi) { const hh = h - 8, ww = hh * pi.width / pi.height; g.drawImage(pi, x + 86, y + 4, ww, hh); } text(`${sp ? cap(cur) : 'Any ' + cur} (${R.seedKeyCount(p, cur)})`, x + 78 + bw / 2 + (pi ? 24 : 0), y + h / 2, size, COL.ink, 'center', true); }
+    B(x + 86 + bw, y, 70, h, '▶', () => cyc(1), { size, style: 'cream', off: keys.length < 2 });
+  }
   function frameBg() { g.fillStyle = COL.paper; g.fillRect(0, 0, BW, BH); g.strokeStyle = COL.edge; g.lineWidth = 12; g.strokeRect(6, 6, BW - 12, BH - 12); }
   function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); }
   function header(title) {
@@ -92,7 +100,7 @@ export function makeScreens(c) {
     B(1244, 18, 90, 66, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 24 }); B(1342, 18, 84, 66, 'Exit', () => ask('Leave VR and stop playing? Your garden is saved.', () => c.exitVR()), { style: 'rose', size: 24 });
     text(`${P().coins} coins`, BW - 24, 52, 28, COL.ink, 'right', true);
   }
-  function stats(y) { const p = P(); text(`Coins ${p.coins}    Letter Bank ${R.bankCount(p.bank)}    Cut flowers ${R.flowerTotal(p)}    Seeds ${p.seeds.common + p.seeds.uncommon + p.seeds.rare}    Super Grow ${p.doses}`, BW / 2, y, 30, COL.ink, 'center', true); }
+  function stats(y) { const p = P(); text(`Coins ${p.coins}    Letter Bank ${R.bankCount(p.bank)}    Cut flowers ${R.flowerTotal(p)}    Seeds ${R.seedTotal(p)}    Super Grow ${p.doses}`, BW / 2, y, 30, COL.ink, 'center', true); }
 
   /* ---------- plain lined page, used for every long text ---------- */
   function paper(paras, title, x, y, h, opt = {}) {
@@ -182,7 +190,7 @@ export function makeScreens(c) {
       frameBg(); header(S.usePractice ? 'Practice garden' : 'Your garden'); const p = P(); stats(130);
       text('Use your hands on the table below, or use these buttons: choose a tool, then a plot.', BW / 2, 178, 26, COL.soft, 'center');
       const tl = [['seeds', 'Seeds'], ['can', 'Water'], ['shaker', 'Super Grow'], [null, 'Pick']]; tl.forEach(([k, label], i) => B(90 + i * 365, 215, 340, 88, label, () => { st.tool = k; say(k ? `${label} selected. Now choose a plot.` : 'Pick selected. Choose a finished flower.'); }, { style: st.tool === k ? 'gold' : 'cream', on: st.tool === k }));
-      text('Seed to plant:', 90, 350, 28, COL.ink); ['common', 'uncommon', 'rare'].forEach((t, i) => B(300 + i * 300 - 90 * 0, 318, 280, 64, `${cap(t)} (${p.seeds[t]})`, () => { st.tier = t; }, { style: st.tier === t ? 'gold' : 'cream', size: 26, on: st.tier === t, off: !p.seeds[t] && st.tier !== t }));
+      text('Seed to plant:', 90, 350, 28, COL.ink); seedPicker(300, 318, 560, 64, 26);
       B(1210, 318, 160, 64, '◀ Table', () => c.moveTray(-0.72), { size: 24, style: S.settings.toolX < 0 ? 'gold' : 'cream' }); B(1390, 318, 160, 64, 'Table ▶', () => c.moveTray(0.72), { size: 24, style: S.settings.toolX >= 0 ? 'gold' : 'cream' });
       p.plots.forEach((pl, i) => { const x = 40 + i * 190, y = 410, d = pl.plant; rr(x, y, 178, 370, 20, d ? (d.stage === 2 ? '#fde8f1' : '#eef6e4') : '#f3ece0', COL.edge, d && d.boost ? 8 : 4);
         text(`Plot ${i + 1}`, x + 89, y + 30, 26, COL.soft, 'center');
@@ -196,12 +204,14 @@ export function makeScreens(c) {
     shop() {
       frameBg(); header(S.usePractice ? "Kit's seed shop (practice)" : "Kit's seed shop"); const p = P(); const kit = img('people/kit.png'); if (kit) g.drawImage(kit, 40, 150, 280, 280 * kit.height / kit.width);
       text(`You have ${p.coins} ${S.usePractice ? 'practice ' : ''}coins`, 380, 135, 34, COL.ink, 'left', true);
-      const rows = [['seed:common', 'Common seed', 'Mostly everyday letters'], ['seed:uncommon', 'Uncommon seed', 'More unusual letters'], ['seed:rare', 'Rare seed', 'A chance at rare letters'], ['pack:common', 'Five common seeds', 'Save 5 coins'], ['pack:uncommon', 'Five uncommon seeds', 'Save 5 coins'], ['pack:rare', 'Five rare seeds', 'Save 5 coins'], ['supergrow', 'Super Grow', 'Next pick gives 2 letters']];
-      const PKT = { common: ['rose'], uncommon: ['daisy', 'sunflower', 'lily'], rare: ['flax', 'kopsia', 'jonquil'] };
-      rows.forEach(([id, name, sub], i) => { const y = 170 + i * 88, cost = R.price(id); rr(380, y, 1170, 78, 16, '#fffdf6', COL.edge, 3);
-        const tier = id.split(':')[1]; (PKT[tier] || []).forEach((f, k) => { const pi = img(`seeds/${f}.png`); if (pi) { const hh = 66, ww = hh * pi.width / pi.height; g.drawImage(pi, 396 + k * 52, y + 6, ww, hh); } });
-        text(name, (PKT[tier] ? 560 : 410), y + 39, 28, COL.ink, 'left', true); text(sub, 905, y + 39, 21, COL.soft); text(`${cost} coins`, 1290, y + 39, 28, COL.ink, 'right', true);
-        B(1310, y + 8, 220, 62, 'Buy', () => ask(`Buy ${name} for ${cost} coins?`, () => { const r = R.buy(S, id); note(r); if (r.ok) { c.beep(700, 0.08); if (S.usePractice) emit('bought'); else ask(`${name} is in your inventory. Keep shopping, or check out?`, () => { cue('K09'); go('map'); }, 'Check out', 'Keep shopping'); } else if (!S.usePractice) cue('K13'); }), { style: 'green', size: 30, off: p.coins < cost }); });
+      st.shopTab = st.shopTab || 'common'; st.qty = st.qty || {};
+      [['common', 'Common'], ['uncommon', 'Uncommon'], ['rare', 'Rare'], ['supergrow', 'Super Grow']].forEach(([id, label], i) => B(380 + i * 295, 160, 280, 62, label, () => { st.shopTab = id; }, { style: st.shopTab === id ? 'gold' : 'cream', size: 28, on: st.shopTab === id }));
+      const items = st.shopTab === 'supergrow' ? [['supergrow', 'Super Grow', 'Shake over a plant for 2 letters']] : R.SPECIES_BY_TIER[st.shopTab].map((f) => ['sp:' + f, cap(f), 'Grows ' + [...new Set(f.toUpperCase())].join(' ')]);
+      items.forEach(([id, name, sub], i) => { const y = 238 + i * 80, key = id.split(':')[1], one = R.price(id), q = st.qty[id] || 1, total = one * q, sp = id.startsWith('sp:'); rr(380, y, 1170, 72, 16, '#fffdf6', COL.edge, 3);
+        const pi = sp ? img(`seeds/${key}.png`) : null; if (pi) { const hh = 62, ww = hh * pi.width / pi.height; g.drawImage(pi, 396, y + 5, ww, hh); }
+        text(name, pi ? 478 : 400, y + 36, 28, COL.ink, 'left', true); text(sub, pi ? 770 : 640, y + 36, 21, COL.soft); text(`${one} each`, 1010, y + 36, 22, COL.soft);
+        B(1120, y + 6, 60, 60, '−', () => { st.qty[id] = Math.max(1, q - 1); }, { size: 34, style: 'cream' }); text(String(q), 1213, y + 36, 32, COL.ink, 'center', true); B(1246, y + 6, 60, 60, '+', () => { st.qty[id] = Math.min(9, q + 1); }, { size: 34, style: 'cream' });
+        B(1320, y + 6, 220, 60, `Buy · ${total}`, () => ask(`Buy ${q} ${name}${sp ? ' seed' : ''}${q > 1 ? 's' : ''} for ${total} coins?`, () => { const r = R.buy(S, id, q); note(r); if (r.ok) { c.beep(700, 0.08); st.qty[id] = 1; if (sp) st.tier = key; if (S.usePractice) emit('bought'); else ask(`${name} is in your inventory. Keep shopping, or check out?`, () => { cue('K09'); go('map'); }, 'Check out', 'Keep shopping'); } else if (!S.usePractice) cue('K13'); }), { style: 'green', size: 26, off: p.coins < total }); });
       footer();
     },
     book() {
@@ -237,7 +247,7 @@ export function makeScreens(c) {
       if (!p.words.length) text('Craft a word in the Spelling Book, then stock it here.', 410, 720, 24, COL.soft, 'center');
       p.words.slice(0, 3).forEach((it, i) => B(60 + i * 237, 680, 226, 84, `Stock\n${it.w.toUpperCase()}`, () => { const r = R.stockWord(S, it.id, c.now()); note(r); if (r.ok) { if (S.usePractice) emit('stocked:' + it.w); else c.speak(DLG.P12.file); } }, { style: 'purple', size: 24 }));
       rr(810, 100, 760, 695, 22, '#fffdf6', COL.edge); const fi = img('scene/flower_cart.png'); if (fi) g.drawImage(fi, 830, 110, 120, 120);
-      text('Flower Cart', 980, 140, 40, COL.ink, 'left', true); text('Arrange up to 9 cut flowers into a bouquet.', 980, 192, 24, COL.soft);
+      text('Flower Cart', 980, 140, 40, COL.ink, 'left', true); [['glass', 'Glass vase'], ['fluted', 'Blue vase']].forEach(([k, label], i) => B(1250 + i * 160, 128, 150, 48, label, () => { st.vase = k; }, { size: 20, r: 10, style: (st.vase || 'glass') === k ? 'gold' : 'cream', on: (st.vase || 'glass') === k })); text('Arrange up to 9 cut flowers into a bouquet.', 980, 192, 24, COL.soft);
       const own = (k) => (p.flowers[k] || 0) + (p.basket[k] || 0), total = Object.values(st.arr).reduce((a, b) => a + b, 0);
       st.arrPage = st.arrPage || 0; const SPP = 8, spl = R.CFG.species.slice(st.arrPage * SPP, st.arrPage * SPP + SPP); text(`Flowers ${st.arrPage * SPP + 1}-${st.arrPage * SPP + spl.length} of ${R.CFG.species.length}`, 1190, 568, 22, COL.soft, 'center'); B(830, 548, 120, 40, '◀', () => { st.arrPage = Math.max(0, st.arrPage - 1); }, { size: 22, off: st.arrPage === 0, r: 10 }); B(1430, 548, 120, 40, '▶', () => { st.arrPage = Math.min(Math.ceil(R.CFG.species.length / SPP) - 1, st.arrPage + 1); }, { size: 22, off: (st.arrPage + 1) * SPP >= R.CFG.species.length, r: 10 });
       spl.forEach((k, i) => { const x = 830 + (i % 2) * 365, y = 245 + Math.floor(i / 2) * 66, have = own(k), n = st.arr[k] || 0; rr(x, y, 350, 58, 12, have ? '#fdf0f5' : '#f3efe6', COL.edge, 2); text(k.replace(/_/g, ' '), x + 10, y + 20, 19, have ? COL.ink : '#a79f90', 'left', true); text(`you have ${have}`, x + 10, y + 43, 17, COL.soft);
@@ -271,7 +281,7 @@ export function makeScreens(c) {
       for (const id of Object.keys(slots)) { const [cx, base, size] = slots[id], w = H.placed[id], x = X + (cx - size / 2) * sc, y = Y + (base - size) * sc, z = size * sc; if (!w) continue; const im = img(`items/${w === 'floor' ? 'floor' : w}.png`); if (im) { const k = Math.min(z / im.width, z / im.height); g.drawImage(im, x + (z - im.width * k) / 2, y + z - im.height * k, im.width * k, im.height * k); } }
       // inventory
       rr(1060, 100, 500, 690, 22, '#fffdf6', COL.edge); text({ rose: 'Rose Cottage', sky: 'Bluebell Cottage', honey: 'Honey Cottage' }[H.cottage], 1310, 140, 34, COL.ink, 'center', true); text('Your things', 1310, 184, 28, COL.plum, 'center', true);
-      const seeds = p.seeds, rows = [['Coins', p.coins], ['Letter Bank', R.bankCount(p.bank)], ['Cut flowers', R.flowerTotal(p)], ['Seeds', `${seeds.common} common, ${seeds.uncommon} uncommon, ${seeds.rare} rare`], ['Super Grow', p.doses], ['Crafted words', p.words.length]];
+      const seeds = p.seeds, rows = [['Coins', p.coins], ['Letter Bank', R.bankCount(p.bank)], ['Cut flowers', R.flowerTotal(p)], ['Seeds', `${R.seedTotal(p)} (${seeds.common} mixed common, ${seeds.uncommon} mixed uncommon, ${seeds.rare} mixed rare, ${Object.values(p.pk || {}).reduce((a, b) => a + b, 0)} by flower)`], ['Super Grow', p.doses], ['Crafted words', p.words.length]];
       rows.forEach(([k, v], i) => { const y = 226 + i * 46; text(k, 1090, y, 24, COL.soft); text(String(v), 1530, y, 24, COL.ink, 'right', true); });
       const items = R.homeItems(S); text('In storage', 1090, 530, 26, COL.plum, 'left', true);
       if (!items.length) text('Nothing yet. Crafted words like BED or LAMP will wait here.', 1090, 575, 22, '#a79f90'); items.slice(0, 5).forEach((it, i) => text(cap(it.w === 'floor' && it.src === 'storage' ? 'Honey oak floor' : it.w), 1090, 572 + i * 38, 24, COL.ink)); if (items.length > 5) text(`and ${items.length - 5} more`, 1090, 572 + 5 * 38, 22, COL.soft);
@@ -318,7 +328,7 @@ export function makeScreens(c) {
       const cm = S.comm, p = S.real; st.ctool = st.ctool || 'water';
       wrap('Twelve shared plots. Anyone can plant, water or pick, and nobody keeps track of who did. Flowers grow slowly here, three times slower than at home.', BW / 2, 190, 1300, 26, COL.soft, 'center', 2);
       [['seeds', 'Plant'], ['water', 'Water'], ['pick', 'Pick']].forEach(([k, label], i) => B(90 + i * 300, 245, 280, 70, label, () => { st.ctool = k; say(`${label} selected. Now choose a plot.`); }, { style: st.ctool === k ? 'gold' : 'cream', on: st.ctool === k }));
-      ['common', 'uncommon', 'rare'].forEach((t, i) => B(1000 + i * 190 - 0, 245, 180, 70, `${cap(t)} (${p.seeds[t]})`, () => { st.tier = t; }, { size: 22, style: st.tier === t ? 'gold' : 'cream', on: st.tier === t, off: !p.seeds[t] && st.tier !== t }));
+      seedPicker(1000, 245, 330, 70, 22);
       cm.plots.forEach((pl, i) => { const x = 40 + (i % 6) * 258, y = 335 + Math.floor(i / 6) * 215, d = pl.plant;
         rr(x, y, 244, 200, 18, d ? (d.stage === 2 ? '#fde8f1' : '#eef6e4') : '#f3ece0', COL.edge, 3);
         if (!d) text('Empty', x + 122, y + 100, 28, '#a79f90', 'center');

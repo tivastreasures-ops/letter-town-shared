@@ -15,8 +15,8 @@ export const CFG = {
   // TEST VALUE: which letters count as common / uncommon / rare, and what each seed tends to grow. Not canon.
   letters: { common: 'EAIONRTLSU', uncommon: 'DGBCMPFHVWY', rare: 'KJXQZ' },
   seedLetterOdds: { common: { common: 0.8, uncommon: 0.2, rare: 0 }, uncommon: { common: 0.35, uncommon: 0.6, rare: 0.05 }, rare: { common: 0.15, uncommon: 0.45, rare: 0.4 } },
-  species: ['chrysanthemum', 'kopsia', 'jonquil', 'marigold', 'zinnia', 'rose', 'peony', 'lily', 'poppy', 'daisy', 'buttercup', 'flax', 'plumeria', 'violet', 'sunflower'],   // a flower can only grow letters that are in its own name
-  flowerColors: { rose: ['black', 'blue', 'pink', 'purple', 'white', 'yellow'], daisy: ['black', 'blue', 'pink', 'purple', 'white', 'yellow'], poppy: ['black', 'blue'], peony: ['pink', 'purple', 'white', 'yellow'], lily: ['pink', 'purple'] },   // other flowers have one fixed color
+  species: ['chrysanthemum', 'kopsia', 'jonquil', 'marigold', 'zinnia', 'rose', 'peony', 'lily', 'daisy', 'buttercup', 'flax', 'plumeria', 'violet', 'sunflower'],   // a flower can only grow letters that are in its own name
+  flowerColors: { rose: ['black', 'blue', 'pink', 'purple', 'white', 'yellow'], daisy: ['black', 'blue', 'pink', 'purple', 'white', 'yellow'], peony: ['black', 'blue', 'pink', 'purple', 'white', 'yellow'], lily: ['pink', 'purple'] },   // other flowers have one fixed color
   commGrowMult: 3, commNeighborMins: [25, 70],   // community plots grow three times slower; a neighbor plants one every 25-70 minutes
   wordSaleSecs: 75, flowerSaleSecs: 110, tutorialSaleSecs: 6, cartShown: 6, flowerSlots: 6,
   practiceCoins: 20,
@@ -54,6 +54,12 @@ export function canSpell(bank, word) { const need = {}; for (const c of word.toU
 export function missing(bank, word) { const need = {}; for (const c of word.toUpperCase()) need[c] = (need[c] || 0) + 1; return Object.keys(need).filter((c) => (bank[c] || 0) < need[c]).map((c) => c + (need[c] - (bank[c] || 0) > 1 ? '×' + (need[c] - (bank[c] || 0)) : '')); }
 
 /* ---------- the community garden: twelve shared plots. Neighbors plant here too, and nobody can tell who did what. ---------- */
+// the approved tier list: one list for the whole game (rose/daisy/peony have six colors each)
+export const SPECIES_BY_TIER = { common: ['rose', 'daisy', 'peony'], uncommon: ['lily', 'sunflower', 'buttercup', 'marigold', 'plumeria', 'violet', 'chrysanthemum'], rare: ['flax', 'jonquil', 'kopsia', 'zinnia'] };
+export const TIER_OF = Object.fromEntries(Object.entries(SPECIES_BY_TIER).flatMap(([t, l]) => l.map((sp) => [sp, t])));
+export const seedKeyCount = (g, k) => (TIER_OF[k] ? (g.pk && g.pk[k]) || 0 : (g.seeds && g.seeds[k]) || 0);   // a seed "key" is a flower name (its own packet) or a tier name (a mixed packet)
+export const ownedSeedKeys = (g) => [...Object.values(SPECIES_BY_TIER).flat().filter((sp) => g.pk && g.pk[sp] > 0), ...['common', 'uncommon', 'rare'].filter((t) => g.seeds[t] > 0)];
+export const seedTotal = (g) => g.seeds.common + g.seeds.uncommon + g.seeds.rare + Object.values(g.pk || {}).reduce((a, b) => a + b, 0);
 function mkComm(species, stage, tier, progress) { return { species, color: colorFor(species), tier, stage, progress: progress || 0, watered: false }; }
 function newComm(now) {
   const kinds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].sort(() => Math.random() - 0.5), plots = [];   // 4 empty, 4 growing, 4 in bloom
@@ -66,7 +72,7 @@ function commAdvance(S, now) {
   for (const p of c.plots) { const pl = p.plant; if (!pl || pl.stage >= 2) continue; let t = dt * (pl.watered ? CFG.waterBoost : 1) / (total / 2); while (t > 0 && pl.stage < 2) { const need = 1 - pl.progress; if (t >= need) { t -= need; pl.stage++; pl.progress = 0; } else { pl.progress += t; t = 0; } } }
   let guard = 0; while (now >= c.nextAt && guard++ < 12) { const free = c.plots.filter((p) => !p.plant); if (free.length) free[rnd(free.length)].plant = mkComm(pick(CFG.species), 0, 'common', 0); c.nextAt += 60000 * (CFG.commNeighborMins[0] + rnd(CFG.commNeighborMins[1] - CFG.commNeighborMins[0])); }
 }
-export function commPlant(S, i, tier) { const g = S.real, p = S.comm.plots[i]; if (!p) return no('No such plot.'); if (p.plant) return no('Someone already planted there.', 'occupied'); if (!(g.seeds[tier] > 0)) return no(`You have no ${tier} seeds. Kit's seed shop sells them.`, 'noseed'); g.seeds[tier]--; p.plant = mkComm(pick(CFG.species), 0, tier, 0); return ok('Planted in the community garden. It grows slowly here.'); }
+export function commPlant(S, i, tier) { const g = S.real, p = S.comm.plots[i]; if (!p) return no('No such plot.'); if (p.plant) return no('Someone already planted there.', 'occupied'); if (!(seedKeyCount(g, tier) > 0)) return no(`You have no ${tier} seeds. Kit's seed shop sells them.`, 'noseed'); if (TIER_OF[tier]) { g.pk[tier]--; p.plant = mkComm(tier, 0, TIER_OF[tier], 0); } else { g.seeds[tier]--; p.plant = mkComm(pick(CFG.species), 0, tier, 0); } return ok('Planted in the community garden. It grows slowly here.'); }
 export function commWater(S, i) { const p = S.comm.plots[i]; if (!p || !p.plant) return no('Nothing is planted there.'); if (p.plant.stage >= 2) return no('That one is ready to pick.'); if (p.plant.watered) return no('Already watered.'); p.plant.watered = true; return ok('Watered. Thank you, neighbor!'); }
 export function commPick(S, i) {
   const g = S.real, p = S.comm.plots[i]; if (!p || !p.plant) return no('Nothing is planted there.'); const pl = p.plant; if (pl.stage < 2) return no('Not quite ready yet.', 'growing');
@@ -79,10 +85,10 @@ export const colorFor = (sp) => (CFG.flowerColors[sp] ? pick(CFG.flowerColors[sp
 // every flower's bud picture: its own color if it has one, otherwise the nearest bud color (checked against the 3D model textures)
 export const BUD_COLOR = { buttercup: 'yellow', chrysanthemum: 'pink', flax: 'blue', jonquil: 'yellow', kopsia: 'white', marigold: 'yellow', plumeria: 'pink', sunflower: 'yellow', violet: 'purple', zinnia: 'pink' };
 export const budColor = (sp, color) => (['black', 'blue', 'pink', 'purple', 'white', 'yellow'].includes(color) ? color : BUD_COLOR[sp] || 'pink');
-export const flowerKey = (sp, color) => (color ? `${sp}_${color}` : sp);
-function newPlant(tier, stage) { const sp = pick(CFG.species); return { species: sp, color: colorFor(sp), tier, stage, progress: 0, watered: false, boost: false, left: CFG.harvestsPerSeed }; }
+export const flowerKey = (sp, color) => (sp === 'peony' && (color === 'black' || color === 'blue') ? `poppy_${color}` : color ? `${sp}_${color}` : sp);   // the black and blue peony models were saved as 'poppy'
+function newPlant(tier, stage, chosen) { const sp = chosen || pick(CFG.species); return { species: sp, color: colorFor(sp), tier, stage, progress: 0, watered: false, boost: false, left: CFG.harvestsPerSeed }; }
 function newPouch(coins, now) {
-  return { coins, seeds: { common: 0, uncommon: 0, rare: 0 }, doses: 0, plots: [], bank: {}, flowers: {}, basket: {}, words: [], bouquets: [],
+  return { coins, seeds: { common: 0, uncommon: 0, rare: 0 }, pk: {}, doses: 0, plots: [], bank: {}, flowers: {}, basket: {}, words: [], bouquets: [],
     wordCart: { items: [], cashbox: 0, nextAt: 0 }, flowerCart: { items: [], nextAt: 0, earned: 0 }, sold: {}, lastAt: now };
 }
 function addLetters(bank, s) { for (const c of s.toUpperCase()) bank[c] = (bank[c] || 0) + 1; }
@@ -106,7 +112,7 @@ export function newGame(now) {
     madlib: { picks: {}, stories: [], restored: false, nudged: false }, journal: [], requests: [], nextId: 1, done: {}, mini: { done: {}, offered: {}, picks: {}, stories: [] }, gifts: { given: {}, sales: 0 }, comm: newComm(now),
     settings: { text: 1, volume: 0.9, mute: false, tableDrop: 0.45, reach: 0.62, auto: true, autoV: 2, boardDist: 0.95, boardHeight: 0.6, boardScale: 1, pinch: 1, poke: true, toolX: 0.5, adjusted: false, v4: 1 }, away: null };
 }
-export function migrate(s, now) { if (!s || s.v !== 1) return null; const f = newGame(now); for (const k of Object.keys(f)) if (s[k] === undefined) s[k] = f[k]; for (const k of Object.keys(f.settings)) if (s.settings[k] === undefined) s.settings[k] = f.settings[k]; if (s.settings.autoV !== 2) { s.settings.auto = true; s.settings.autoV = 2; } if (!s.settings.v4) { s.settings.v4 = 1; if (!s.settings.adjusted) { s.settings.reach = 0.62; s.settings.toolX = 0.5; } } return s; }
+export function migrate(s, now) { if (!s || s.v !== 1) return null; const f = newGame(now); for (const k of Object.keys(f)) if (s[k] === undefined) s[k] = f[k]; for (const k of Object.keys(f.settings)) if (s.settings[k] === undefined) s.settings[k] = f.settings[k]; if (s.settings.autoV !== 2) { s.settings.auto = true; s.settings.autoV = 2; } if (!s.settings.v4) { s.settings.v4 = 1; if (!s.settings.adjusted) { s.settings.reach = 0.62; s.settings.toolX = 0.5; } } const fixSp = (pl) => { if (pl && pl.species === 'poppy') pl.species = 'peony'; }; for (const g of [s.real, s.practice]) if (g) { g.pk = g.pk || {}; (g.plots || []).forEach((q) => fixSp(q.plant)); for (const m of [g.flowers, g.basket, g.flowerTier]) if (m && m.poppy !== undefined) { if (m === g.flowerTier) m.peony = m.peony || m.poppy; else m.peony = (m.peony || 0) + m.poppy; delete m.poppy; } } if (s.comm) (s.comm.plots || []).forEach((q) => fixSp(q.plant)); return s; }
 export const pouch = (S) => (S.usePractice ? S.practice : S.real);
 
 /* ---------- time: plants and carts move forward to "now", also after the game was closed ---------- */
@@ -124,11 +130,12 @@ export function advance(S, now) {
 }
 
 /* ---------- garden ---------- */
-export function plant(S, i, tier) {
+export function plant(S, i, key) {
   const g = pouch(S), p = g.plots[i]; if (!p) return no('No such plot.');
   if (p.plant) return no('That plot already has a plant.', 'occupied');
-  if (!(g.seeds[tier] > 0)) return no(`You have no ${tier} seeds. Kit's seed shop sells them.`, 'noseed');
-  g.seeds[tier]--; p.plant = newPlant(tier, 0); return ok('Planted! A tiny beginning.');
+  if (!(seedKeyCount(g, key) > 0)) return no(`You have no ${key} seeds. Kit's seed shop sells them.`, 'noseed');
+  if (TIER_OF[key]) { g.pk[key]--; p.plant = newPlant(TIER_OF[key], 0, key); } else { g.seeds[key]--; p.plant = newPlant(key, 0); }
+  return ok('Planted! A tiny beginning.');
 }
 export function water(S, i) {
   const p = pouch(S).plots[i]; if (!p || !p.plant) return no('Nothing is planted there.');
@@ -157,12 +164,12 @@ export function harvest(S, i, txn) {
 }
 
 /* ---------- Kit's seed shop ---------- */
-export function price(item) { const [kind, tier] = item.split(':'); return kind === 'supergrow' ? CFG.prices.supergrow : CFG.prices[kind][tier]; }
-export function buy(S, item) {
-  const g = pouch(S), [kind, tier] = item.split(':'), cost = price(item); if (cost == null) return no('The shop does not sell that.');
+export function price(item) { const [kind, tier] = item.split(':'); return kind === 'supergrow' ? CFG.prices.supergrow : kind === 'sp' ? (TIER_OF[tier] ? CFG.prices.seed[TIER_OF[tier]] : undefined) : CFG.prices[kind][tier]; }
+export function buy(S, item, qty) {
+  const g = pouch(S), [kind, tier] = item.split(':'), n = Math.max(1, Math.min(99, Math.floor(qty) || 1)), one = price(item), cost = one == null ? null : one * n; if (cost == null) return no('The shop does not sell that.');
   if (g.coins < cost) return no(`Not enough coins. You need ${cost - g.coins} more.`, 'coins');
-  g.coins -= cost; if (kind === 'seed') g.seeds[tier] += 1; else if (kind === 'pack') g.seeds[tier] += 5; else g.doses += 1;
-  return ok(kind === 'supergrow' ? 'One Super Grow, all yours.' : `${kind === 'pack' ? 'Five' : 'One'} ${tier} seed${kind === 'pack' ? 's' : ''}, all yours.`);
+  g.pk = g.pk || {}; g.coins -= cost; if (kind === 'sp') g.pk[tier] = (g.pk[tier] || 0) + n; else if (kind === 'seed') g.seeds[tier] += n; else if (kind === 'pack') g.seeds[tier] += 5 * n; else g.doses += n;
+  return ok(kind === 'supergrow' ? (n === 1 ? 'One Super Grow, all yours.' : `${n} Super Grow, all yours.`) : kind === 'sp' ? `${n} ${tier} seed${n > 1 ? 's' : ''}, all yours.` : `${kind === 'pack' ? 'Five' : 'One'} ${tier} seed${kind === 'pack' ? 's' : ''}, all yours.`);
 }
 
 /* ---------- spelling ---------- */

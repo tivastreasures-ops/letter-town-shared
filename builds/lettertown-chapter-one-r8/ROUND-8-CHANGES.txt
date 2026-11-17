@@ -9,3 +9,12 @@ CHANGED
 NEW FILES: assets/models/flowers/seed_magic.glb, sprout_seedling.glb; assets/blooms/pseed.png, psprout.png, pbud_<color>.png
 
 NOT DONE YET: peony/poppy merge, per-flower seed shop and quantity counters, second vase, resident placement, anchoring, interiors.
+
+Round 8, part 2
+- Poppy merged into peony (14 flowers). Peony has six colors; black and blue use the old poppy art and models. Old saves are converted.
+- One tier list: common rose, daisy, peony; uncommon lily, sunflower, buttercup, marigold, plumeria, violet, chrysanthemum; rare flax, jonquil, kopsia, zinnia.
+- Seed shop: tabs for Common, Uncommon, Rare and Super Grow. Every flower has its own packet. Each row has a minus/plus counter and a Buy button with the total. Buying a packet selects it for planting.
+- Garden and community garden: a seed picker (arrows) chooses the packet to plant. Old mixed seeds still work as "Any common/uncommon/rare".
+- Flower Cart: choose the glass vase or the Blue Fluted Vase (your Meshy model, 512 px).
+- Plot soil mound uses your soil tile (mirrored so the seam does not show).
+Not done yet: a third vase, seed shop interior, navigation fixes, building interiors.
