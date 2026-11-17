@@ -1,0 +1,21 @@
+import { chromium } from 'playwright';
+import { mkdirSync, writeFileSync } from 'node:fs';
+mkdirSync('test-results', { recursive: true });
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium', headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader', '--use-angle=swiftshader'] });
+const page = await browser.newPage({ viewport: { width: 960, height: 720 } });
+const errors = [], warnings = [], failed = [];
+page.on('pageerror', e => { errors.push(e.stack); console.log('PAGE ERROR', e.message); });
+page.on('console', m => { if (m.type() === 'error') errors.push(m.text() + ' ' + JSON.stringify(m.location())); if(m.type()==='warning') warnings.push(m.text()); });
+page.on('response', r => { if(r.status()>=400) failed.push([r.status(),r.url()]); });
+await page.goto(process.env.TEST_URL || 'http://localhost:4173/');
+try { await page.waitForFunction(() => window.__lt, { timeout: 60000 }); } catch(e) { errors.push(e.message); }
+await page.waitForTimeout(4000);
+await page.evaluate(() => { document.getElementById('skip').click(); document.getElementById('enter').click(); });
+await page.waitForFunction(() => document.getElementById('intro').classList.contains('hide'));
+const state = await page.evaluate(() => ({ build: document.querySelector('#build-id').textContent, canvas: document.querySelectorAll('canvas').length, ready: !!window.__lt, labels: window.__lt?.UI.labels(), sdk: !!window.__lettertownSDK, renderedFrames: window.__lettertownSDK?.renderer.info.render.frame }));
+console.log('STATE', JSON.stringify(state));
+await page.screenshot({ path: 'test-results/startup.png', timeout: 30000 });
+writeFileSync('test-results/startup.json', JSON.stringify({ state, errors, warnings, failed }, null, 2));
+console.log(JSON.stringify({ state, errors, warnings, failed }, null, 2));
+await browser.close();
+if(errors.length || failed.length || !state.ready || state.renderedFrames < 1) process.exitCode=1;

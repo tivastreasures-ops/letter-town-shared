@@ -1,1 +1,22 @@
-{"name":"lettertown-iwsdk-isolated-port","private":true,"type":"module","scripts":{"build":"vite build"},"dependencies":{},"devDependencies":{}}
+{
+  "name": "lettertown-iwsdk-isolated-port",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run stage && vite --host 0.0.0.0",
+    "stage": "node scripts/stage-assets.mjs",
+    "build": "npm run stage && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test:browser": "node scripts/browser-test.mjs",
+    "test:gameplay": "node scripts/gameplay-test.mjs",
+    "test:xr": "node scripts/xr-test.mjs"
+  },
+  "dependencies": {
+    "@iwsdk/core": "1.1.0"
+  },
+  "devDependencies": {
+    "iwer": "2.8.0",
+    "playwright": "1.56.1",
+    "vite": "6.4.1"
+  }
+}
