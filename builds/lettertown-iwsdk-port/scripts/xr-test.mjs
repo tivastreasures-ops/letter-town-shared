@@ -26,12 +26,10 @@ try{
  await page.waitForTimeout(500);
  await page.evaluate(()=>__xrDevice.hands.right.updatePinchValue(1));
  await page.waitForFunction(()=>__lt.pointers.slice(0,2).some(p=>p.down),null,{timeout:10000});
- console.log('PINCH', JSON.stringify(await page.evaluate(()=>__lt.pointers.slice(0,2).map(p=>({down:p.down,was:p.was,pend:p.pend,ray:p.ray,gap:p.gap})))));
  await page.waitForTimeout(250);
  await page.evaluate(()=>__xrDevice.hands.right.updatePinchValue(0));
  await page.waitForFunction(()=>__lt.UI.state.screen==='adjust',null,{timeout:20000});
  result=await page.evaluate(()=>({mode:'IWER emulator only; NOT PHYSICAL QUEST',pinchSelectedNewGame:__lt.UI.state.screen==='adjust',stagePosition:__lt.stage.position.toArray(),presenting:__lettertownSDK.renderer.xr.isPresenting,sdkSession:!!__lettertownSDK.session,inputSources:[...__lettertownSDK.session.inputSources].map(s=>({hand:!!s.hand,handedness:s.handedness})),validGameHands:__lt.pointers.slice(0,2).map(p=>p.valid),requiredHands:__lettertownSDK.xrDefaults.features.handTracking,renderedFrames:__lettertownSDK.renderer.info.render.frame}));
- await page.screenshot({path:'test-results/xr-emulator.png',timeout:30000});
  await page.evaluate(()=>__lettertownSDK.session.end());
  await page.waitForFunction(()=>!__lettertownSDK.renderer.xr.isPresenting);
  result.exit=true;
