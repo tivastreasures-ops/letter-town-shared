@@ -35,3 +35,6 @@ Round 8, part 6
 
 Round 8, part 7
 - Garden plots use your 3D soil mound (soilmound.glb: 8,326 triangles already; I cut the textures from three 4096 px PNGs, 54 MB, to one 512 px color map, 0.6 MB).
+
+Round 8, part 8
+- Both carts are about 35% bigger (and easier to grab). Bouquets on the flower cart are made of your 3D flower models, in the species that went into each bouquet, instead of colored balls.

@@ -96,17 +96,17 @@ function addProp(file, height, x, y, z, ry, opts = {}) {
   gltfLoader.load(`assets/models/${file}.glb`, (g) => { holder.add(fit(g.scene, height)); if (opts.hideFlat) town.children.filter((c) => c.name === opts.hideFlat).forEach((c) => { c.visible = false; }); }, undefined, () => { /* the flat picture stays */ });
   return rec;
 }
-const wordCartProp = addProp('lettercart', 1.0, 1.8, 0, -2.0, -0.5, { hideFlat: 'flatWord', parent: town, kind: 'carts', radius: 0.62, cy: 0.5 });
-const flowerCartProp = addProp('flowercart', 0.9, 2.5, 0, -1.3, -0.95, { hideFlat: 'flatFlower', parent: town, kind: 'carts', radius: 0.62, cy: 0.45 });
+const wordCartProp = addProp('lettercart', 1.35, 1.8, 0, -2.0, -0.5, { hideFlat: 'flatWord', parent: town, kind: 'carts', radius: 0.8, cy: 0.65 });
+const flowerCartProp = addProp('flowercart', 1.2, 2.5, 0, -1.3, -0.95, { hideFlat: 'flatFlower', parent: town, kind: 'carts', radius: 0.8, cy: 0.6 });
 /* what is on each cart, drawn in 3D and refreshed twice a second */
-const stockW = new THREE.Group(), stockF = new THREE.Group(); wordCartProp.holder.add(stockW); flowerCartProp.holder.add(stockF);
+const stockW = new THREE.Group(), stockF = new THREE.Group(); wordCartProp.holder.add(stockW); flowerCartProp.holder.add(stockF); stockW.scale.setScalar(1.35); stockF.scale.setScalar(1.33);   // the carts are bigger now, so their stock grows with them
 const plaqueTex = {}; function plaque(txt, bg) { const k = txt + bg; if (plaqueTex[k]) return plaqueTex[k]; const c = document.createElement('canvas'); c.width = 256; c.height = 112; const x = c.getContext('2d'); x.fillStyle = bg; x.fillRect(0, 0, 256, 112); x.strokeStyle = '#6b4a2b'; x.lineWidth = 10; x.strokeRect(5, 5, 246, 102); x.fillStyle = '#4b2f6b'; x.font = 'bold 60px Georgia,serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt.toUpperCase(), 128, 58, 230); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return (plaqueTex[k] = t); }
 const FCOL = { rose: '#e88aa5', daisy: '#fffdf4', poppy: '#e8453c', peony: '#f2a6c4', lily: '#f6b5d8', sunflower: '#ffc928', violet: '#8a63d2', marigold: '#ff9a1f', buttercup: '#ffe14a', zinnia: '#e2557a', chrysanthemum: '#f4d36b', kopsia: '#f08bb0', jonquil: '#ffd84a', flax: '#6d8fe8', plumeria: '#fff0c7' };
 /* real 3D arranging: pick cut flowers from the shelf, they stand in the vase; touch the vase to take the last one out */
 const arrG = new THREE.Group(); arrG.visible = false; stage.add(arrG);
 const vase = new THREE.Group(); { const v = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.04, 0.14, 20, 1, true), new THREE.MeshLambertMaterial({ color: '#cfe6f2', transparent: true, opacity: 0.8, side: THREE.DoubleSide })); v.position.y = 0.07; vase.add(v); const bt = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.01, 20), new THREE.MeshLambertMaterial({ color: '#9dc3d8' })); bt.position.y = 0.005; vase.add(bt); } vase.position.set(0.58, TABLE, 0.02); arrG.add(vase);
 const vaseRec = { holder: vase, kind: 'vase', radius: 0.09, cy: 0.1 }; props.push(vaseRec);
-const vaseFl = new THREE.Group(); vase.add(vaseFl); const pickRecs = []; const SPKEY = { rose: 'rose_pink', daisy: 'daisy_white', peony: 'peony_pink', lily: 'lily_pink' }; let arrSig = '';
+const vaseFl = new THREE.Group(); vase.add(vaseFl); const pickRecs = []; const SPKEY = { poppy: 'poppy_blue', rose: 'rose_pink', daisy: 'daisy_white', peony: 'peony_pink', lily: 'lily_pink' }; let arrSig = '';
 const vaseFluted = new THREE.Group(); vase.add(vaseFluted); let vaseLoaded = false; const vaseGlass = vase.children.filter((c) => c.isMesh);
 function applyVase() { const f = UI.state.vase === 'fluted'; vaseGlass.forEach((m) => { m.visible = !f; }); vaseFluted.visible = f; if (f && !vaseLoaded) { vaseLoaded = true; flowerModel('vase_fluted', 0.16, (m) => vaseFluted.add(m)); } }
 function refreshArr() {
@@ -121,10 +121,12 @@ function refreshArr() {
 let stockSig = '';
 function refreshStock() {
   if (!S) return; const PP = R.pouch(S), sig = JSON.stringify([PP.wordCart.items.map((i) => i.w), PP.wordCart.cashbox, PP.flowerCart.items.map((i) => i.id)]); if (sig === stockSig) return; stockSig = sig;
-  [stockW, stockF].forEach((g) => { while (g.children.length) { const o = g.children.pop(); o.traverse((m) => { if (m.geometry) m.geometry.dispose(); }); } });
+  [stockW, stockF].forEach((g) => { while (g.children.length) { const o = g.children.pop(); if (!o.userData.keep) o.traverse((m) => { if (m.geometry) m.geometry.dispose(); }); } });
   PP.wordCart.items.slice(0, 6).forEach((it, i) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.087), new THREE.MeshBasicMaterial({ map: plaque(it.w, '#f4ecff'), side: THREE.DoubleSide })); m.position.set(-0.3 + (i % 3) * 0.3, 0.46 - Math.floor(i / 3) * 0.1, 0.1); m.rotation.x = -0.35; stockW.add(m); });
   if (PP.wordCart.cashbox) { const n = Math.min(8, 1 + Math.floor(PP.wordCart.cashbox / 5)); for (let i = 0; i < n; i++) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.008, 14), new THREE.MeshLambertMaterial({ color: '#f7c948' })); c.position.set(0.4, 0.3 + i * 0.01, 0.16); stockW.add(c); } }
-  PP.flowerCart.items.slice(0, 6).forEach((b, i) => { const g = new THREE.Group(), n = Math.min(9, b.size || 3); const sp = Object.keys(b.used || {}); for (let k = 0; k < n; k++) { const col = FCOL[sp[k % Math.max(1, sp.length)]] || '#f29ac0'; const head = new THREE.Mesh(new THREE.SphereGeometry(0.03, 10, 8), new THREE.MeshLambertMaterial({ color: col })); const a = k * 2.4, r = 0.02 + 0.012 * (k % 3); head.position.set(Math.cos(a) * r, 0.08 + (k % 3) * 0.015, Math.sin(a) * r); g.add(head); const st = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.08, 5), new THREE.MeshLambertMaterial({ color: '#4c9a43' })); st.position.set(head.position.x * 0.5, 0.04, head.position.z * 0.5); g.add(st); } g.position.set(-0.3 + (i % 3) * 0.3, 0.33, 0.0 + Math.floor(i / 3) * 0.17); stockF.add(g); });
+  PP.flowerCart.items.slice(0, 6).forEach((b, i) => { const g = new THREE.Group(), n = Math.min(9, b.size || 3), used = b.used || {}, list = []; Object.keys(used).forEach((k) => { for (let j = 0; j < used[k]; j++) list.push(k); }); if (!list.length) list.push('rose'); g.userData.keep = true;
+    for (let k = 0; k < n; k++) { const sp = list[k % list.length], a = k * 2.4, r = 0.012 + 0.012 * (k % 3), kk = k; flowerModel(SPKEY[sp] || sp, 0.15, (m) => { m.position.set(Math.cos(a) * r, 0.0, Math.sin(a) * r); m.rotation.z = Math.cos(a) * 0.15; m.rotation.x = Math.sin(a) * 0.15; m.rotation.y = kk; g.add(m); }); }
+    g.position.set(-0.3 + (i % 3) * 0.3, 0.33, 0.0 + Math.floor(i / 3) * 0.17); stockF.add(g); });
 }
 const bookProp = addProp('townbook', 0.14, -0.7, TABLE, -0.3, 0.3, { kind: 'book', radius: 0.14 });
 const noticeProp = addProp('noticeboard', 0.34, -2.15, TABLE + 0.55, -0.35, 1.0, { kind: 'notice', radius: 0.4 });
