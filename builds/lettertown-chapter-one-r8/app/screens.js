@@ -67,7 +67,7 @@ export function makeScreens(c) {
   function go(screen) { if (screen !== 'community') c.setCommunity(false); if (screen !== 'present') c.showGift(false); if (screen !== 'talk' && screen !== 'hub') c.showPerson(null); st.screen = screen; st.page = 0; st.modal = null; st.pick = null; st.sel = null; dirty = true; }
   function ask(textStr, yes, yesLabel = 'Yes', noLabel = 'No', no) { st.modal = { text: textStr, yes, yesLabel, noLabel, no }; dirty = true; }
   function journalText(s) {
-    const n = s.name || 'our new neighbor', cot = { rose: 'rose', sky: 'bluebell', honey: 'honey' }[s.home.cottage] || 'cozy';
+    const n = s.name || 'our new neighbor', cot = { pink: 'pink', white: 'white', flowerbox: 'flower box', forest: 'forest green', rose: 'rose', sky: 'bluebell', honey: 'honey' }[s.home.cottage] || 'cozy';
     return [`Dear Journal,`, `Today a new neighbor named ${n} arrived in Letter Town, and nothing has been the same since. In a good way. Mostly.`, `Hudson did the welcoming. Snowy did the organizing. Merry did the gardening, Kit did the selling, Phineas did the building, and Mayor Ren did the speeches. I did the supervising, which is the hardest job.`, `${n} got a garden with eight plots and the ${cot} cottage, and grows flowers that grow LETTERS, which I still think is showing off.`, `Then the Welcome Sign got its welcome back. The whole town cheered. I cheered loudest. Somebody had to.`, `I wonder what happens next. I have several ideas. Most of them are windy.`, `— Cat Girl`].join('\n');
   }
 
@@ -91,7 +91,7 @@ export function makeScreens(c) {
     B(x + 86 + bw, y, 70, h, '▶', () => cyc(1), { size, style: 'cream', off: keys.length < 2 });
   }
   function frameBg() { g.fillStyle = COL.paper; g.fillRect(0, 0, BW, BH); g.strokeStyle = COL.edge; g.lineWidth = 12; g.strokeRect(6, 6, BW - 12, BH - 12); }
-  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-15', BW - 40, 872, 16, COL.soft, 'right'); }
+  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-16', BW - 40, 872, 16, COL.soft, 'right'); }
   function header(title) {
     if (S.lesson) { text(title, 40, 52, 40, COL.ink, 'left', true); const free = st.wait && st.wait.free; if (free) B(BW - 760, 20, 300, 64, "I'm finished", finishPractice, { style: 'green', size: 30 }); B(BW - 440, 20, 100, 64, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 26 }); B(BW - 330, 20, 300, 64, 'Back to Hudson', () => ask('Leave this lesson? You can repeat it any time.', leaveLesson), { style: 'rose', size: 28 }); if (S.usePractice && !free) text('Practice: nothing here uses your real coins or letters', BW / 2 + 60, 52, 24, COL.soft, 'center'); return; }
     const tabs = [['map', 'Map'], ['garden', 'Garden'], ['book', 'Book'], ['dict', 'Dictionary'], ['shop', 'Shop'], ['carts', 'Carts'], ['home', 'Home'], ['story', 'Story'], ['settings', 'Settings']];
@@ -267,9 +267,9 @@ export function makeScreens(c) {
     },
     cottage() {
       frameBg(); header('Choose your cottage');
-      [['rose', 'Rose Cottage', '#f4b6c8'], ['sky', 'Bluebell Cottage', '#a9c8ee'], ['honey', 'Honey Cottage', '#f3d58a']].forEach(([id, name, col], i) => { const x = 70 + i * 510; rr(x, 140, 470, 560, 26, '#fffdf6', COL.edge);
-        const hi = img(`houses/${id}.png`); if (hi) { const sc = Math.min(430 / hi.width, 440 / hi.height); g.drawImage(hi, x + 235 - hi.width * sc / 2, 570 - hi.height * sc, hi.width * sc, hi.height * sc); }
-        text(name, x + 235, 620, 36, COL.ink, 'center', true); btns.push({ x, y: 140, w: 470, h: 560, fn: () => ask(`Choose ${name}?`, () => { note(R.chooseCottage(S, id)); emit('cottage'); }) }); });
+      [['pink', 'Pink Cottage'], ['white', 'White Cottage'], ['flowerbox', 'Flower Box Cottage'], ['forest', 'Forest Green Cottage']].forEach(([id, name], i) => { const x = 30 + i * 390; rr(x, 140, 370, 560, 26, '#fffdf6', COL.edge);
+        const hi = img(`houses/${id}.png`); if (hi) { const sc = Math.min(340 / hi.width, 400 / hi.height); g.drawImage(hi, x + 185 - hi.width * sc / 2, 570 - hi.height * sc, hi.width * sc, hi.height * sc); }
+        text(name, x + 185, 620, 32, COL.ink, 'center', true); btns.push({ x, y: 140, w: 370, h: 560, fn: () => ask(`Choose ${name}?`, () => { note(R.chooseCottage(S, id)); emit('cottage'); }) }); });
       footer();
     },
     gift() {
@@ -278,7 +278,7 @@ export function makeScreens(c) {
       footer();
     },
     home() {
-      frameBg(); header(); const H = S.home, hs = img(`scene/house_${S.home.cottage || 'sky'}.png`) || img('scene/house.png'), X = 30, Y = 100, sc = 0.9, p = S.real;
+      frameBg(); header(); const H = S.home, hs = img(`scene/house_${{ pink: 'rose', white: 'sky', flowerbox: 'honey', forest: 'sky' }[S.home.cottage] || S.home.cottage || 'sky'}.png`) || img('scene/house.png'), X = 30, Y = 100, sc = 0.9, p = S.real;
       if (!H.cottage) { text('Mayor Ren will give you a cottage at the end of the welcome tour.', BW / 2, 400, 32, COL.soft, 'center'); return footer(); }
       // the cottage and everything already placed in it: look only
       const rooms = { big: [150, 330, 525, 250, 580, 70], small: [760, 330, 190, 250, 580, 60] };
@@ -286,7 +286,7 @@ export function makeScreens(c) {
       const slots = { 'big-0': [215, 615, 120], 'big-1': [345, 615, 120], 'big-2': [475, 615, 120], 'big-3': [600, 615, 120], 'big-4': [300, 450, 100], 'big-5': [520, 450, 100], 'small-0': [810, 615, 95], 'small-1': [905, 615, 95], 'small-2': [857, 450, 90] };
       for (const id of Object.keys(slots)) { const [cx, base, size] = slots[id], w = H.placed[id], x = X + (cx - size / 2) * sc, y = Y + (base - size) * sc, z = size * sc; if (!w) continue; const im = img(`items/${w === 'floor' ? 'floor' : w}.png`); if (im) { const k = Math.min(z / im.width, z / im.height); g.drawImage(im, x + (z - im.width * k) / 2, y + z - im.height * k, im.width * k, im.height * k); } }
       // inventory
-      rr(1060, 100, 500, 690, 22, '#fffdf6', COL.edge); text({ rose: 'Rose Cottage', sky: 'Bluebell Cottage', honey: 'Honey Cottage' }[H.cottage], 1310, 140, 34, COL.ink, 'center', true); text('Your things', 1310, 184, 28, COL.plum, 'center', true);
+      rr(1060, 100, 500, 690, 22, '#fffdf6', COL.edge); text({ pink: 'Pink Cottage', white: 'White Cottage', flowerbox: 'Flower Box Cottage', forest: 'Forest Green Cottage', rose: 'Rose Cottage', sky: 'Bluebell Cottage', honey: 'Honey Cottage' }[H.cottage], 1310, 140, 34, COL.ink, 'center', true); text('Your things', 1310, 184, 28, COL.plum, 'center', true);
       const seeds = p.seeds, rows = [['Coins', p.coins], ['Letter Bank', R.bankCount(p.bank)], ['Cut flowers', R.flowerTotal(p)], ['Seeds', `${R.seedTotal(p)} (${seeds.common} mixed common, ${seeds.uncommon} mixed uncommon, ${seeds.rare} mixed rare, ${Object.values(p.pk || {}).reduce((a, b) => a + b, 0)} by flower)`], ['Super Grow', p.doses], ['Crafted words', p.words.length]];
       rows.forEach(([k, v], i) => { const y = 226 + i * 46; text(k, 1090, y, 24, COL.soft); text(String(v), 1530, y, 24, COL.ink, 'right', true); });
       const items = R.homeItems(S); text('In storage', 1090, 530, 26, COL.plum, 'left', true);

@@ -61,8 +61,8 @@ cutout('assets/scene/word_cart.png', 0.95, 0.95, 1.4, TABLE + 0.5, -1.75, -0.5).
 cutout('assets/scene/flower_cart.png', 0.8, 0.8, 2.1, TABLE + 0.42, -1.0, -0.95).name = 'flatFlower';
 const PEOPLE = ['hudson', 'snowy', 'merry', 'kit', 'phineas', 'mayor'];
 // each resident stands in front of their home, on a little grass stage behind the story board
-const HOMES = { hudson: 'archway', snowy: 'cozycottage', merry: 'merry_greenhouse', kit: 'cottage_blue', phineas: 'cottage_green', mayor: 'townhall' };
-const HOME_H = { hudson: 0.95, snowy: 0.85, merry: 0.95, kit: 0.8, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.46, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
+const HOMES = { hudson: 'archway', snowy: 'cozycottage', merry: 'merry_greenhouse', kit: 'seed_shop', phineas: 'cottage_green', mayor: 'townhall' };
+const HOME_H = { hudson: 0.95, snowy: 0.85, merry: 0.95, kit: 0.95, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.46, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
 const gltfLoader = new GLTFLoader(), vig = new THREE.Group(); vig.visible = false; stage.add(vig);
 const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.33, 0.03, 40), new THREE.MeshLambertMaterial({ color: '#a8d08a' })); stand.position.y = -0.015; vig.add(stand);
 const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.34, 3, 32), new THREE.MeshLambertMaterial({ color: '#b98a55' })); plinth.position.y = -1.53; vig.add(plinth);   // a wooden pedestal down to the ground, so nobody floats
@@ -171,11 +171,17 @@ cobblePatch(new THREE.CircleGeometry(0.9, 32), 1.8, 1.8, -2.7, -1.5);           
 put('fountain', 2.3, 0, -7.0, 0);
 worldModel('trowel', (src) => { src.updateMatrixWorld(true); const bb = new THREE.Box3().setFromObject(src), sz = bb.getSize(new THREE.Vector3()); src.scale.setScalar(0.15 / Math.max(sz.x, sz.y, sz.z, 1e-3)); src.updateMatrixWorld(true); bb.setFromObject(src); const c = bb.getCenter(new THREE.Vector3()); src.position.x -= c.x; src.position.z -= c.z; src.position.y -= bb.min.y; const w = new THREE.Group(); w.add(src); w.position.set(0.8, TABLE, 0.02); w.rotation.y = 0.5; stage.add(w); });   // a small trowel left on the table
 addProp('townhall', 6.0, 0, 0, -12.5, 0, { parent: town });
+// Kit's seed shop, where the first cottage used to be
+gltfLoader.load('assets/models/seed_shop.glb', (g) => { const m = fit(g.scene, 2.7); m.position.set(6.6, 0, -0.8); m.rotation.y = -1.3; town.add(m); }, undefined, () => {});
+// the player's own cottage, in front of the Player's Garden, once the Mayor has given it to them
+const HOME_MODEL = { pink: 'pink_cottage', white: 'white_cottage', flowerbox: 'flower_box_cottage', forest: 'forest_green_cottage', rose: 'pink_cottage', sky: 'white_cottage', honey: 'flower_box_cottage' };
+let homeKey = null, homeObj = null;
+function placeHome() { const k = S && S.home && S.home.cottage; if (k === homeKey || !k) return; homeKey = k; if (homeObj) { town.remove(homeObj); homeObj = null; } const f = HOME_MODEL[k]; if (!f) return; gltfLoader.load(`assets/models/${f}.glb`, (g) => { if (homeKey !== k) return; const m = fit(g.scene, 2.5); m.position.set(-2.6, 0, 2.6); m.rotation.y = -2.86; town.add(m); homeObj = m; }, undefined, () => {}); }
 // Merry's greenhouse beside the community garden: this is where the seeds, watering can and Super Grow desk lives
 gltfLoader.load('assets/models/merry_greenhouse.glb', (g) => { const m = fit(g.scene, 2.6); m.position.set(-7.0, 0, -2.9); m.rotation.y = 1.06; town.add(m); }, undefined, () => {});
 // the residents stand where they belong: Snowy and Mayor Ren on the town hall steps, Phineas by his workshop and the carts
-[['snowy', -1.1, -10.3, 1.15], ['mayor', 1.1, -10.3, 1.25], ['phineas', 2.4, -0.9, 1.2], ['merry', -5.6, -1.5, 1.2]].forEach(([who, x, z, h]) => gltfLoader.load(`assets/models/${who}.glb`, (g) => { const m = fit(g.scene, h); m.position.set(x, 0, z); m.rotation.y = who === 'phineas' ? -0.4 : who === 'merry' ? 1.24 : 0; town.add(m); }, undefined, () => {}));
-[['cottage_new_blue', 3.0, 6.4, -0.6, -1.3], ['cottage_new_green', 3.0, 6.8, -3.8, -1.45], ['cottage_new_blue', 3.0, 6.2, -7.2, -1.8], ['cottage_new_green', 3.0, -7.0, -6.8, 1.6], ['cottage_new_blue', 3.0, -7.4, 0.6, 1.2], ['cottage_new_green', 3.0, 5.0, 5.6, 2.6], ['cottage_new_blue', 3.0, -4.6, 6.2, 3.4]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
+[['snowy', -1.1, -10.3, 1.15], ['mayor', 1.1, -10.3, 1.25], ['phineas', 2.4, -0.9, 1.2], ['merry', -5.6, -1.5, 1.2], ['kit', 5.3, -2.1, 1.15]].forEach(([who, x, z, h]) => gltfLoader.load(`assets/models/${who}.glb`, (g) => { const m = fit(g.scene, h); m.position.set(x, 0, z); m.rotation.y = who === 'phineas' ? -0.4 : who === 'merry' ? 1.24 : who === 'kit' ? -1.3 : 0; town.add(m); }, undefined, () => {}));
+[['cottage_new_green', 3.0, 6.8, -3.8, -1.45], ['cottage_new_blue', 3.0, 6.2, -7.2, -1.8], ['cottage_new_green', 3.0, -7.0, -6.8, 1.6], ['cottage_new_blue', 3.0, -7.4, 0.6, 1.2], ['cottage_new_green', 3.0, 5.0, 5.6, 2.6], ['cottage_new_blue', 3.0, -4.6, 6.2, 3.4]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 [[-8.5, -2.5], [-9.8, -7.0], [-8, -11], [8.5, -11], [10.2, -6], [9.6, -1.5], [-4.5, -11.5], [4.8, -12], [-9.5, 3.5], [-6, 7.5], [0, 9.5], [8, 6.5], [10.5, 3], [-12.5, -5], [12.5, -4], [-4.8, 2.2], [4.4, 2.8]].forEach(([x, z], i) => put(i % 2 ? 'tree_flowering' : 'tree_lush', 3.4 + rng() * 1.8, x, z, rng() * 6.28));
 const KEEP = [[0, -0.4, 2.7], [0, -7, 3.0], [3.5, -1.3, 2.9], [-3.2, -1.9, 2.6], [0, -4.3, 1.6], [-4.2, -2.8, 2.7]];   // keep the cobblestone and garden clear of shrubs
 for (let i = 0; i < 70; i++) { const a = rng() * 6.283, r = 2.8 + rng() * 11, x = Math.cos(a) * r, z = -3 + Math.sin(a) * r; if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; const k = ['shrub', 'bush', 'grassclump', 'grassclump'][i % 4]; put(k, k === 'grassclump' ? 0.35 + rng() * 0.3 : 0.6 + rng() * 0.7, x, z, rng() * 6.28); }
@@ -594,6 +600,7 @@ layout(); UI.start();
 
 const clock = new THREE.Clock(); let slow = 0;
 function tick(dt, simOnly) {
+  placeHome();
   if (!simOnly) readXR();
   stepPointers(dt, performance.now() / 1000); stepBits(dt); stepWordObj(dt); stepTiles(dt); stepKids(dt); stepSky(dt); packetFor(G.seedTier()); if (giftHolder.visible) { giftHolder.rotation.y += dt * 0.8; giftHolder.position.y = TABLE + 0.02 + Math.abs(Math.sin(clock.elapsedTime * 2)) * 0.03; }
   const t = clock.elapsedTime; plots.forEach((p) => drawPlot(p, t, dt));

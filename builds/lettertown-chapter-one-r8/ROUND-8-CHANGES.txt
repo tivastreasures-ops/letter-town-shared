@@ -58,3 +58,8 @@ Build R8-13: free ground teleporting turned off (travel is by the map only, so a
 R8-14: Merry now stands on the pad in front of the community garden, facing the garden. Kit waits until the seed shop 3D model exists.
 
 R8-15: Merry Greenhouse (new 3D model, 10K triangles) stands beside the community garden with Merry in front; clicking Merry on the map opens the desk (seeds, watering can, Super Grow). Community garden renamed Player's Garden. Phineas workshop is the old green cottage model. Old fenced yard removed. Player home placement waits for the new cottage models.
+
+R8-16
+- Seed Shop 3D model in town; Kit stands beside it.
+- Four 3D cottages (Pink, White, Flower Box, Forest Green); picker shows four cards; chosen cottage sits in front of the Player's Garden.
+- Merry's greenhouse = desk setup; Phineas workshop = green cottage.
