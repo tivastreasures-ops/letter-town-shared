@@ -440,9 +440,9 @@ function readXR() {
 function plotUnder(pos, r) { let best = null, bd = r; for (const p of plots) { const d = Math.hypot(pos.x - p.g.position.x, pos.z - p.g.position.z); if (d < bd && pos.y > TABLE - 0.02 && pos.y < TABLE + 0.45) { bd = d; best = p; } } return best; }
 function bloomAt(p, out) { return out.copy(p.bloomPos).applyQuaternion(p.g.quaternion).add(p.g.position); }
 function nearestGrab(pos) {
-  if (menuBtn.position.distanceTo(pos) < 0.085) return { menu: true };
-  if (UI.propsOn()) for (const pr of props) if (pr.kind && pr.holder.parent && pr.holder.parent.visible !== false && stage.worldToLocal(pr.holder.getWorldPosition(_c3)).add(_c3o.set(0, pr.cy, 0)).distanceTo(pos) < (pr.kind === 'carts' ? 0.4 : pr.radius + 0.05)) return { prop: pr.kind };
-  let best = null, bd = HAND.grabReach; if (!UI.gardenOpen()) return null;
+  if (menuBtn.position.distanceTo(pos) < 0.11) return { menu: true };
+  if (UI.propsOn()) for (const pr of props) if (pr.kind && pr.holder.parent && pr.holder.parent.visible !== false && stage.worldToLocal(pr.holder.getWorldPosition(_c3)).add(_c3o.set(0, pr.cy, 0)).distanceTo(pos) < (pr.kind === 'carts' ? 0.5 : pr.radius + 0.09)) return { prop: pr.kind };
+  let best = null, bd = HAND.grabReach * 1.4 * (S && S.settings.pinch > 1 ? S.settings.pinch : 1); if (!UI.gardenOpen()) return null;
   for (const t of tools) { if (t.heldBy) continue; const d = _gp.copy(t.gp).applyQuaternion(t.g.quaternion).add(t.g.position).distanceTo(pos); if (d < bd) { bd = d; best = { tool: t }; } }
   for (const p of plots) { const pl = plantAt(p.i); if (!pl || pl.stage < 2 || p.heldBy) continue; const d = bloomAt(p, _a).distanceTo(pos); if (d < bd) { bd = d; best = { plot: p }; } }
   if (!best && S && Math.abs(pos.x - trayX()) < 0.15 && Math.abs(pos.z - TRAY.z) < 0.3 && pos.y > TABLE - 0.02 && pos.y < TABLE + 0.14) return { tray: true };

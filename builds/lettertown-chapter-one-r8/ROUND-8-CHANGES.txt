@@ -22,3 +22,6 @@ Not done yet: a third vase, seed shop interior, navigation fixes, building inter
 Round 8, part 3
 - Teleport is clamped to the town bounds (no walking off the edge into the clouds).
 - A burst of VR "reset" events recenters the table only once per 4 seconds, so the table stops chasing your head.
+
+Round 8, part 4
+- Grab reach is about 40% bigger, grows with the Pinch setting; props (book, shop, vase) and the menu button are easier to hit; Pinch setting goes up to 260%.

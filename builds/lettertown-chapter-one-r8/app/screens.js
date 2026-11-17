@@ -364,7 +364,7 @@ export function makeScreens(c) {
       row(2, 'Screen size (smaller / bigger)', Math.round(s.boardScale * 100) + '%', 'boardScale', 0.1, 0.7, 1.7);
       row(3, 'Table height (lower / higher)', Math.round(s.tableDrop * 100) + ' cm below eyes', 'tableDrop', 0.03, 0.25, 0.7, true);
       row(4, 'Garden reach (closer / farther)', Math.round(s.reach * 100) + ' cm', 'reach', 0.03, 0.35, 0.65);
-      row(5, 'Pinch (needs a tighter / easier pinch)', Math.round(s.pinch * 100) + '%', 'pinch', 0.1, 0.6, 1.8);
+      row(5, 'Pinch (needs a tighter / easier pinch)', Math.round(s.pinch * 100) + '%', 'pinch', 0.1, 0.6, 2.6);
       B(60, 680, 400, 84, s.poke ? 'Fingertip poke: on' : 'Fingertip poke: off', () => { s.poke = !s.poke; c.save(); }, { style: s.poke ? 'gold' : 'cream', size: 28 });
       B(500, 680, 320, 84, 'Recenter', () => c.startRecenter(), { style: 'blue', size: 30 });
       B(1010, 680, 540, 84, st.afterAdjust ? 'Done, start the tour' : 'Done', () => { s.adjusted = true; c.save(); const f = st.afterAdjust; st.afterAdjust = null; if (f) f(); else go('settings'); }, { style: 'green', size: 36 });
