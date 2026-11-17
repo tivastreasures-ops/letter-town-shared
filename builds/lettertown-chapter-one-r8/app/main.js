@@ -396,7 +396,7 @@ const G = {
   cPlant(i) { const t = G.seedTier(); const r = R.commPlant(S, i, t); UI.note(r); if (r.ok) beep(520, 0.08); return r; },
   cWater(i) { const r = R.commWater(S, i); UI.note(r); if (r.ok) beep(660, 0.08); return r; },
   cPick(i) { const r = R.commPick(S, i); UI.note(r); if (r.ok) { beep(740, 0.07); setTimeout(() => beep(990, 0.1), 80); save(); } return r; },
-  seedTier() { const g = R.pouch(S), k = R.ownedSeedKeys(g); return k.includes(UI.state.tier) ? UI.state.tier : (k[0] || UI.state.tier); },
+  seedTier() { if (!S) return UI.state.tier; const g = R.pouch(S), k = R.ownedSeedKeys(g); return k.includes(UI.state.tier) ? UI.state.tier : (k[0] || UI.state.tier); },
   plant(i) { const r = R.plant(S, i, G.seedTier()); UI.note(r); if (r.ok) { beep(520, 0.08); UI.emit('planted'); } else if (r.code === 'noseed') UI.cue('M13'); return r; },
   water(i) { const r = R.water(S, i); UI.note(r); if (r.ok) { beep(660, 0.08); UI.emit('watered'); } return r; },
   boost(i) { const r = R.superGrow(S, i); UI.note(r); if (r.ok) { beep(880, 0.1); burst(plots[i], '#ffd34d', 10); UI.emit('boosted'); } return r; },

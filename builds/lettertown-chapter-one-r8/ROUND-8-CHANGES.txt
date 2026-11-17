@@ -49,3 +49,6 @@ Round 8, part 10
 Round 8, part 11
 - Tapping "Thank you!" on a present now bursts it: 160 confetti pieces plus a pop sound.
 - A crafted word appears on the table as an object for a few seconds: your item art when the word has one (bed, lamp, cup...), an emoji for about 70 common words, otherwise the word on a tile. This is a stopgap until each word has 3D art.
+
+Round 8, part 12
+- Fixed a crash on startup: the seed-packet check ran before a game was loaded and stopped the whole scene (blank sky, no town). Label now reads Build R8-12.
