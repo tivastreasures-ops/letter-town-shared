@@ -91,7 +91,7 @@ export function makeScreens(c) {
     B(x + 86 + bw, y, 70, h, '▶', () => cyc(1), { size, style: 'cream', off: keys.length < 2 });
   }
   function frameBg() { g.fillStyle = COL.paper; g.fillRect(0, 0, BW, BH); g.strokeStyle = COL.edge; g.lineWidth = 12; g.strokeRect(6, 6, BW - 12, BH - 12); }
-  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-12', BW - 40, 872, 16, COL.soft, 'right'); }
+  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-13', BW - 40, 872, 16, COL.soft, 'right'); }
   function header(title) {
     if (S.lesson) { text(title, 40, 52, 40, COL.ink, 'left', true); const free = st.wait && st.wait.free; if (free) B(BW - 760, 20, 300, 64, "I'm finished", finishPractice, { style: 'green', size: 30 }); B(BW - 440, 20, 100, 64, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 26 }); B(BW - 330, 20, 300, 64, 'Back to Hudson', () => ask('Leave this lesson? You can repeat it any time.', leaveLesson), { style: 'rose', size: 28 }); if (S.usePractice && !free) text('Practice: nothing here uses your real coins or letters', BW / 2 + 60, 52, 24, COL.soft, 'center'); return; }
     const tabs = [['map', 'Map'], ['garden', 'Garden'], ['book', 'Book'], ['dict', 'Dictionary'], ['shop', 'Shop'], ['carts', 'Carts'], ['home', 'Home'], ['story', 'Story'], ['settings', 'Settings']];
@@ -221,8 +221,8 @@ export function makeScreens(c) {
         rr(40, 185, 1100, 100, 18, '#ffffff', COL.edge); text(st.tray.split('').join(' ') || 'Tap letters from your Letter Bank', 70, 235, st.tray ? 56 : 30, st.tray ? COL.plum : '#a79f90', 'left', !!st.tray);
         B(1160, 185, 180, 100, 'Erase', () => { st.tray = st.tray.slice(0, -1); }, { style: 'rose', size: 28 }); B(1360, 185, 200, 100, 'Craft', () => craftTray(), { style: 'green', size: 36, off: st.tray.length < R.CFG.minWordLen });
         const left = { ...p.bank }; for (const ch of st.tray) left[ch] = (left[ch] || 0) - 1;
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach((ch, i) => { const n = left[ch] || 0, x = 40 + (i % 13) * 117, y = 310 + Math.floor(i / 13) * 150; B(x, y, 106, 130, ch, () => { st.tray += ch; }, { size: 50, off: n <= 0, style: R.letterTier(ch) === 'rare' ? 'purple' : R.letterTier(ch) === 'uncommon' ? 'blue' : 'cream' }); text(n > 0 ? '×' + n : '', x + 86, y + 108, 22, COL.soft, 'right'); });
-        text('Your Letter Bank: tap a letter to add it to the word.', BW / 2, 640, 24, COL.soft, 'center');
+        const QW = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'], qpos = {}; QW.forEach((r, ri) => r.split('').forEach((ch, ci) => { qpos[ch] = [40 + ri * 50 + ci * 117, 310 + ri * 110]; })); (S.settings.qwerty ? QW.join('') : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ').split('').forEach((ch, i) => { const n = left[ch] || 0, x = S.settings.qwerty ? qpos[ch][0] : 40 + (i % 13) * 117, y = S.settings.qwerty ? qpos[ch][1] : 310 + Math.floor(i / 13) * 150; B(x, y, 106, 130, ch, () => { st.tray += ch; }, { size: 50, off: n <= 0, style: R.letterTier(ch) === 'rare' ? 'purple' : R.letterTier(ch) === 'uncommon' ? 'blue' : 'cream' }); text(n > 0 ? '×' + n : '', x + 86, y + 108, 22, COL.soft, 'right'); });
+        B(1180, 600, 380, 70, S.settings.qwerty ? 'Layout: QWERTY' : 'Layout: A to Z', () => { S.settings.qwerty = !S.settings.qwerty; c.save(); }, { size: 28, style: 'blue' }); text('Your Letter Bank: tap a letter to add it to the word.', 560, 640, 24, COL.soft, 'center');
         text(`Each letter is worth 1, 2 or 3 coins. A new word sells for double.`, BW / 2, 680, 24, COL.soft, 'center');
       } else if (st.bookTab === 'words') {
         if (!p.words.length) text('No crafted words yet. Spell one on the Spell tab.', BW / 2, 400, 32, '#a79f90', 'center');
@@ -372,8 +372,8 @@ export function makeScreens(c) {
       row(4, 'Garden reach (closer / farther)', Math.round(s.reach * 100) + ' cm', 'reach', 0.03, 0.35, 0.65);
       row(5, 'Pinch (needs a tighter / easier pinch)', Math.round(s.pinch * 100) + '%', 'pinch', 0.1, 0.6, 2.6);
       B(60, 680, 400, 84, s.poke ? 'Fingertip poke: on' : 'Fingertip poke: off', () => { s.poke = !s.poke; c.save(); }, { style: s.poke ? 'gold' : 'cream', size: 28 });
-      B(500, 680, 320, 84, 'Recenter', () => c.startRecenter(), { style: 'blue', size: 30 });
-      B(1010, 680, 540, 84, st.afterAdjust ? 'Done, start the tour' : 'Done', () => { s.adjusted = true; c.save(); const f = st.afterAdjust; st.afterAdjust = null; if (f) f(); else go('settings'); }, { style: 'green', size: 36 });
+      B(500, 680, 320, 84, 'Recenter', () => c.startRecenter(), { style: 'blue', size: 30 }); B(830, 680, 360, 84, 'Return to Garden', () => { c.teleport('yard'); go('garden'); }, { style: 'green', size: 28 });
+      B(1200, 680, 350, 84, st.afterAdjust ? 'Done, start tour' : 'Done', () => { s.adjusted = true; c.save(); const f = st.afterAdjust; st.afterAdjust = null; if (f) f(); else go('settings'); }, { style: 'green', size: 36 });
       footer();
     },
     settings() {

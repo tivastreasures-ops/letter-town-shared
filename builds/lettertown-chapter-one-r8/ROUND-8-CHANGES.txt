@@ -52,3 +52,5 @@ Round 8, part 11
 
 Round 8, part 12
 - Fixed a crash on startup: the seed-packet check ran before a game was loaded and stopped the whole scene (blank sky, no town). Label now reads Build R8-12.
+
+Build R8-13: free ground teleporting turned off (travel is by the map only, so accidental pinches can't move you); Return to Garden button on the Adjust screen; QWERTY / A-to-Z letter layout toggle in the Spelling Book.
