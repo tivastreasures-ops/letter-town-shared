@@ -28,3 +28,7 @@ Round 8, part 4
 
 Round 8, part 5
 - The tool tray moves to the side of the hand you pinch with first (still adjustable with the Table buttons).
+
+Round 8, part 6
+- Home screen: the cutaway cottage now has the roof color of the cottage you chose (rose = red, bluebell = blue, honey = gold). Before, every home showed the blue-roof house.
+- Snowy and Mayor Ren stand on the town hall steps; Phineas stands by the workshop and carts.

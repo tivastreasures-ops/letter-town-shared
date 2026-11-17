@@ -272,7 +272,7 @@ export function makeScreens(c) {
       footer();
     },
     home() {
-      frameBg(); header(); const H = S.home, hs = img('scene/house.png'), X = 30, Y = 100, sc = 0.9, p = S.real;
+      frameBg(); header(); const H = S.home, hs = img(`scene/house_${S.home.cottage || 'sky'}.png`) || img('scene/house.png'), X = 30, Y = 100, sc = 0.9, p = S.real;
       if (!H.cottage) { text('Mayor Ren will give you a cottage at the end of the welcome tour.', BW / 2, 400, 32, COL.soft, 'center'); return footer(); }
       // the cottage and everything already placed in it: look only
       const rooms = { big: [150, 330, 525, 250, 580, 70], small: [760, 330, 190, 250, 580, 60] };
