@@ -1,0 +1,11 @@
+ROUND 8 (copy of Round 7, which is untouched in builds/lettertown-chapter-one)
+Nov 16 2026, the Professor.
+
+CHANGED
+- Plants now grow through the 3D seed (Golden Magic Seed), then the 3D sprout (Sprout Seedling), then the 3D bud in the flower's own color, then the bloom. Garden table and community plots.
+- Each flower gets a bud in its own color. Flowers with their own color use it; the rest are mapped: yellow = buttercup, jonquil, marigold, sunflower; pink = chrysanthemum, plumeria, zinnia; blue = flax; purple = violet; white = kopsia.
+- Blooms sit on the soil instead of floating 5.5 cm above it.
+- 2D screens (Garden, community) use the seed, sprout and bud pictures from Drive instead of shapes drawn by code.
+NEW FILES: assets/models/flowers/seed_magic.glb, sprout_seedling.glb; assets/blooms/pseed.png, psprout.png, pbud_<color>.png
+
+NOT DONE YET: peony/poppy merge, per-flower seed shop and quantity counters, second vase, resident placement, anchoring, interiors.

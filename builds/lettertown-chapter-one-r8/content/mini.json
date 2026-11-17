@@ -1,0 +1,154 @@
+{
+ "stories": [
+  {
+   "id": "adventure",
+   "title": "The Lantern Trail",
+   "who_label": "adventure",
+   "slots": [
+    {
+     "id": 1,
+     "category": "adjective",
+     "prompt": "adjective"
+    },
+    {
+     "id": 2,
+     "category": "noun",
+     "prompt": "singular noun"
+    },
+    {
+     "id": 3,
+     "category": "verb",
+     "prompt": "base-form verb"
+    },
+    {
+     "id": 4,
+     "category": "plural_noun",
+     "prompt": "plural noun"
+    },
+    {
+     "id": 5,
+     "category": "adjective",
+     "prompt": "adjective"
+    }
+   ],
+   "paragraphs": [
+    "At dawn, you set off on the old lantern trail with {{article:1}} {{1}} map and a very small {{2}} in your pocket.",
+    "Halfway up the hill, the path made everyone {{3}}, even the squirrels, who are not usually joiners.",
+    "Beyond the bridge you found a cave full of glowing {{4}}. They were not treasure exactly, but they were extremely good company.",
+    "You walked home under a {{5}} sky, with muddy boots and a head full of plans for next weekend."
+   ]
+  },
+  {
+   "id": "town",
+   "title": "A Quiet Day on Petal Street",
+   "slots": [
+    {
+     "id": 1,
+     "category": "noun",
+     "prompt": "singular noun"
+    },
+    {
+     "id": 2,
+     "category": "adjective",
+     "prompt": "adjective"
+    },
+    {
+     "id": 3,
+     "category": "verb",
+     "prompt": "base-form verb"
+    },
+    {
+     "id": 4,
+     "category": "plural_noun",
+     "prompt": "plural noun"
+    },
+    {
+     "id": 5,
+     "category": "noun",
+     "prompt": "singular noun"
+    }
+   ],
+   "paragraphs": [
+    "Nothing much happened on Petal Street today, unless you count the {{1}} that rolled gently down the middle of the road.",
+    "The baker declared it a {{2}} sort of morning, and the whole street agreed without being asked.",
+    "By noon, people stopped to {{3}} at the corner, mostly to see who else was doing it.",
+    "Someone left a basket of {{4}} on every doorstep, and nobody has confessed.",
+    "By evening the only thing missing was {{article:5}} {{5}}, but that is a problem for tomorrow."
+   ]
+  },
+  {
+   "id": "seasonal",
+   "title": "The First Frost Festival",
+   "slots": [
+    {
+     "id": 1,
+     "category": "adjective",
+     "prompt": "adjective"
+    },
+    {
+     "id": 2,
+     "category": "plural_noun",
+     "prompt": "plural noun"
+    },
+    {
+     "id": 3,
+     "category": "verb",
+     "prompt": "base-form verb"
+    },
+    {
+     "id": 4,
+     "category": "noun",
+     "prompt": "singular noun"
+    },
+    {
+     "id": 5,
+     "category": "adjective",
+     "prompt": "adjective"
+    }
+   ],
+   "paragraphs": [
+    "The first frost arrived overnight, and Letter Town woke up {{1}} and sparkling.",
+    "Every window was hung with {{2}}, and every chimney puffed a small, proud cloud.",
+    "The festival began when the mayor asked everyone to {{3}} together, which went better than anyone expected.",
+    "The prize for the best decoration was a golden {{4}}, and it was awarded, after a long and {{5}} debate, to the oldest lamppost."
+   ]
+  },
+  {
+   "id": "fantasy",
+   "title": "The Dragon Who Borrowed a Cup of Sugar",
+   "slots": [
+    {
+     "id": 1,
+     "category": "adjective",
+     "prompt": "adjective"
+    },
+    {
+     "id": 2,
+     "category": "noun",
+     "prompt": "singular noun"
+    },
+    {
+     "id": 3,
+     "category": "verb",
+     "prompt": "base-form verb"
+    },
+    {
+     "id": 4,
+     "category": "plural_noun",
+     "prompt": "plural noun"
+    },
+    {
+     "id": 5,
+     "category": "noun",
+     "prompt": "singular noun"
+    }
+   ],
+   "paragraphs": [
+    "One evening, {{article:1}} {{1}} dragon knocked on the door of the tallest tower and asked to borrow a cup of sugar.",
+    "In exchange, he offered a {{2}}, which was not quite what the wizard had in mind but was certainly polite.",
+    "Soon the whole tower began to {{3}}, and the kettle sang along in a very small voice.",
+    "By midnight the dragon had left behind a pile of shiny {{4}} and promised to return the cup, filled with {{article:5}} {{5}}."
+   ]
+  }
+ ]
+}
