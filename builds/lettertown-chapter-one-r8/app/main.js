@@ -364,7 +364,7 @@ const TP = { home: [0, 0], yard: [3.6, 3.4], carts: [2.2, 0.7], fountain: [0, -4
 let tpName = 'home'; const _tp = new THREE.Vector3();
 function placeTown(x, z, lx, lz) { const th = Math.atan2(lx - x, -(lz - z)); const c = Math.cos(th), sn = Math.sin(th); town.rotation.y = th; town.position.set(-(x * c + z * sn), 0, -(-x * sn + z * c)); }
 function teleportTo(k, quiet) { const a = TP[k]; if (!a) return; tpName = k; placeTown(a[0], a[1], TP_LOOK[k][0], TP_LOOK[k][1]); if (!quiet) beep(560, 0.06); }
-function teleportPoint(x, z) { const th = town.rotation.y, c = Math.cos(th), sn = Math.sin(th); /* current town coords of the stage-local point (x,z) */ const tx = (x - town.position.x) * c - (z - town.position.z) * sn, tz = (x - town.position.x) * sn + (z - town.position.z) * c; town.position.set(-(tx * c + tz * sn), 0, -(-tx * sn + tz * c)); beep(560, 0.06); }
+function teleportPoint(x, z) { const th = town.rotation.y, c = Math.cos(th), sn = Math.sin(th); /* current town coords of the stage-local point (x,z) */ const tx = (x - town.position.x) * c - (z - town.position.z) * sn, tz = (x - town.position.x) * sn + (z - town.position.z) * c; const bx = Math.max(-9, Math.min(11, tx)), bz = Math.max(-14, Math.min(6, tz)); town.position.set(-(bx * c + bz * sn), 0, -(-bx * sn + bz * c)); beep(560, 0.06); }   // stay inside the town: no walking off the edge into the clouds
 const tpRing = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.3, 32), new THREE.MeshBasicMaterial({ color: '#58c06a', transparent: true, opacity: 0.85, side: THREE.DoubleSide })); tpRing.rotation.x = -Math.PI / 2; tpRing.visible = false; stage.add(tpRing);
 // a fence around the yard garden spot, so your own garden sits inside the town like the community garden does
 worldModel('fence', (src) => { const f = (px, pz, ry) => { const m = fitW(src.clone(true), 2.2); m.position.set(TP.yard[0] + px, 0, TP.yard[1] + pz); m.rotation.y = ry; world.add(m); }; for (let i = -1; i <= 1; i++) f(i * 2.2, 1.9, 0); for (const sx of [-1, 1]) f(sx * 3.2, 0.4, Math.PI / 2); });
@@ -537,7 +537,7 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
 addEventListener('keydown', (e) => { if (UI.key(e.key)) e.preventDefault(); });
 
 /* ---------- VR session ---------- */
-let recenterAt = 0, needsRecenter = false; const head = new THREE.Vector3(), hq = new THREE.Quaternion(), he = new THREE.Euler();
+let recenterAt = 0, needsRecenter = false, lastReset = 0; const head = new THREE.Vector3(), hq = new THREE.Quaternion(), he = new THREE.Euler();
 function recenter() { const cam = renderer.xr.getCamera(); cam.getWorldPosition(head); if (head.lengthSq() === 0) return false; cam.getWorldQuaternion(hq); he.setFromQuaternion(hq, 'YXZ'); stage.rotation.set(0, he.y, 0); stage.position.set(head.x, head.y - (S ? S.settings.tableDrop : 0.45) - TABLE, head.z); stage.updateMatrixWorld(true); return true; }
 function startRecenter() { recenterAt = performance.now() + 3000; UI.say('Recentering in 3 seconds. Sit comfortably and look straight ahead.'); }
 const vrBtn = document.getElementById('vr'), noteEl = document.getElementById('note');
@@ -551,7 +551,7 @@ const vrReady = (async () => {
 async function enterVR() {
   if (!vrOK) return; if (renderer.xr.isPresenting) return exitVR(); beep(440, 0.01);
   try { const s = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['local-floor', 'hand-tracking'] }); renderer.xr.setReferenceSpaceType('local-floor'); await renderer.xr.setSession(s);
-    vrBtn.textContent = 'Exit VR'; setTimeout(() => { needsRecenter = true; }, 600); const ref = renderer.xr.getReferenceSpace(); if (ref && ref.addEventListener) ref.addEventListener('reset', () => { needsRecenter = true; });
+    vrBtn.textContent = 'Exit VR'; setTimeout(() => { needsRecenter = true; }, 600); const ref = renderer.xr.getReferenceSpace(); if (ref && ref.addEventListener) ref.addEventListener('reset', () => { const t = performance.now(); if (t - lastReset > 4000) needsRecenter = true; lastReset = t; });
     s.addEventListener('end', () => { vrBtn.textContent = 'Enter VR'; stage.position.set(0, 0, 0); stage.rotation.set(0, 0, 0); pointers.forEach((P) => { if (P.held) letGo(P, true); }); saveNow(); });
   } catch (e) { noteEl.textContent = 'Could not start VR: ' + e.message; }
 }

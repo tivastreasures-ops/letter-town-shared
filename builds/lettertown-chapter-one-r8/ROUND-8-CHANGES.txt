@@ -18,3 +18,7 @@ Round 8, part 2
 - Flower Cart: choose the glass vase or the Blue Fluted Vase (your Meshy model, 512 px).
 - Plot soil mound uses your soil tile (mirrored so the seam does not show).
 Not done yet: a third vase, seed shop interior, navigation fixes, building interiors.
+
+Round 8, part 3
+- Teleport is clamped to the town bounds (no walking off the edge into the clouds).
+- A burst of VR "reset" events recenters the table only once per 4 seconds, so the table stops chasing your head.
