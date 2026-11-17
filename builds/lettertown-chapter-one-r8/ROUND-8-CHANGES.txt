@@ -56,3 +56,5 @@ Round 8, part 12
 Build R8-13: free ground teleporting turned off (travel is by the map only, so accidental pinches can't move you); Return to Garden button on the Adjust screen; QWERTY / A-to-Z letter layout toggle in the Spelling Book.
 
 R8-14: Merry now stands on the pad in front of the community garden, facing the garden. Kit waits until the seed shop 3D model exists.
+
+R8-15: Merry Greenhouse (new 3D model, 10K triangles) stands beside the community garden with Merry in front; clicking Merry on the map opens the desk (seeds, watering can, Super Grow). Community garden renamed Player's Garden. Phineas workshop is the old green cottage model. Old fenced yard removed. Player home placement waits for the new cottage models.

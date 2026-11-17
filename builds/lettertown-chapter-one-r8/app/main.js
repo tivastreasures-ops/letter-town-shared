@@ -61,8 +61,8 @@ cutout('assets/scene/word_cart.png', 0.95, 0.95, 1.4, TABLE + 0.5, -1.75, -0.5).
 cutout('assets/scene/flower_cart.png', 0.8, 0.8, 2.1, TABLE + 0.42, -1.0, -0.95).name = 'flatFlower';
 const PEOPLE = ['hudson', 'snowy', 'merry', 'kit', 'phineas', 'mayor'];
 // each resident stands in front of their home, on a little grass stage behind the story board
-const HOMES = { hudson: 'archway', snowy: 'cozycottage', merry: 'cottage_green', kit: 'cottage_blue', phineas: 'cottage_roof', mayor: 'townhall' };
-const HOME_H = { hudson: 0.95, snowy: 0.85, merry: 0.8, kit: 0.8, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.46, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
+const HOMES = { hudson: 'archway', snowy: 'cozycottage', merry: 'merry_greenhouse', kit: 'cottage_blue', phineas: 'cottage_green', mayor: 'townhall' };
+const HOME_H = { hudson: 0.95, snowy: 0.85, merry: 0.95, kit: 0.8, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.46, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
 const gltfLoader = new GLTFLoader(), vig = new THREE.Group(); vig.visible = false; stage.add(vig);
 const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.33, 0.03, 40), new THREE.MeshLambertMaterial({ color: '#a8d08a' })); stand.position.y = -0.015; vig.add(stand);
 const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.34, 3, 32), new THREE.MeshLambertMaterial({ color: '#b98a55' })); plinth.position.y = -1.53; vig.add(plinth);   // a wooden pedestal down to the ground, so nobody floats
@@ -171,8 +171,10 @@ cobblePatch(new THREE.CircleGeometry(0.9, 32), 1.8, 1.8, -2.7, -1.5);           
 put('fountain', 2.3, 0, -7.0, 0);
 worldModel('trowel', (src) => { src.updateMatrixWorld(true); const bb = new THREE.Box3().setFromObject(src), sz = bb.getSize(new THREE.Vector3()); src.scale.setScalar(0.15 / Math.max(sz.x, sz.y, sz.z, 1e-3)); src.updateMatrixWorld(true); bb.setFromObject(src); const c = bb.getCenter(new THREE.Vector3()); src.position.x -= c.x; src.position.z -= c.z; src.position.y -= bb.min.y; const w = new THREE.Group(); w.add(src); w.position.set(0.8, TABLE, 0.02); w.rotation.y = 0.5; stage.add(w); });   // a small trowel left on the table
 addProp('townhall', 6.0, 0, 0, -12.5, 0, { parent: town });
+// Merry's greenhouse beside the community garden: this is where the seeds, watering can and Super Grow desk lives
+gltfLoader.load('assets/models/merry_greenhouse.glb', (g) => { const m = fit(g.scene, 2.6); m.position.set(-7.0, 0, -2.9); m.rotation.y = 1.06; town.add(m); }, undefined, () => {});
 // the residents stand where they belong: Snowy and Mayor Ren on the town hall steps, Phineas by his workshop and the carts
-[['snowy', -1.1, -10.3, 1.15], ['mayor', 1.1, -10.3, 1.25], ['phineas', 2.4, -0.9, 1.2], ['merry', -2.7, -1.5, 1.2]].forEach(([who, x, z, h]) => gltfLoader.load(`assets/models/${who}.glb`, (g) => { const m = fit(g.scene, h); m.position.set(x, 0, z); m.rotation.y = who === 'phineas' ? -0.4 : who === 'merry' ? -2.28 : 0; town.add(m); }, undefined, () => {}));
+[['snowy', -1.1, -10.3, 1.15], ['mayor', 1.1, -10.3, 1.25], ['phineas', 2.4, -0.9, 1.2], ['merry', -5.6, -1.5, 1.2]].forEach(([who, x, z, h]) => gltfLoader.load(`assets/models/${who}.glb`, (g) => { const m = fit(g.scene, h); m.position.set(x, 0, z); m.rotation.y = who === 'phineas' ? -0.4 : who === 'merry' ? 1.24 : 0; town.add(m); }, undefined, () => {}));
 [['cottage_new_blue', 3.0, 6.4, -0.6, -1.3], ['cottage_new_green', 3.0, 6.8, -3.8, -1.45], ['cottage_new_blue', 3.0, 6.2, -7.2, -1.8], ['cottage_new_green', 3.0, -7.0, -6.8, 1.6], ['cottage_new_blue', 3.0, -7.4, 0.6, 1.2], ['cottage_new_green', 3.0, 5.0, 5.6, 2.6], ['cottage_new_blue', 3.0, -4.6, 6.2, 3.4]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 [[-8.5, -2.5], [-9.8, -7.0], [-8, -11], [8.5, -11], [10.2, -6], [9.6, -1.5], [-4.5, -11.5], [4.8, -12], [-9.5, 3.5], [-6, 7.5], [0, 9.5], [8, 6.5], [10.5, 3], [-12.5, -5], [12.5, -4], [-4.8, 2.2], [4.4, 2.8]].forEach(([x, z], i) => put(i % 2 ? 'tree_flowering' : 'tree_lush', 3.4 + rng() * 1.8, x, z, rng() * 6.28));
 const KEEP = [[0, -0.4, 2.7], [0, -7, 3.0], [3.5, -1.3, 2.9], [-3.2, -1.9, 2.6], [0, -4.3, 1.6], [-4.2, -2.8, 2.7]];   // keep the cobblestone and garden clear of shrubs
@@ -377,14 +379,12 @@ function stepBits(dt) { for (const b of bits) { if (b.life <= 0) continue; b.lif
 
 
 /* ---------- moving around: the town slides around you, so your table, tools and panel always stay in reach ---------- */
-const TP = { home: [0, 0], yard: [3.6, 3.4], carts: [2.2, 0.7], fountain: [0, -4.1], townhall: [0, -8.9], cottages: [4.8, -1.0], commgarden: [-2.7, -0.5] }, TP_LOOK = { home: [0, -2], yard: [3.6, 0], carts: [1.9, -1.6], fountain: [0, -7], townhall: [0, -12.5], cottages: [8.3, -2], commgarden: [-4.2, -2.8] };
+const TP = { home: [0, 0], yard: [3.6, 3.4], carts: [2.2, 0.7], fountain: [0, -4.1], townhall: [0, -8.9], cottages: [4.8, -1.0], commgarden: [-2.7, -0.5], merry: [-3.6, -0.2] }, TP_LOOK = { home: [0, -2], yard: [3.6, 0], carts: [1.9, -1.6], fountain: [0, -7], townhall: [0, -12.5], cottages: [8.3, -2], commgarden: [-4.2, -2.8], merry: [-6.8, -2.8] };
 let tpName = 'home'; const _tp = new THREE.Vector3();
 function placeTown(x, z, lx, lz) { const th = Math.atan2(lx - x, -(lz - z)); const c = Math.cos(th), sn = Math.sin(th); town.rotation.y = th; town.position.set(-(x * c + z * sn), 0, -(-x * sn + z * c)); }
 function teleportTo(k, quiet) { const a = TP[k]; if (!a) return; tpName = k; placeTown(a[0], a[1], TP_LOOK[k][0], TP_LOOK[k][1]); if (!quiet) beep(560, 0.06); }
 function teleportPoint(x, z) { const th = town.rotation.y, c = Math.cos(th), sn = Math.sin(th); /* current town coords of the stage-local point (x,z) */ const tx = (x - town.position.x) * c - (z - town.position.z) * sn, tz = (x - town.position.x) * sn + (z - town.position.z) * c; const bx = Math.max(-9, Math.min(11, tx)), bz = Math.max(-14, Math.min(6, tz)); town.position.set(-(bx * c + bz * sn), 0, -(-bx * sn + bz * c)); beep(560, 0.06); }   // stay inside the town: no walking off the edge into the clouds
 const tpRing = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.3, 32), new THREE.MeshBasicMaterial({ color: '#58c06a', transparent: true, opacity: 0.85, side: THREE.DoubleSide })); tpRing.rotation.x = -Math.PI / 2; tpRing.visible = false; stage.add(tpRing);
-// a fence around the yard garden spot, so your own garden sits inside the town like the community garden does
-worldModel('fence', (src) => { const f = (px, pz, ry) => { const m = fitW(src.clone(true), 2.2); m.position.set(TP.yard[0] + px, 0, TP.yard[1] + pz); m.rotation.y = ry; world.add(m); }; for (let i = -1; i <= 1; i++) f(i * 2.2, 1.9, 0); for (const sx of [-1, 1]) f(sx * 3.2, 0.4, Math.PI / 2); });
 /* ---------- hide the big panel to see the whole town; a round MENU button on the table brings it back ---------- */
 const menuBtn = new THREE.Mesh(new THREE.CircleGeometry(0.055, 32), new THREE.MeshBasicMaterial({ map: labelTexture(['MENU'], { w: 128, h: 128, bg: '#fbeed2', fg: '#7a3f6b', size: 30 }) })); menuBtn.rotation.x = -Math.PI / 2; menuBtn.position.set(-0.78, TABLE + 0.012, 0.08); stage.add(menuBtn);
 let panelOn = true;
@@ -606,5 +606,5 @@ renderer.setAnimationLoop(() => {
   if (renderer.xr.isPresenting) { if (needsRecenter && recenter()) needsRecenter = false; if (recenterAt && performance.now() >= recenterAt) { recenterAt = 0; if (recenter()) UI.say('All set. Everything is in front of you.'); } }
   tick(dt, false); renderer.render(scene, camera);
 });
-window.__lt = { vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
+window.__lt = { teleportTo, vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
   sim(i, pos, quat, down) { const P = pointers[2 + i]; if (!pos) { P.valid = false; return; } P.valid = true; P.pos.fromArray(pos); if (quat) P.quat.fromArray(quat); else P.quat.identity(); P.down = !!down; } };

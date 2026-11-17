@@ -91,7 +91,7 @@ export function makeScreens(c) {
     B(x + 86 + bw, y, 70, h, '▶', () => cyc(1), { size, style: 'cream', off: keys.length < 2 });
   }
   function frameBg() { g.fillStyle = COL.paper; g.fillRect(0, 0, BW, BH); g.strokeStyle = COL.edge; g.lineWidth = 12; g.strokeRect(6, 6, BW - 12, BH - 12); }
-  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-14', BW - 40, 872, 16, COL.soft, 'right'); }
+  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-15', BW - 40, 872, 16, COL.soft, 'right'); }
   function header(title) {
     if (S.lesson) { text(title, 40, 52, 40, COL.ink, 'left', true); const free = st.wait && st.wait.free; if (free) B(BW - 760, 20, 300, 64, "I'm finished", finishPractice, { style: 'green', size: 30 }); B(BW - 440, 20, 100, 64, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 26 }); B(BW - 330, 20, 300, 64, 'Back to Hudson', () => ask('Leave this lesson? You can repeat it any time.', leaveLesson), { style: 'rose', size: 28 }); if (S.usePractice && !free) text('Practice: nothing here uses your real coins or letters', BW / 2 + 60, 52, 24, COL.soft, 'center'); return; }
     const tabs = [['map', 'Map'], ['garden', 'Garden'], ['book', 'Book'], ['dict', 'Dictionary'], ['shop', 'Shop'], ['carts', 'Carts'], ['home', 'Home'], ['story', 'Story'], ['settings', 'Settings']];
@@ -179,9 +179,9 @@ export function makeScreens(c) {
       hot(990, 140, 1260, 440, () => { c.teleport('cottages'); go('shop'); cue('K10'); });                                           // Seed shop
       hot(140, 470, 400, 720, () => { go('notice'); S.heard = S.heard || {}; if (!S.heard.R19) { S.heard.R19 = true; cue('R19'); c.save(); } });                                          // Message board
       hot(1020, 470, 1300, 720, () => { c.teleport('home'); go('home'); });                                                           // Home
-      hot(450, 300, 980, 560, () => { c.teleport('yard'); go('garden'); cue('M13'); });                                          // the fenced garden
+      hot(450, 300, 980, 560, () => { c.teleport('merry'); go('garden'); cue('M13'); });                                          // Merry's greenhouse: the desk with seeds, watering can and Super Grow
       hot(470, 600, 970, 900, () => go('hub'));                                                              // the welcome arch: lessons
-      const side = [[20, 'Spelling Book', () => { go('book'); st.bookTab = 'spell'; cue('S10'); }], [20, 'Community garden', () => { c.teleport('commgarden'); go('community'); }], [1290, 'Welcome story', () => { go('story'); cue(S.madlib.restored ? 'R22' : 'R21'); }], [1290, 'Lessons', () => { c.teleport('home'); go('hub'); }]];
+      const side = [[20, 'Spelling Book', () => { go('book'); st.bookTab = 'spell'; cue('S10'); }], [20, "Player's Garden", () => { c.teleport('commgarden'); go('community'); }], [1290, 'Welcome story', () => { go('story'); cue(S.madlib.restored ? 'R22' : 'R21'); }], [1290, 'Lessons', () => { c.teleport('home'); go('hub'); }]];
       side.forEach(([x, label, fn], i) => B(x, 270 + (i % 2) * 150, 290, 110, label, fn, { size: 26 }));
       text('Tap a place on the map', BW / 2, 160 + MH, 22, COL.soft, 'center');
       footer();
@@ -330,7 +330,7 @@ export function makeScreens(c) {
       footer();
     },
     community() {
-      frameBg(); header(); c.setCommunity(true); text('The community garden', BW / 2, 138, 44, COL.ink, 'center', true);
+      frameBg(); header(); c.setCommunity(true); text("The Player's Garden", BW / 2, 138, 44, COL.ink, 'center', true);
       const cm = S.comm, p = S.real; st.ctool = st.ctool || 'water';
       wrap('Twelve shared plots. Anyone can plant, water or pick, and nobody keeps track of who did. Flowers grow slowly here, three times slower than at home.', BW / 2, 190, 1300, 26, COL.soft, 'center', 2);
       [['seeds', 'Plant'], ['water', 'Water'], ['pick', 'Pick']].forEach(([k, label], i) => B(90 + i * 300, 245, 280, 70, label, () => { st.ctool = k; say(`${label} selected. Now choose a plot.`); }, { style: st.ctool === k ? 'gold' : 'cream', on: st.ctool === k }));
@@ -372,7 +372,7 @@ export function makeScreens(c) {
       row(4, 'Garden reach (closer / farther)', Math.round(s.reach * 100) + ' cm', 'reach', 0.03, 0.35, 0.65);
       row(5, 'Pinch (needs a tighter / easier pinch)', Math.round(s.pinch * 100) + '%', 'pinch', 0.1, 0.6, 2.6);
       B(60, 680, 400, 84, s.poke ? 'Fingertip poke: on' : 'Fingertip poke: off', () => { s.poke = !s.poke; c.save(); }, { style: s.poke ? 'gold' : 'cream', size: 28 });
-      B(500, 680, 320, 84, 'Recenter', () => c.startRecenter(), { style: 'blue', size: 30 }); B(830, 680, 360, 84, 'Return to Garden', () => { c.teleport('yard'); go('garden'); }, { style: 'green', size: 28 });
+      B(500, 680, 320, 84, 'Recenter', () => c.startRecenter(), { style: 'blue', size: 30 }); B(830, 680, 360, 84, 'Return to Garden', () => { c.teleport('merry'); go('garden'); }, { style: 'green', size: 28 });
       B(1200, 680, 350, 84, st.afterAdjust ? 'Done, start tour' : 'Done', () => { s.adjusted = true; c.save(); const f = st.afterAdjust; st.afterAdjust = null; if (f) f(); else go('settings'); }, { style: 'green', size: 36 });
       footer();
     },
