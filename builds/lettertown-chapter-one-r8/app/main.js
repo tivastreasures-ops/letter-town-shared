@@ -279,7 +279,7 @@ const soilTex = tex('assets/blooms/soil_tile.jpg'); soilTex.wrapS = soilTex.wrap
 const stageTex = { seed: tex('assets/blooms/pseed.png'), sprout: tex('assets/blooms/psprout.png') };   // her glowing seed and sprout art
 for (let i = 0; i < 8; i++) {
   const g = new THREE.Group();
-  const soil = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.058, 0.02, 20), new THREE.MeshLambertMaterial({ color: '#7a5236' })); soil.position.y = 0.01; soil.name = 'soil'; g.add(soil);
+  const soil = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.058, 0.02, 20), new THREE.MeshLambertMaterial({ color: '#7a5236' })); soil.position.y = 0.01; soil.name = 'soil'; g.add(soil); flowerModel('soilmound', 0.03, (m) => { soil.visible = false; g.add(m); });   // her 3D soil mound (cut to 8k triangles, 512 px texture)
   const ring = new THREE.Mesh(new THREE.TorusGeometry(0.062, 0.006, 8, 28), new THREE.MeshBasicMaterial({ color: '#58c06a' })); ring.rotation.x = Math.PI / 2; ring.position.y = 0.022; ring.visible = false; g.add(ring);
   const mound = new THREE.Mesh(new THREE.SphereGeometry(0.022, 12, 8), new THREE.MeshLambertMaterial({ color: '#a08068', map: soilTex })); mound.scale.y = 0.6; mound.position.y = 0.024; g.add(mound);
   const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.005, 1, 8), new THREE.MeshLambertMaterial({ color: '#5a9a48' })); g.add(stem);

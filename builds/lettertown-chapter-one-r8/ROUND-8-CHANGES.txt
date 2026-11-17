@@ -32,3 +32,6 @@ Round 8, part 5
 Round 8, part 6
 - Home screen: the cutaway cottage now has the roof color of the cottage you chose (rose = red, bluebell = blue, honey = gold). Before, every home showed the blue-roof house.
 - Snowy and Mayor Ren stand on the town hall steps; Phineas stands by the workshop and carts.
+
+Round 8, part 7
+- Garden plots use your 3D soil mound (soilmound.glb: 8,326 triangles already; I cut the textures from three 4096 px PNGs, 54 MB, to one 512 px color map, 0.6 MB).
