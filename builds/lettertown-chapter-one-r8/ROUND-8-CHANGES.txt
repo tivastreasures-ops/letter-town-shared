@@ -41,3 +41,7 @@ Round 8, part 8
 
 Round 8, part 9
 - Cart buttons say what they do: "Take 12 coins" / "No coins yet"; "Keep 5 for later" / "Sell on the flower cart" / "Add flowers first".
+
+Round 8, part 10
+- Carts screen: choose which cart you are working at (Word Cart or Flower Cart); the other shows as a picture with a "Work at the ..." button.
+- The 2D cart pictures are now renders of your 3D carts, so they match.

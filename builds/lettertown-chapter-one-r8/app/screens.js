@@ -239,14 +239,19 @@ export function makeScreens(c) {
     },
     carts() {
       frameBg(); header(S.usePractice ? 'Carts (practice)' : 'The two carts'); const p = P(), wc = p.wordCart, fc = p.flowerCart;
-      rr(30, 100, 760, 695, 22, '#fffdf6', COL.edge); const wi = img('scene/word_cart.png'); if (wi) g.drawImage(wi, 50, 110, 150, 150);
+      st.cartSel = st.cartSel || 'word';
+      const pickCart = (x0, key, name, file, sub) => { rr(x0, 100, 760, 695, 22, '#fffdf6', COL.edge); const im = img(file); if (im) { const k = Math.min(520 / im.width, 430 / im.height); g.drawImage(im, x0 + 380 - im.width * k / 2, 130, im.width * k, im.height * k); } text(name, x0 + 380, 590, 42, COL.ink, 'center', true); text(sub, x0 + 380, 640, 24, COL.soft, 'center'); B(x0 + 130, 680, 500, 90, `Work at the ${name}`, () => { st.cartSel = key; }, { style: key === 'word' ? 'purple' : 'green', size: 32 }); };
+      if (st.cartSel === 'word') {
+      rr(30, 100, 760, 695, 22, '#fffdf6', COL.edge); const wi = img('scene/word_cart.png'); if (wi) g.drawImage(wi, 40, 105, 160, 156);
       text('Word Cart', 220, 150, 40, COL.ink, 'left', true); text('Sells crafted words. Coins wait in the cashbox.', 220, 200, 24, COL.soft);
       for (let i = 0; i < 6; i++) { const it = wc.items[i], x = 60 + (i % 3) * 240, y = 280 + Math.floor(i / 3) * 110; rr(x, y, 225, 96, 14, it ? '#f3ebff' : '#f3efe6', COL.edge, 3); text(it ? it.w.toUpperCase() : 'empty', x + 112, y + 36, it ? 30 : 24, it ? COL.plum : '#b5ad9e', 'center', !!it); if (it) text(`${it.value} coins`, x + 112, y + 72, 22, COL.soft, 'center'); }
       text(wc.items.length > 6 ? `${wc.items.length - 6} more waiting behind the cart` : wc.items.length ? 'Oldest sells first.' : 'Empty. Stock words from the Spelling Book.', 410, 525, 24, COL.soft, 'center');
       rr(60, 560, 700, 96, 16, '#fff3d6', COL.edge, 3); text(`Cashbox: ${wc.cashbox} coins`, 90, 608, 34, COL.ink, 'left', true); B(440, 572, 300, 72, wc.cashbox ? `Take ${wc.cashbox} coins` : 'No coins yet', () => { const r = R.collect(S); note(r); if (r.ok) c.beep(900, 0.1); }, { style: 'green', off: !wc.cashbox });
       if (!p.words.length) text('Craft a word in the Spelling Book, then stock it here.', 410, 720, 24, COL.soft, 'center');
       p.words.slice(0, 3).forEach((it, i) => B(60 + i * 237, 680, 226, 84, `Stock\n${it.w.toUpperCase()}`, () => { const r = R.stockWord(S, it.id, c.now()); note(r); if (r.ok) { if (S.usePractice) emit('stocked:' + it.w); else c.speak(DLG.P12.file); } }, { style: 'purple', size: 24 }));
-      rr(810, 100, 760, 695, 22, '#fffdf6', COL.edge); const fi = img('scene/flower_cart.png'); if (fi) g.drawImage(fi, 830, 110, 120, 120);
+      } else pickCart(30, 'word', 'Word Cart', 'scene/word_cart.png', 'Sells crafted words');
+      if (st.cartSel === 'flower') {
+      rr(810, 100, 760, 695, 22, '#fffdf6', COL.edge); const fi = img('scene/flower_cart.png'); if (fi) g.drawImage(fi, 825, 105, 130, 146);
       text('Flower Cart', 980, 140, 40, COL.ink, 'left', true); [['glass', 'Glass vase'], ['fluted', 'Blue vase']].forEach(([k, label], i) => B(1250 + i * 160, 128, 150, 48, label, () => { st.vase = k; }, { size: 20, r: 10, style: (st.vase || 'glass') === k ? 'gold' : 'cream', on: (st.vase || 'glass') === k })); text('Arrange up to 9 cut flowers into a bouquet.', 980, 192, 24, COL.soft);
       const own = (k) => (p.flowers[k] || 0) + (p.basket[k] || 0), total = Object.values(st.arr).reduce((a, b) => a + b, 0);
       st.arrPage = st.arrPage || 0; const SPP = 8, spl = R.CFG.species.slice(st.arrPage * SPP, st.arrPage * SPP + SPP); text(`Flowers ${st.arrPage * SPP + 1}-${st.arrPage * SPP + spl.length} of ${R.CFG.species.length}`, 1190, 568, 22, COL.soft, 'center'); B(830, 548, 120, 40, '◀', () => { st.arrPage = Math.max(0, st.arrPage - 1); }, { size: 22, off: st.arrPage === 0, r: 10 }); B(1430, 548, 120, 40, '▶', () => { st.arrPage = Math.min(Math.ceil(R.CFG.species.length / SPP) - 1, st.arrPage + 1); }, { size: 22, off: (st.arrPage + 1) * SPP >= R.CFG.species.length, r: 10 });
@@ -257,6 +262,7 @@ export function makeScreens(c) {
       B(830, 622, 350, 66, total ? `Keep ${total} for later` : 'Add flowers first', () => doArr(false), { style: 'green', size: 28, off: !total }); B(1200, 622, 350, 66, total ? 'Sell on the flower cart' : 'Add flowers first', () => doArr(true), { style: 'purple', size: 28, off: !total || fc.items.length >= R.CFG.flowerSlots });
       text(`With you: ${p.bouquets.length} bouquet${p.bouquets.length === 1 ? '' : 's'}.   On the cart: ${fc.items.length} of ${R.CFG.flowerSlots}.`, 1190, 718, 24, COL.ink, 'center');
       B(830, 735, 720, 52, p.bouquets.length ? `Put my ${p.bouquets[0].size}-flower bouquet on the cart` : 'Your bouquets will wait here until you put them on the cart', () => { if (p.bouquets.length) note(R.stockBouquet(S, p.bouquets[0].id, c.now())); }, { style: 'cream', size: 22, off: !p.bouquets.length || fc.items.length >= R.CFG.flowerSlots });
+      } else pickCart(810, 'flower', 'Flower Cart', 'scene/flower_cart.png', 'Sells bouquets');
       footer();
     },
     cottage() {
