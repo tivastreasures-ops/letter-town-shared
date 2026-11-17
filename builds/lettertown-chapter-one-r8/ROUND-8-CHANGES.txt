@@ -38,3 +38,6 @@ Round 8, part 7
 
 Round 8, part 8
 - Both carts are about 35% bigger (and easier to grab). Bouquets on the flower cart are made of your 3D flower models, in the species that went into each bouquet, instead of colored balls.
+
+Round 8, part 9
+- Cart buttons say what they do: "Take 12 coins" / "No coins yet"; "Keep 5 for later" / "Sell on the flower cart" / "Add flowers first".
