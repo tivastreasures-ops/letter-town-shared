@@ -45,3 +45,7 @@ Round 8, part 9
 Round 8, part 10
 - Carts screen: choose which cart you are working at (Word Cart or Flower Cart); the other shows as a picture with a "Work at the ..." button.
 - The 2D cart pictures are now renders of your 3D carts, so they match.
+
+Round 8, part 11
+- Tapping "Thank you!" on a present now bursts it: 160 confetti pieces plus a pop sound.
+- A crafted word appears on the table as an object for a few seconds: your item art when the word has one (bed, lamp, cup...), an emoji for about 70 common words, otherwise the word on a tile. This is a stopgap until each word has 3D art.

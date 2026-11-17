@@ -392,7 +392,7 @@ export function makeScreens(c) {
     },
   };
   function playClip(src) { go('video'); const stop = c.playVideo(src, (ok) => { st.videoStop = null; if (ok === false) say('That video is not in the game folder yet.'); go('movies'); }); st.videoStop = () => stop(true); }
-  function craftTray() { const w = st.tray; const r = R.craft(S, w); note(r); if (r.ok) { st.tray = ''; c.beep(780, 0.1); emit('crafted:' + w.toLowerCase()); if (!S.usePractice && R.CFG.items.includes(w.toLowerCase())) say(`You crafted ${w}! It can go in your home, on the cart, or be sold.`); } }
+  function craftTray() { const w = st.tray; const r = R.craft(S, w); note(r); if (r.ok) { st.tray = ''; c.beep(780, 0.1); if (c.showWordObject) c.showWordObject(w); emit('crafted:' + w.toLowerCase()); if (!S.usePractice && R.CFG.items.includes(w.toLowerCase())) say(`You crafted ${w}! It can go in your home, on the cart, or be sold.`); } }
   function finishStory() {
     const r = R.completeStory(S, STORY, c.now(), journalText); note(r); if (!r.ok) return; c.saveNow();
     if (r.first) { c.setSign(true); c.setPlace('night'); c.celebrate(); c.beep(660, 0.15); setTimeout(() => c.beep(880, 0.2), 160);

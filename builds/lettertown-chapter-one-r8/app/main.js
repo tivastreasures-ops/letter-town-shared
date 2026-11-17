@@ -135,7 +135,20 @@ for (const dx of [-0.38, 0.38]) { const post = new THREE.Mesh(new THREE.Cylinder
 /* ---------- a present for the player, shown on the table while a gift is opened ---------- */
 const giftHolder = new THREE.Group(); giftHolder.position.set(0, TABLE + 0.02, -0.32); giftHolder.visible = false; stage.add(giftHolder);
 gltfLoader.load('assets/models/giftbox.glb', (g) => { giftHolder.add(fit(g.scene, 0.22)); }, undefined, () => { /* no box model: the tiles still show */ });
-function showGift(on) { giftHolder.visible = !!on; if (on) for (let i = 0; i < 40; i++) spawn(new THREE.Vector3((Math.random() - 0.5) * 0.4, TABLE + 0.2, -0.32), new THREE.Vector3((Math.random() - 0.5) * 0.9, Math.random() * 0.9 + 0.3, (Math.random() - 0.5) * 0.9), ['#ff9ec4', '#ffd34d', '#b99cf0', '#8fd18a'][i % 4], 1.2); }
+// a crafted word becomes an object on the table: her item art when she has it, otherwise an emoji (a stopgap until each word has 3D art)
+const EMO = { cat: '🐱', dog: '🐶', sun: '☀️', moon: '🌙', star: '⭐', tree: '🌳', bird: '🐦', fish: '🐟', rose: '🌹', rain: '🌧️', leaf: '🍃', seed: '🌱', bell: '🔔', cake: '🍰', door: '🚪', nest: '🪹', tea: '🍵', hat: '🎩', bee: '🐝', bear: '🐻', bunny: '🐰', duck: '🦆', frog: '🐸', crab: '🦀', cow: '🐮', pig: '🐷', owl: '🦉', fox: '🦊', heart: '❤️', kite: '🪁', boat: '⛵', ship: '🚢', car: '🚗', bus: '🚌', key: '🔑', gift: '🎁', ring: '💍', shoe: '👟', sock: '🧦', apple: '🍎', pear: '🍐', plum: '🍑', corn: '🌽', milk: '🥛', flower: '🌸', cloud: '☁️', snow: '❄️', fire: '🔥', wind: '💨', rock: '🪨', shell: '🐚', bread: '🍞', egg: '🥚', pie: '🥧', jam: '🍓', bed: '🛏️', chair: '🪑', lamp: '💡', book: '📖', cup: '☕', mug: '☕', clock: '⏰', drum: '🥁', bat: '🦇', ant: '🐜', lion: '🦁', horse: '🐴', mouse: '🐭', snail: '🐌', camel: '🐫' };
+let wordObj = null;
+function showWordObject(word) {
+  const w = String(word).toLowerCase(); if (wordObj) { stage.remove(wordObj.m); wordObj = null; }
+  const cv = document.createElement('canvas'); cv.width = cv.height = 256; const x = cv.getContext('2d'); x.textAlign = 'center'; x.textBaseline = 'middle';
+  const finish = () => { const mat = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, depthWrite: false }), m = new THREE.Sprite(mat); m.scale.set(0.2, 0.2, 1); m.position.set(0, TABLE + 0.12, -0.28); stage.add(m); wordObj = { m, t: 0 }; for (let i = 0; i < 40; i++) spawn(m.position.clone(), new THREE.Vector3((Math.random() - 0.5) * 0.8, Math.random() * 0.8 + 0.2, (Math.random() - 0.5) * 0.8), ['#ff9ec4', '#ffd34d', '#b99cf0', '#8fd18a'][i % 4], 1.0); };
+  const art = R.CFG.items.includes(w) ? new Image() : null;
+  if (art) { art.onload = () => { const k = Math.min(230 / art.width, 230 / art.height); x.drawImage(art, 128 - art.width * k / 2, 128 - art.height * k / 2, art.width * k, art.height * k); finish(); }; art.onerror = () => { x.font = '170px sans-serif'; x.fillText(EMO[w] || '✨', 128, 136); finish(); }; art.src = `assets/items/${w}.png`; }
+  else { if (EMO[w]) { x.font = '170px sans-serif'; x.fillText(EMO[w], 128, 136); } else { x.fillStyle = '#4b2f6b'; x.font = 'bold 70px Georgia,serif'; x.fillText(w.toUpperCase(), 128, 128); } finish(); }
+}
+function stepWordObj(dt) { if (!wordObj) return; wordObj.t += dt; const m = wordObj.m; m.position.y = TABLE + 0.12 + Math.min(wordObj.t, 1) * 0.08 + Math.sin(wordObj.t * 2) * 0.01; const pop = wordObj.t < 0.3 ? 0.2 * (0.5 + wordObj.t / 0.6) : 0.2; m.scale.set(pop, pop, 1); if (wordObj.t > 4) { stage.remove(m); wordObj = null; } }
+function showGift(on) { if (!on && giftHolder.visible) { const cols = ['#ff9ec4', '#ffd34d', '#b99cf0', '#8fd18a', '#ffffff', '#7ec8f2']; for (let i = 0; i < 160; i++) { const a = Math.random() * 6.283, up = 0.8 + Math.random() * 1.8, sp = 0.5 + Math.random() * 1.6; spawn(new THREE.Vector3(giftHolder.position.x, TABLE + 0.18, giftHolder.position.z), new THREE.Vector3(Math.cos(a) * sp, up, Math.sin(a) * sp), cols[i % cols.length], 1.6); } beep(300, 0.05); setTimeout(() => beep(1040, 0.16), 90); }   // opening the present: it bursts
+  giftHolder.visible = !!on; if (on) for (let i = 0; i < 40; i++) spawn(new THREE.Vector3((Math.random() - 0.5) * 0.4, TABLE + 0.2, -0.32), new THREE.Vector3((Math.random() - 0.5) * 0.9, Math.random() * 0.9 + 0.3, (Math.random() - 0.5) * 0.9), ['#ff9ec4', '#ffd34d', '#b99cf0', '#8fd18a'][i % 4], 1.2); }
 
 /* ---------- the town all around the table: cobblestone, fountain, trees, cottages ---------- */
 const FL = {};   // flower models by key, loaded when first needed
@@ -575,14 +588,14 @@ function playVideo(src, done) {
 
 /* ---------- screens and flow live in screens.js ---------- */
 const UI = makeScreens({ R, board, BW, BH, now, video: videoEl, playVideo, save, saveNow, beep, speak, hush, showPerson, setPlace, celebrate, G, startRecenter, recenter: () => { needsRecenter = true; }, exitVR, layout, hidePanel: () => setPanel(false), showPanel: () => setPanel(true), teleport: (k) => teleportTo(k),
-  getS: () => S, moveTray, showGift, setCommunity, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, load, clearSave: () => { try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* fine */ } }, newGame: () => R.newGame(now()),
+  getS: () => S, moveTray, showGift, showWordObject, setCommunity, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, load, clearSave: () => { try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* fine */ } }, newGame: () => R.newGame(now()),
   setSign: (restored) => { signRestored.visible = restored; signBroken.visible = !restored; }, redraw: () => { boardTex.needsUpdate = true; }, inVR: () => renderer.xr.isPresenting });
 layout(); UI.start();
 
 const clock = new THREE.Clock(); let slow = 0;
 function tick(dt, simOnly) {
   if (!simOnly) readXR();
-  stepPointers(dt, performance.now() / 1000); stepBits(dt); stepTiles(dt); stepKids(dt); stepSky(dt); packetFor(G.seedTier()); if (giftHolder.visible) { giftHolder.rotation.y += dt * 0.8; giftHolder.position.y = TABLE + 0.02 + Math.abs(Math.sin(clock.elapsedTime * 2)) * 0.03; }
+  stepPointers(dt, performance.now() / 1000); stepBits(dt); stepWordObj(dt); stepTiles(dt); stepKids(dt); stepSky(dt); packetFor(G.seedTier()); if (giftHolder.visible) { giftHolder.rotation.y += dt * 0.8; giftHolder.position.y = TABLE + 0.02 + Math.abs(Math.sin(clock.elapsedTime * 2)) * 0.03; }
   const t = clock.elapsedTime; plots.forEach((p) => drawPlot(p, t, dt));
   if (vig.visible) { const v = VIG[vigWho]; if (v && v.char) { const talking = !voice.paused && !voice.ended; v.char.position.y = Math.abs(Math.sin(t * (talking ? 7 : 1.6))) * (talking ? 0.014 : 0.004); v.char.rotation.y = Math.sin(t * 0.9) * (talking ? 0.16 : 0.07); } }
   slow += dt; if (slow > 0.5 && S) { slow = 0; refreshStock(); refreshArr(); { const evn = R.advance(S, now()); kidBuys(evn); UI.everyHalfSecond(evn); } }
