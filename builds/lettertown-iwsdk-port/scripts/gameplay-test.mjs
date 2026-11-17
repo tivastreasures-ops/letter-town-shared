@@ -17,7 +17,7 @@ await run('Complete tutorial through original screen actions (scripted desktop)'
  const pause=()=>new Promise(r=>setTimeout(r,550));
  const tap=label=>{U.frame();if(!U.tap(label))throw Error('Missing '+label+' on '+U.state.screen+' '+U.labels());U.frame();};
  tap('New game'); L.S.settings.mute=true;L.S.settings.auto=false;
- tap('Done, start the tour');
+ tap('Done, start tour');
  const seen=new Set();
  for(let i=0;i<180&&!L.S.tutorialDone;i++){
   U.frame();const st=U.state;seen.add(st.screen);

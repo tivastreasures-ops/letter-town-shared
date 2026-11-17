@@ -2,6 +2,8 @@
 
 Isolated port on `lettertown-iwsdk-port`. Round 7 and Round 8 are protected and unchanged.
 
+Updated from R8-16 source commit `1a9f5cee5e87aab64e6dcf69b58477889231e5d7`. See [R8-16-REPORT.md](R8-16-REPORT.md) for integration and validation limits.
+
 ## Run
 
 Node 22+ and npm are required. From this directory:
@@ -16,7 +18,7 @@ For development: `npm run dev`. The non-destructive bootstrap script installs th
 
 IWSDK `@iwsdk/core@1.1.0` creates the renderer, camera, scene and XR session. `LetterTownSystem` runs the adapted Round 8 game on the SDK's frame loop. The original hand interactions and canvas screens remain integrated; this port does not replace them with SDK stock interactions. Approved gloves remain the hand visuals.
 
-`src/index.js`, `src/screens.js` and `src/intro.js` derive from Round 8. Rules/dictionary are imported directly from the protected Round 8 files. `npm run stage` copies its original assets/content unchanged into a content-fingerprinted release directory. Vite fingerprints JavaScript. No service worker or deployment storage reset is used.
+`src/index.js`, `src/screens.js` and `src/intro.js` derive from Round 8. Rules/dictionary are imported directly from the protected Round 8 files. `npm run stage` verifies the pinned source manifest and copies baseline plus target-local R8-16 assets into a content-fingerprinted release directory. Vite fingerprints JavaScript. No service worker or deployment storage reset is used.
 
 ## Controls and saves
 
@@ -30,6 +32,8 @@ The save key remains `lettertown_ch1_v1`, using the original migration and schem
 npm run test:browser
 npm run test:gameplay
 npm run test:xr
+npm run test:r816
+npm run test:assets
 ```
 
 Tests use real Chromium via Playwright (`CHROMIUM_PATH` can select a compatible executable). Browser artifacts are written under `test-results/`. Gameplay uses scripted screen actions, accelerated time and simulated pointers. The ending test seeds discovered words to isolate ending behavior from random harvesting. The XR test injects IWER only into the test browser; it is never shipped to players. Emulator checks are not physical Quest results.

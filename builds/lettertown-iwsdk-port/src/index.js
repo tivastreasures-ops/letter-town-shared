@@ -70,8 +70,8 @@ cutout('assets/scene/word_cart.png', 0.95, 0.95, 1.4, TABLE + 0.5, -1.75, -0.5).
 cutout('assets/scene/flower_cart.png', 0.8, 0.8, 2.1, TABLE + 0.42, -1.0, -0.95).name = 'flatFlower';
 const PEOPLE = ['hudson', 'snowy', 'merry', 'kit', 'phineas', 'mayor'];
 // each resident stands in front of their home, on a little grass stage behind the story board
-const HOMES = { hudson: 'archway', snowy: 'cozycottage', merry: 'cottage_green', kit: 'cottage_blue', phineas: 'cottage_roof', mayor: 'townhall' };
-const HOME_H = { hudson: 0.95, snowy: 0.85, merry: 0.8, kit: 0.8, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.46, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
+const HOMES = { hudson: 'archway', snowy: 'cozycottage', merry: 'merry_greenhouse', kit: 'seed_shop', phineas: 'cottage_green', mayor: 'townhall' };
+const HOME_H = { hudson: 0.95, snowy: 0.85, merry: 0.95, kit: 0.95, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.46, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
 const gltfLoader = new GLTFLoader(), vig = new THREE.Group(); vig.visible = false; stage.add(vig);
 const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.33, 0.03, 40), new THREE.MeshLambertMaterial({ color: '#a8d08a' })); stand.position.y = -0.015; vig.add(stand);
 const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.34, 3, 32), new THREE.MeshLambertMaterial({ color: '#b98a55' })); plinth.position.y = -1.53; vig.add(plinth);   // a wooden pedestal down to the ground, so nobody floats
@@ -180,9 +180,37 @@ cobblePatch(new THREE.CircleGeometry(0.9, 32), 1.8, 1.8, -2.7, -1.5);           
 put('fountain', 2.3, 0, -7.0, 0);
 worldModel('trowel', (src) => { src.updateMatrixWorld(true); const bb = new THREE.Box3().setFromObject(src), sz = bb.getSize(new THREE.Vector3()); src.scale.setScalar(0.15 / Math.max(sz.x, sz.y, sz.z, 1e-3)); src.updateMatrixWorld(true); bb.setFromObject(src); const c = bb.getCenter(new THREE.Vector3()); src.position.x -= c.x; src.position.z -= c.z; src.position.y -= bb.min.y; const w = new THREE.Group(); w.add(src); w.position.set(0.8, TABLE, 0.02); w.rotation.y = 0.5; stage.add(w); });   // a small trowel left on the table
 addProp('townhall', 6.0, 0, 0, -12.5, 0, { parent: town });
+// Kit's seed shop, where the first cottage used to be
+const seedShop = addProp('seed_shop', 2.7, 6.6, 0, -0.8, -1.3, { parent: town, kind: 'shop', radius: 1.1, cy: 1 }); seedShop.holder.name = 'seed-shop';
+// the player's own cottage, in front of the Player's Garden, once the Mayor has given it to them
+const HOME_MODEL = { pink: 'pink_cottage', white: 'white_cottage', flowerbox: 'flower_box_cottage', forest: 'forest_green_cottage', rose: 'pink_cottage', sky: 'white_cottage', honey: 'flower_box_cottage' };
+let homeKey = null, homeObj = null, homeGeneration = 0;
+const PLAYER_HOME = [-4.2, 0, 0.8];
+function disposeCottage(object) {
+  const geometries = new Set(), materials = new Set(), textures = new Set();
+  object.traverse(o => { if (o.geometry) geometries.add(o.geometry); if (o.material) for (const m of [].concat(o.material)) { materials.add(m); for (const value of Object.values(m)) if (value?.isTexture) textures.add(value); } });
+  geometries.forEach(g => g.dispose()); textures.forEach(t => t.dispose()); materials.forEach(m => m.dispose());
+}
+function placeHome() {
+  const k = S?.home?.cottage || null;
+  if (k === homeKey) return;
+  homeKey = k; const generation = ++homeGeneration;
+  if (homeObj) { town.remove(homeObj); disposeCottage(homeObj); homeObj = null; }
+  if (!k) return;
+  const file = HOME_MODEL[k];
+  if (!file) { console.error('Unknown saved cottage:', k); return; }
+  gltfLoader.load(`assets/models/${file}.glb`, g => {
+    if (generation !== homeGeneration || S?.home?.cottage !== k) { disposeCottage(g.scene); return; }
+    const m = fit(g.scene, 2.5); m.name = 'player-cottage'; m.userData.cottageKey = k; m.userData.model = file;
+    m.position.fromArray(PLAYER_HOME); m.rotation.y = -2.86; town.add(m); homeObj = m;
+  }, undefined, error => console.error('Player cottage model failed:', file, error));
+}
+// Merry's greenhouse beside the community garden: this is where the seeds, watering can and Super Grow desk lives
+const greenhouse = addProp('merry_greenhouse', 2.6, -7, 0, -2.9, 1.06, { parent: town, kind: 'greenhouse', radius: 1.1, cy: 1 }); greenhouse.holder.name = 'merry-greenhouse';
+const workshop = addProp('cottage_green', 2.5, 3.3, 0, -3.1, -0.4, { parent: town, kind: 'workshop', radius: 1.1, cy: 1 }); workshop.holder.name = 'phineas-workshop';
 // the residents stand where they belong: Snowy and Mayor Ren on the town hall steps, Phineas by his workshop and the carts
-[['snowy', -1.1, -10.3, 1.15], ['mayor', 1.1, -10.3, 1.25], ['phineas', 2.4, -0.9, 1.2]].forEach(([who, x, z, h]) => gltfLoader.load(`assets/models/${who}.glb`, (g) => { const m = fit(g.scene, h); m.position.set(x, 0, z); m.rotation.y = who === 'phineas' ? -0.4 : 0; town.add(m); }, undefined, () => {}));
-[['cottage_new_blue', 3.0, 6.4, -0.6, -1.3], ['cottage_new_green', 3.0, 6.8, -3.8, -1.45], ['cottage_new_blue', 3.0, 6.2, -7.2, -1.8], ['cottage_new_green', 3.0, -7.0, -6.8, 1.6], ['cottage_new_blue', 3.0, -7.4, 0.6, 1.2], ['cottage_new_green', 3.0, 5.0, 5.6, 2.6], ['cottage_new_blue', 3.0, -4.6, 6.2, 3.4]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
+[['snowy', -1.1, -10.3, 1.15], ['mayor', 1.1, -10.3, 1.25], ['phineas', 2.4, -0.9, 1.2], ['merry', -5.6, -1.5, 1.2], ['kit', 5.3, -2.1, 1.15]].forEach(([who, x, z, h]) => gltfLoader.load(`assets/models/${who}.glb`, (g) => { const m = fit(g.scene, h); m.position.set(x, 0, z); m.rotation.y = who === 'phineas' ? -0.4 : who === 'merry' ? 1.24 : who === 'kit' ? -1.3 : 0; town.add(m); }, undefined, () => {}));
+[['cottage_new_green', 3.0, 6.8, -3.8, -1.45], ['cottage_new_blue', 3.0, 6.2, -7.2, -1.8], ['cottage_new_green', 3.0, -7.0, -6.8, 1.6], ['cottage_new_blue', 3.0, -7.4, 0.6, 1.2], ['cottage_new_green', 3.0, 5.0, 5.6, 2.6], ['cottage_new_blue', 3.0, -4.6, 6.2, 3.4]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 [[-8.5, -2.5], [-9.8, -7.0], [-8, -11], [8.5, -11], [10.2, -6], [9.6, -1.5], [-4.5, -11.5], [4.8, -12], [-9.5, 3.5], [-6, 7.5], [0, 9.5], [8, 6.5], [10.5, 3], [-12.5, -5], [12.5, -4], [-4.8, 2.2], [4.4, 2.8]].forEach(([x, z], i) => put(i % 2 ? 'tree_flowering' : 'tree_lush', 3.4 + rng() * 1.8, x, z, rng() * 6.28));
 const KEEP = [[0, -0.4, 2.7], [0, -7, 3.0], [3.5, -1.3, 2.9], [-3.2, -1.9, 2.6], [0, -4.3, 1.6], [-4.2, -2.8, 2.7]];   // keep the cobblestone and garden clear of shrubs
 for (let i = 0; i < 70; i++) { const a = rng() * 6.283, r = 2.8 + rng() * 11, x = Math.cos(a) * r, z = -3 + Math.sin(a) * r; if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; const k = ['shrub', 'bush', 'grassclump', 'grassclump'][i % 4]; put(k, k === 'grassclump' ? 0.35 + rng() * 0.3 : 0.6 + rng() * 0.7, x, z, rng() * 6.28); }
@@ -200,7 +228,7 @@ const cTexOf = (f) => cTex[f] || (cTex[f] = tex(`assets/blooms/${f}.png`));
 for (let i = 0; i < 12; i++) {
   const x = (i % 6 - 2.5) * 0.55, z = Math.floor(i / 6) * 0.6, g = new THREE.Group(); g.position.set(x, 0, z); comm.add(g);
   const mound = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.23, 0.07, 20), new THREE.MeshLambertMaterial({ color: '#7a5236' })); mound.position.y = 0.035; mound.visible = false; g.add(mound); worldModel('stoneplot', (src) => { const m = fitW(src, 0.62); g.add(m); });
-  const ico = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); ico.position.y = 0.22; g.add(ico);
+  const ico = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); ico.position.y = 0.22; ico.visible = false; ico.name = 'garden-art-fallback'; g.add(ico);
   CP.push({ g, ico, holder: new THREE.Group(), sig: '' }); CP[i].holder.position.y = 0.07; g.add(CP[i].holder);
 }
 function miniPlant(look) {   // a small 3D seed, sprout or bud for the community plots (no flat pictures)
@@ -309,7 +337,7 @@ for (let i = 0; i < 8; i++) {
   const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.005, 1, 8), new THREE.MeshLambertMaterial({ color: '#5a9a48' })); g.add(stem);
   const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.016, 10, 8), new THREE.MeshLambertMaterial({ color: '#6fb45a' })); leaf.scale.set(1.3, 0.35, 0.8); g.add(leaf);
   const bud = new THREE.Mesh(new THREE.SphereGeometry(0.014, 10, 8), new THREE.MeshLambertMaterial({ color: '#f08cb4' })); bud.scale.y = 1.4; bud.visible = false; g.add(bud);
-  const bloom = new THREE.Mesh(new THREE.PlaneGeometry(0.13, 0.13), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); g.add(bloom);
+  const bloom = new THREE.Mesh(new THREE.PlaneGeometry(0.13, 0.13), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); bloom.visible = false; g.add(bloom);
   const spark = new THREE.Mesh(new THREE.TorusGeometry(0.045, 0.005, 8, 24), new THREE.MeshBasicMaterial({ color: '#ffd34d' })); spark.rotation.x = Math.PI / 2; g.add(spark);
   const mdl = new THREE.Group(); g.add(mdl);
   const pic = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); pic.visible = false; g.add(pic);
@@ -386,14 +414,12 @@ function stepBits(dt) { for (const b of bits) { if (b.life <= 0) continue; b.lif
 
 
 /* ---------- moving around: the town slides around you, so your table, tools and panel always stay in reach ---------- */
-const TP = { home: [0, 0], yard: [3.6, 3.4], carts: [2.2, 0.7], fountain: [0, -4.1], townhall: [0, -8.9], cottages: [4.8, -1.0], commgarden: [-2.7, -0.5] }, TP_LOOK = { home: [0, -2], yard: [3.6, 0], carts: [1.9, -1.6], fountain: [0, -7], townhall: [0, -12.5], cottages: [8.3, -2], commgarden: [-4.2, -2.8] };
+const TP = { home: [-2.4, 2.3], hub: [0, 0], yard: [3.6, 3.4], carts: [2.2, 0.7], fountain: [0, -4.1], townhall: [0, -8.9], cottages: [4.8, -1.0], commgarden: [-2.7, -0.5], merry: [-3.6, -0.2] }, TP_LOOK = { home: [-4.2, 0.8], hub: [0, -2], yard: [3.6, 0], carts: [1.9, -1.6], fountain: [0, -7], townhall: [0, -12.5], cottages: [8.3, -2], commgarden: [-4.2, -2.8], merry: [-6.8, -2.8] };
 let tpName = 'home'; const _tp = new THREE.Vector3();
 function placeTown(x, z, lx, lz) { const th = Math.atan2(lx - x, -(lz - z)); const c = Math.cos(th), sn = Math.sin(th); town.rotation.y = th; town.position.set(-(x * c + z * sn), 0, -(-x * sn + z * c)); }
 function teleportTo(k, quiet) { const a = TP[k]; if (!a) return; tpName = k; placeTown(a[0], a[1], TP_LOOK[k][0], TP_LOOK[k][1]); if (!quiet) beep(560, 0.06); }
 function teleportPoint(x, z) { const th = town.rotation.y, c = Math.cos(th), sn = Math.sin(th); /* current town coords of the stage-local point (x,z) */ const tx = (x - town.position.x) * c - (z - town.position.z) * sn, tz = (x - town.position.x) * sn + (z - town.position.z) * c; const bx = Math.max(-9, Math.min(11, tx)), bz = Math.max(-14, Math.min(6, tz)); town.position.set(-(bx * c + bz * sn), 0, -(-bx * sn + bz * c)); beep(560, 0.06); }   // stay inside the town: no walking off the edge into the clouds
 const tpRing = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.3, 32), new THREE.MeshBasicMaterial({ color: '#58c06a', transparent: true, opacity: 0.85, side: THREE.DoubleSide })); tpRing.rotation.x = -Math.PI / 2; tpRing.visible = false; stage.add(tpRing);
-// a fence around the yard garden spot, so your own garden sits inside the town like the community garden does
-worldModel('fence', (src) => { const f = (px, pz, ry) => { const m = fitW(src.clone(true), 2.2); m.position.set(TP.yard[0] + px, 0, TP.yard[1] + pz); m.rotation.y = ry; world.add(m); }; for (let i = -1; i <= 1; i++) f(i * 2.2, 1.9, 0); for (const sx of [-1, 1]) f(sx * 3.2, 0.4, Math.PI / 2); });
 /* ---------- hide the big panel to see the whole town; a round MENU button on the table brings it back ---------- */
 const menuBtn = new THREE.Mesh(new THREE.CircleGeometry(0.055, 32), new THREE.MeshBasicMaterial({ map: labelTexture(['MENU'], { w: 128, h: 128, bg: '#fbeed2', fg: '#7a3f6b', size: 30 }) })); menuBtn.rotation.x = -Math.PI / 2; menuBtn.position.set(-0.78, TABLE + 0.012, 0.08); stage.add(menuBtn);
 let panelOn = true;
@@ -489,6 +515,7 @@ function rayPick(ray) {
 function selectThing(hit) {
   if (!hit) return; if (hit.menu) return togglePanel(); if (hit.board) return UI.press(hit.board.x, hit.board.y);
   if (hit.prop && /^pick:|^vase$/.test(hit.prop)) { const a = UI.state.arr = UI.state.arr || {}, tot = Object.values(a).reduce((x, y) => x + y, 0); if (hit.prop === 'vase') { const ks = Object.keys(a).filter((k) => a[k] > 0); if (ks.length) a[ks[ks.length - 1]]--; beep(380, 0.05); } else if (tot < 9) { a[hit.prop.slice(5)] = (a[hit.prop.slice(5)] || 0) + 1; beep(660, 0.06); } else UI.say('The vase is full. Nine flowers is a bouquet.'); arrSig = ''; refreshArr(); return; }
+  if (hit.prop && ['shop', 'greenhouse', 'workshop'].includes(hit.prop)) { setPanel(true); const dest = { shop: ['cottages', 'shop'], greenhouse: ['merry', 'garden'], workshop: ['carts', 'carts'] }[hit.prop]; teleportTo(dest[0]); UI.go(dest[1]); return; }
   if (hit.prop) { beep(520, 0.05); setPanel(true); return UI.go(hit.prop === 'book' ? 'book' : hit.prop === 'carts' ? 'carts' : 'notice'); }
   if (hit.tool) { UI.state.tool = UI.state.tool === hit.tool.kind ? null : hit.tool.kind; UI.say(UI.state.tool ? `${{ seeds: 'Seeds', can: 'Watering can', shaker: 'Super Grow' }[UI.state.tool]} selected. Now choose a plot.` : 'Nothing selected.'); beep(500, 0.05); return; }
   const i = hit.plot.i, pl = plantAt(i);
@@ -546,7 +573,7 @@ function stepPointers(dt, tnow) {
       if (inside && uv.z < 0.012 && P.tipZ >= 0.012 && uv.z > -0.06 && vz > HAND.pokeSpeed && P.point && (!S || S.settings.poke) && !P.pinching && !P.held) UI.press(uv.x, uv.y); P.tipZ = inside ? uv.z : 9; }   // fingertip poke
     if (P.ray && !P.held && panelOn) { const h = boardRay(P.ray); if (h) cursor = h.p; }
     if (P.down && !P.was && S && !S.settings.trayPicked && !P.name.startsWith('sim') && Math.abs(P.pos.x) > 0.08) { S.settings.trayPicked = true; S.settings.toolX = P.pos.x < 0 ? -0.5 : 0.5; placeTray(); save(); }   // the tools go on the side of the hand you pinch with first
-    if (P.down && !P.was && !P.held) { const hit = nearestGrab(P.pos); if (hit) grab(P, hit); else if (P.ray) { const rp = rayPick(P.ray); if (rp && rp.board) P.pend = { uv: rp.board, t: performance.now() }; else if (rp) selectThing(rp); else if (P.ray.d.y < -0.06) { const tt = -P.ray.o.y / P.ray.d.y, gx = P.ray.o.x + P.ray.d.x * tt, gz = P.ray.o.z + P.ray.d.z * tt; if (Math.hypot(gx, gz) > 1.6 && tt < 16) P.go = { x: gx, z: gz, t: performance.now() }; } } }
+    if (P.down && !P.was && !P.held) { const hit = nearestGrab(P.pos); if (hit) grab(P, hit); else if (P.ray) { const rp = rayPick(P.ray); if (rp && rp.board) P.pend = { uv: rp.board, t: performance.now() }; else if (rp) selectThing(rp); } }
     if (P.go && P.ray && P.down) { const tt = -P.ray.o.y / P.ray.d.y; if (P.ray.d.y < -0.06 && tt > 0 && tt < 16) { P.go.x = P.ray.o.x + P.ray.d.x * tt; P.go.z = P.ray.o.z + P.ray.d.z * tt; tpRing.position.set(P.go.x, 0.02, P.go.z); tpRing.visible = true; } }
     if (!P.down && P.was && P.go) { const gg = P.go; P.go = null; tpRing.visible = false; if (performance.now() - gg.t > 250 && performance.now() - gg.t < 8000) teleportPoint(gg.x, gg.z); }
     if (!P.down && P.was && P.pend) { const pd = P.pend; P.pend = null; const h = P.ray && boardRay(P.ray); if (h && Math.hypot(h.uv.x - pd.uv.x, h.uv.y - pd.uv.y) < 180) UI.press(pd.uv.x, pd.uv.y); }   // a board button fires when you let go of the pinch, so you can aim first
@@ -607,12 +634,13 @@ function playVideo(src, done) {
 
 /* ---------- screens and flow live in screens.js ---------- */
 const UI = makeScreens({ R, board, BW, BH, now, video: videoEl, playVideo, save, saveNow, beep, speak, hush, showPerson, setPlace, celebrate, G, startRecenter, recenter: () => { needsRecenter = true; }, exitVR, layout, hidePanel: () => setPanel(false), showPanel: () => setPanel(true), teleport: (k) => teleportTo(k),
-  getS: () => S, moveTray, showGift, showWordObject, setCommunity, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, load, clearSave: () => { try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* fine */ } }, newGame: () => R.newGame(now()),
+  getS: () => S, moveTray, showGift, showWordObject, setCommunity, setS: (s) => { S = s; placeHome(); plots.forEach((p) => { p.lastStage = -1; }); layout(); }, load, clearSave: () => { try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* fine */ } }, newGame: () => R.newGame(now()),
   setSign: (restored) => { signRestored.visible = restored; signBroken.visible = !restored; }, redraw: () => { boardTex.needsUpdate = true; }, inVR: () => renderer.xr.isPresenting });
 layout(); await UI.start();
 
 const clock = { elapsedTime: 0 }; let slow = 0;
 function tick(dt, simOnly) {
+  placeHome();
   if (!simOnly) readXR();
   stepPointers(dt, performance.now() / 1000); stepBits(dt); stepWordObj(dt); stepTiles(dt); stepKids(dt); stepSky(dt); packetFor(G.seedTier()); if (giftHolder.visible) { giftHolder.rotation.y += dt * 0.8; giftHolder.position.y = TABLE + 0.02 + Math.abs(Math.sin(clock.elapsedTime * 2)) * 0.03; }
   const t = clock.elapsedTime; plots.forEach((p) => drawPlot(p, t, dt));
@@ -633,5 +661,5 @@ class LetterTownSystem extends createSystem({}) {
 }
 sdkWorld.registerSystem(LetterTownSystem, { priority: 10 });
 window.__lettertownSDK = sdkWorld;
-window.__lt = { vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, stage, assetErrors, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
+window.__lt = { teleportTo, get destination() { return tpName; }, town, CP, seedShop, greenhouse, workshop, get homeObj() { return homeObj; }, HOME_MODEL, vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; placeHome(); plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, stage, assetErrors, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
   sim(i, pos, quat, down) { const P = pointers[2 + i]; if (!pos) { P.valid = false; return; } P.valid = true; P.pos.fromArray(pos); if (quat) P.quat.fromArray(quat); else P.quat.identity(); P.down = !!down; } };

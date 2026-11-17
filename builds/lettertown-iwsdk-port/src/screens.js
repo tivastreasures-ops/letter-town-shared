@@ -4,7 +4,7 @@ export function makeScreens(c) {
   const st = { screen: 'loading', tool: null, tier: 'common', tray: '', page: 0, msg: '', modal: null, wait: null, talk: null, bookTab: 'spell', storyTab: 'tale', pick: null, sel: null, demoPage: 1, demoTab: 'notes', nameDraft: '', read: null, arr: {}, mini: null };
   let btns = [], dirty = true, DLG = {}, STORY = null, S = null;
   const IMG = {};
-  function img(name) { let i = IMG[name]; if (!i) { i = IMG[name] = new Image(); i.onload = () => { dirty = true; }; i.src = 'assets/' + name; } return i.complete && i.naturalWidth ? i : null; }
+  function img(name) { let i = IMG[name]; if (!i) { i = IMG[name] = new Image(); i.onload = () => { dirty = true; }; i.onerror = () => { console.error('Letter Town artwork failed:', i.src); say('An artwork file could not load. Please reload.'); }; i.src = 'assets/' + name; } return i.complete && i.naturalWidth ? i : null; }
   const ts = () => (S ? S.settings.text : 1);
   const COL = { ink: '#5a3b22', soft: '#8a6a4a', plum: '#7a3f6b', cream: '#fff3d6', paper: '#fff8ea', edge: '#c99a5b', green: '#bfe0a8', purple: '#dccdf5', rose: '#f9cfd9', gold: '#ffe08a', off: '#ebe5d8', blue: '#cfe3f5' };
   function rr(x, y, w, h, r, fill, stroke, lw = 4) { g.beginPath(); g.roundRect(x, y, w, h, r); if (fill) { g.fillStyle = fill; g.fill(); } if (stroke) { g.strokeStyle = stroke; g.lineWidth = lw; g.stroke(); } }
@@ -44,6 +44,7 @@ export function makeScreens(c) {
   const PRACTICE = ['merry', 'kit', 'phineas', 'orders'];
   function startLesson(id) { S.lesson = id; S.lessonStep = 0; S.usePractice = PRACTICE.includes(id); if (S.usePractice) S.practice = R.newPractice(c.now()); st.tool = null; st.tray = ''; c.setS(S); c.setPlace(id === 'mayor' ? 'day' : 'gate'); c.save(); runLesson(); }
   function runLesson() {
+    S = c.getS(); if (!S?.lesson) return;
     const L = LESSONS[S.lesson]; if (!L) return; st.wait = null;
     if (S.lessonStep >= L.length) return finishLesson();
     const step = L[S.lessonStep];
@@ -52,7 +53,7 @@ export function makeScreens(c) {
     else if (step.free) { st.wait = step; st.bookTab = 'spell'; go(step.free); say(step.hint); }
     else { st.wait = step; st.bookTab = step.wait === 'gave:flower' ? 'words' : 'spell'; go(step.screen); say(step.hint); if (step.wait === 'bloom') checkBloom(); }
   }
-  function emit(ev) { if (st.wait && st.wait.wait === ev) { st.wait = null; S.lessonStep++; c.save(); setTimeout(runLesson, 500); } }
+  function emit(ev) { if (st.wait && st.wait.wait === ev) { st.wait = null; S.lessonStep++; c.save(); const expected = S, lesson = S.lesson; setTimeout(() => { if (c.getS() === expected && expected.lesson === lesson) runLesson(); }, 500); } }
   function checkBloom() { if (st.wait && st.wait.wait === 'bloom' && S.practice.plots.some((p) => p.plant && p.plant.stage === 2)) emit('bloom'); }
   function finishPractice() { const step = st.wait; if (!step || !step.free) return; st.wait = null; S.lessonStep++; c.save(); talk(step.off || [], finishLesson); }
   const ALL_BUT_MAYOR = ['snowy', 'merry', 'kit', 'phineas', 'orders'];
@@ -64,10 +65,10 @@ export function makeScreens(c) {
   }
   function finishLesson() { const id = S.lesson; S.lessons[id] = true; S.lesson = null; S.usePractice = false; c.setS(S); c.showPerson(null); const after = () => { if (id === 'mayor') { S.tutorialDone = true; R.refreshRequests(S); c.save(); c.setPlace('day'); go('map'); cue('H25'); } else { c.save(); go('hub'); cue('H07'); } }; S.gifts = S.gifts || { given: {}, sales: 0 }; if (GIFTS[id] && !S.gifts.given[id]) { S.gifts.given[id] = GIFTS[id]; presentGift({ snowy: 'Snowy', merry: 'Merry', kit: 'Kit', phineas: 'Phineas', orders: 'Phineas', mayor: 'Mayor Ren' }[id], GIFTS[id], after); } else after(); }
   function leaveLesson() { c.hush(); st.talk = null; st.wait = null; S.lesson = null; S.usePractice = false; c.setS(S); c.showPerson(null); c.save(); go(S.tutorialDone ? 'map' : 'hub'); }
-  function go(screen) { if (screen !== 'community') c.setCommunity(false); if (screen !== 'present') c.showGift(false); if (screen !== 'talk' && screen !== 'hub') c.showPerson(null); st.screen = screen; st.page = 0; st.modal = null; st.pick = null; st.sel = null; dirty = true; }
+  function go(screen) { S = c.getS(); if (!S && !['loading', 'title'].includes(screen)) screen = 'title'; if (screen !== 'community') c.setCommunity(false); if (screen !== 'present') c.showGift(false); if (screen !== 'talk' && screen !== 'hub') c.showPerson(null); st.screen = screen; st.page = 0; st.modal = null; st.pick = null; st.sel = null; dirty = true; }
   function ask(textStr, yes, yesLabel = 'Yes', noLabel = 'No', no) { st.modal = { text: textStr, yes, yesLabel, noLabel, no }; dirty = true; }
   function journalText(s) {
-    const n = s.name || 'our new neighbor', cot = { rose: 'rose', sky: 'bluebell', honey: 'honey' }[s.home.cottage] || 'cozy';
+    const n = s.name || 'our new neighbor', cot = { pink: 'pink', white: 'white', flowerbox: 'flower box', forest: 'forest green', rose: 'rose', sky: 'bluebell', honey: 'honey' }[s.home.cottage] || 'cozy';
     return [`Dear Journal,`, `Today a new neighbor named ${n} arrived in Letter Town, and nothing has been the same since. In a good way. Mostly.`, `Hudson did the welcoming. Snowy did the organizing. Merry did the gardening, Kit did the selling, Phineas did the building, and Mayor Ren did the speeches. I did the supervising, which is the hardest job.`, `${n} got a garden with eight plots and the ${cot} cottage, and grows flowers that grow LETTERS, which I still think is showing off.`, `Then the Welcome Sign got its welcome back. The whole town cheered. I cheered loudest. Somebody had to.`, `I wonder what happens next. I have several ideas. Most of them are windy.`, `— Cat Girl`].join('\n');
   }
 
@@ -91,12 +92,12 @@ export function makeScreens(c) {
     B(x + 86 + bw, y, 70, h, '▶', () => cyc(1), { size, style: 'cream', off: keys.length < 2 });
   }
   function frameBg() { g.fillStyle = COL.paper; g.fillRect(0, 0, BW, BH); g.strokeStyle = COL.edge; g.lineWidth = 12; g.strokeRect(6, 6, BW - 12, BH - 12); }
-  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('IWSDK ' + import.meta.env.VITE_BUILD_ID, BW - 40, 872, 16, COL.soft, 'right'); }
+  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('IWSDK R8-16 ' + import.meta.env.VITE_BUILD_ID, BW - 40, 872, 16, COL.soft, 'right'); }
   function header(title) {
     if (S.lesson) { text(title, 40, 52, 40, COL.ink, 'left', true); const free = st.wait && st.wait.free; if (free) B(BW - 760, 20, 300, 64, "I'm finished", finishPractice, { style: 'green', size: 30 }); B(BW - 440, 20, 100, 64, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 26 }); B(BW - 330, 20, 300, 64, 'Back to Hudson', () => ask('Leave this lesson? You can repeat it any time.', leaveLesson), { style: 'rose', size: 28 }); if (S.usePractice && !free) text('Practice: nothing here uses your real coins or letters', BW / 2 + 60, 52, 24, COL.soft, 'center'); return; }
     const tabs = [['map', 'Map'], ['garden', 'Garden'], ['book', 'Book'], ['dict', 'Dictionary'], ['shop', 'Shop'], ['carts', 'Carts'], ['home', 'Home'], ['story', 'Story'], ['settings', 'Settings']];
     tabs.forEach(([id, label], i) => { const on = id === 'dict' ? (st.screen === 'book' && st.bookTab === 'known') : id === 'book' ? (st.screen === 'book' && st.bookTab !== 'known') : st.screen === id;
-      B(14 + i * 136, 18, 130, 66, label, () => { if (id === 'dict') { go('book'); st.bookTab = 'known'; } else { go(id); if (id === 'book' && st.bookTab === 'known') st.bookTab = 'spell'; } }, { style: on ? 'gold' : 'cream', size: id === 'dict' ? 21 : 25, on }); });
+      B(14 + i * 136, 18, 130, 66, label, () => { if (id === 'dict') { go('book'); st.bookTab = 'known'; } else { go(id); const destination = { home: 'home', garden: 'merry', shop: 'cottages', carts: 'carts' }[id]; if (destination) c.teleport(destination); if (id === 'book' && st.bookTab === 'known') st.bookTab = 'spell'; } }, { style: on ? 'gold' : 'cream', size: id === 'dict' ? 21 : 25, on }); });
     B(1244, 18, 90, 66, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 24 }); B(1342, 18, 84, 66, 'Exit', () => ask('Leave VR and stop playing? Your garden is saved.', () => c.exitVR()), { style: 'rose', size: 24 });
     text(`${P().coins} coins`, BW - 24, 52, 28, COL.ink, 'right', true);
   }
@@ -113,7 +114,7 @@ export function makeScreens(c) {
     return { w, pages };
   }
   /* ---------- mini stories: a resident shares one after two of their requests are fulfilled ---------- */
-  let MINI = null; fetch('content/mini.json').then((r) => r.json()).then((d) => { MINI = d.stories; }).catch(() => {});
+  let MINI = null; fetch('content/mini.json').then((r) => { if (!r.ok) throw Error('Mini story HTTP ' + r.status); return r.json(); }).then((d) => { MINI = d.stories; }).catch(error => { console.error('Mini story content failed:', error); say('Neighbor stories could not load. Please reload.'); });
   const MINI_ORDER = ['Hudson', 'Snowy', 'Merry', 'Kit', 'Phineas', 'Mayor Ren'], MINI_TYPES = ['adventure', 'town', 'seasonal', 'fantasy'];
   function miniOffers() { const M = S.mini || (S.mini = { done: {}, offered: {}, picks: {}, stories: [] }); if (!MINI) return []; const out = []; MINI_ORDER.forEach((who, i) => { if ((M.done[who] || 0) >= 2 && !M.offered[who + ':read']) out.push({ who, type: MINI_TYPES[i % 4], story: MINI.find((x) => x.id === MINI_TYPES[i % 4]) }); }); return out; }
   function openMini(m) { st.mini = { m, picks: {}, pick: null }; st.page = 0; go('mini'); }
@@ -179,9 +180,9 @@ export function makeScreens(c) {
       hot(990, 140, 1260, 440, () => { c.teleport('cottages'); go('shop'); cue('K10'); });                                           // Seed shop
       hot(140, 470, 400, 720, () => { go('notice'); S.heard = S.heard || {}; if (!S.heard.R19) { S.heard.R19 = true; cue('R19'); c.save(); } });                                          // Message board
       hot(1020, 470, 1300, 720, () => { c.teleport('home'); go('home'); });                                                           // Home
-      hot(450, 300, 980, 560, () => { c.teleport('yard'); go('garden'); cue('M13'); });                                          // the fenced garden
+      hot(450, 300, 980, 560, () => { c.teleport('merry'); go('garden'); cue('M13'); });                                          // Merry's greenhouse: the desk with seeds, watering can and Super Grow
       hot(470, 600, 970, 900, () => go('hub'));                                                              // the welcome arch: lessons
-      const side = [[20, 'Spelling Book', () => { go('book'); st.bookTab = 'spell'; cue('S10'); }], [20, 'Community garden', () => { c.teleport('commgarden'); go('community'); }], [1290, 'Welcome story', () => { go('story'); cue(S.madlib.restored ? 'R22' : 'R21'); }], [1290, 'Lessons', () => { c.teleport('home'); go('hub'); }]];
+      const side = [[20, 'Spelling Book', () => { go('book'); st.bookTab = 'spell'; cue('S10'); }], [20, "Player's Garden", () => { c.teleport('commgarden'); go('community'); }], [1290, 'Welcome story', () => { go('story'); cue(S.madlib.restored ? 'R22' : 'R21'); }], [1290, 'Lessons', () => { c.teleport('hub'); go('hub'); }]];
       side.forEach(([x, label, fn], i) => B(x, 270 + (i % 2) * 150, 290, 110, label, fn, { size: 26 }));
       text('Tap a place on the map', BW / 2, 160 + MH, 22, COL.soft, 'center');
       footer();
@@ -221,8 +222,8 @@ export function makeScreens(c) {
         rr(40, 185, 1100, 100, 18, '#ffffff', COL.edge); text(st.tray.split('').join(' ') || 'Tap letters from your Letter Bank', 70, 235, st.tray ? 56 : 30, st.tray ? COL.plum : '#a79f90', 'left', !!st.tray);
         B(1160, 185, 180, 100, 'Erase', () => { st.tray = st.tray.slice(0, -1); }, { style: 'rose', size: 28 }); B(1360, 185, 200, 100, 'Craft', () => craftTray(), { style: 'green', size: 36, off: st.tray.length < R.CFG.minWordLen });
         const left = { ...p.bank }; for (const ch of st.tray) left[ch] = (left[ch] || 0) - 1;
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach((ch, i) => { const n = left[ch] || 0, x = 40 + (i % 13) * 117, y = 310 + Math.floor(i / 13) * 150; B(x, y, 106, 130, ch, () => { st.tray += ch; }, { size: 50, off: n <= 0, style: R.letterTier(ch) === 'rare' ? 'purple' : R.letterTier(ch) === 'uncommon' ? 'blue' : 'cream' }); text(n > 0 ? '×' + n : '', x + 86, y + 108, 22, COL.soft, 'right'); });
-        text('Your Letter Bank: tap a letter to add it to the word.', BW / 2, 640, 24, COL.soft, 'center');
+        const QW = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'], qpos = {}; QW.forEach((r, ri) => r.split('').forEach((ch, ci) => { qpos[ch] = [40 + ri * 50 + ci * 117, 310 + ri * 110]; })); (S.settings.qwerty ? QW.join('') : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ').split('').forEach((ch, i) => { const n = left[ch] || 0, x = S.settings.qwerty ? qpos[ch][0] : 40 + (i % 13) * 117, y = S.settings.qwerty ? qpos[ch][1] : 310 + Math.floor(i / 13) * 150; B(x, y, 106, S.settings.qwerty ? 96 : 130, ch, () => { st.tray += ch; }, { size: 50, off: n <= 0, style: R.letterTier(ch) === 'rare' ? 'purple' : R.letterTier(ch) === 'uncommon' ? 'blue' : 'cream' }); text(n > 0 ? '×' + n : '', x + 86, y + (S.settings.qwerty ? 78 : 108), 22, COL.soft, 'right'); });
+        B(1180, 600, 380, 70, S.settings.qwerty ? 'Layout: QWERTY' : 'Layout: A to Z', () => { S.settings.qwerty = !S.settings.qwerty; c.save(); }, { size: 28, style: 'blue' }); text('Your Letter Bank: tap a letter to add it to the word.', 560, 640, 24, COL.soft, 'center');
         text(`Each letter is worth 1, 2 or 3 coins. A new word sells for double.`, BW / 2, 680, 24, COL.soft, 'center');
       } else if (st.bookTab === 'words') {
         if (!p.words.length) text('No crafted words yet. Spell one on the Spell tab.', BW / 2, 400, 32, '#a79f90', 'center');
@@ -267,9 +268,9 @@ export function makeScreens(c) {
     },
     cottage() {
       frameBg(); header('Choose your cottage');
-      [['rose', 'Rose Cottage', '#f4b6c8'], ['sky', 'Bluebell Cottage', '#a9c8ee'], ['honey', 'Honey Cottage', '#f3d58a']].forEach(([id, name, col], i) => { const x = 70 + i * 510; rr(x, 140, 470, 560, 26, '#fffdf6', COL.edge);
-        const hi = img(`houses/${id}.png`); if (hi) { const sc = Math.min(430 / hi.width, 440 / hi.height); g.drawImage(hi, x + 235 - hi.width * sc / 2, 570 - hi.height * sc, hi.width * sc, hi.height * sc); }
-        text(name, x + 235, 620, 36, COL.ink, 'center', true); btns.push({ x, y: 140, w: 470, h: 560, fn: () => ask(`Choose ${name}?`, () => { note(R.chooseCottage(S, id)); emit('cottage'); }) }); });
+      [['pink', 'Pink Cottage'], ['white', 'White Cottage'], ['flowerbox', 'Flower Box Cottage'], ['forest', 'Forest Green Cottage']].forEach(([id, name], i) => { const x = 30 + i * 390; rr(x, 140, 370, 560, 26, '#fffdf6', COL.edge);
+        const hi = img(`houses/${id}.png`); if (hi) { const sc = Math.min(340 / hi.width, 400 / hi.height); g.drawImage(hi, x + 185 - hi.width * sc / 2, 570 - hi.height * sc, hi.width * sc, hi.height * sc); }
+        text(name, x + 185, 620, 32, COL.ink, 'center', true); btns.push({ label: name, x, y: 140, w: 370, h: 560, fn: () => ask(`Choose ${name}?`, () => { note(R.chooseCottage(S, id)); emit('cottage'); }) }); });
       footer();
     },
     gift() {
@@ -278,7 +279,7 @@ export function makeScreens(c) {
       footer();
     },
     home() {
-      frameBg(); header(); const H = S.home, hs = img(`scene/house_${S.home.cottage || 'sky'}.png`) || img('scene/house.png'), X = 30, Y = 100, sc = 0.9, p = S.real;
+      frameBg(); header(); const H = S.home, hs = img(`scene/house_${{ pink: 'rose', white: 'sky', flowerbox: 'honey', forest: 'sky' }[S.home.cottage] || S.home.cottage || 'sky'}.png`) || img('scene/house.png'), X = 30, Y = 100, sc = 0.9, p = S.real;
       if (!H.cottage) { text('Mayor Ren will give you a cottage at the end of the welcome tour.', BW / 2, 400, 32, COL.soft, 'center'); return footer(); }
       // the cottage and everything already placed in it: look only
       const rooms = { big: [150, 330, 525, 250, 580, 70], small: [760, 330, 190, 250, 580, 60] };
@@ -286,7 +287,7 @@ export function makeScreens(c) {
       const slots = { 'big-0': [215, 615, 120], 'big-1': [345, 615, 120], 'big-2': [475, 615, 120], 'big-3': [600, 615, 120], 'big-4': [300, 450, 100], 'big-5': [520, 450, 100], 'small-0': [810, 615, 95], 'small-1': [905, 615, 95], 'small-2': [857, 450, 90] };
       for (const id of Object.keys(slots)) { const [cx, base, size] = slots[id], w = H.placed[id], x = X + (cx - size / 2) * sc, y = Y + (base - size) * sc, z = size * sc; if (!w) continue; const im = img(`items/${w === 'floor' ? 'floor' : w}.png`); if (im) { const k = Math.min(z / im.width, z / im.height); g.drawImage(im, x + (z - im.width * k) / 2, y + z - im.height * k, im.width * k, im.height * k); } }
       // inventory
-      rr(1060, 100, 500, 690, 22, '#fffdf6', COL.edge); text({ rose: 'Rose Cottage', sky: 'Bluebell Cottage', honey: 'Honey Cottage' }[H.cottage], 1310, 140, 34, COL.ink, 'center', true); text('Your things', 1310, 184, 28, COL.plum, 'center', true);
+      rr(1060, 100, 500, 690, 22, '#fffdf6', COL.edge); text({ pink: 'Pink Cottage', white: 'White Cottage', flowerbox: 'Flower Box Cottage', forest: 'Forest Green Cottage', rose: 'Rose Cottage', sky: 'Bluebell Cottage', honey: 'Honey Cottage' }[H.cottage], 1310, 140, 34, COL.ink, 'center', true); text('Your things', 1310, 184, 28, COL.plum, 'center', true);
       const seeds = p.seeds, rows = [['Coins', p.coins], ['Letter Bank', R.bankCount(p.bank)], ['Cut flowers', R.flowerTotal(p)], ['Seeds', `${R.seedTotal(p)} (${seeds.common} mixed common, ${seeds.uncommon} mixed uncommon, ${seeds.rare} mixed rare, ${Object.values(p.pk || {}).reduce((a, b) => a + b, 0)} by flower)`], ['Super Grow', p.doses], ['Crafted words', p.words.length]];
       rows.forEach(([k, v], i) => { const y = 226 + i * 46; text(k, 1090, y, 24, COL.soft); text(String(v), 1530, y, 24, COL.ink, 'right', true); });
       const items = R.homeItems(S); text('In storage', 1090, 530, 26, COL.plum, 'left', true);
@@ -330,9 +331,9 @@ export function makeScreens(c) {
       footer();
     },
     community() {
-      frameBg(); header(); c.setCommunity(true); text('The community garden', BW / 2, 138, 44, COL.ink, 'center', true);
+      frameBg(); header(); c.setCommunity(true); text("The Player's Garden", BW / 2, 138, 44, COL.ink, 'center', true);
       const cm = S.comm, p = S.real; st.ctool = st.ctool || 'water';
-      wrap('Twelve shared plots. Anyone can plant, water or pick, and nobody keeps track of who did. Flowers grow slowly here, three times slower than at home.', BW / 2, 190, 1300, 26, COL.soft, 'center', 2);
+      wrap("Twelve plots tended alongside your neighbors. Plant, water or pick a finished flower for letters and a cut flower. Growth here takes three times as long as in Merry's tabletop garden.", BW / 2, 190, 1300, 26, COL.soft, 'center', 2);
       [['seeds', 'Plant'], ['water', 'Water'], ['pick', 'Pick']].forEach(([k, label], i) => B(90 + i * 300, 245, 280, 70, label, () => { st.ctool = k; say(`${label} selected. Now choose a plot.`); }, { style: st.ctool === k ? 'gold' : 'cream', on: st.ctool === k }));
       seedPicker(1000, 245, 330, 70, 22);
       cm.plots.forEach((pl, i) => { const x = 40 + (i % 6) * 258, y = 335 + Math.floor(i / 6) * 215, d = pl.plant;
@@ -372,8 +373,8 @@ export function makeScreens(c) {
       row(4, 'Garden reach (closer / farther)', Math.round(s.reach * 100) + ' cm', 'reach', 0.03, 0.35, 0.65);
       row(5, 'Pinch (needs a tighter / easier pinch)', Math.round(s.pinch * 100) + '%', 'pinch', 0.1, 0.6, 2.6);
       B(60, 680, 400, 84, s.poke ? 'Fingertip poke: on' : 'Fingertip poke: off', () => { s.poke = !s.poke; c.save(); }, { style: s.poke ? 'gold' : 'cream', size: 28 });
-      B(500, 680, 320, 84, 'Recenter', () => c.startRecenter(), { style: 'blue', size: 30 });
-      B(1010, 680, 540, 84, st.afterAdjust ? 'Done, start the tour' : 'Done', () => { s.adjusted = true; c.save(); const f = st.afterAdjust; st.afterAdjust = null; if (f) f(); else go('settings'); }, { style: 'green', size: 36 });
+      B(500, 680, 320, 84, 'Recenter', () => c.startRecenter(), { style: 'blue', size: 30 }); B(830, 680, 360, 84, 'Return to Garden', () => { c.teleport('merry'); if (S.lesson) { c.hidePanel(); } else go('garden'); }, { style: 'green', size: 28, off: !!st.afterAdjust });
+      B(1200, 680, 350, 84, st.afterAdjust ? 'Done, start tour' : 'Done', () => { s.adjusted = true; c.save(); const f = st.afterAdjust; st.afterAdjust = null; if (f) f(); else go('settings'); }, { style: 'green', size: 36 });
       footer();
     },
     settings() {
@@ -411,6 +412,7 @@ export function makeScreens(c) {
   }
 
   function draw() {
+    S = c.getS(); if (!S && !['loading', 'title'].includes(st.screen)) { st.screen = 'title'; st.wait = st.talk = st.modal = null; }
     btns = []; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, BW, BH); (SCREENS[st.screen] || SCREENS.loading)();
     if (st.modal) { const keep = btns; btns = []; g.fillStyle = 'rgba(60,40,30,0.55)'; g.fillRect(0, 0, BW, BH); rr(300, 270, 1000, 360, 30, COL.paper, COL.edge, 8); wrap(st.modal.text, BW / 2, 350, 880, 38, COL.ink, 'center', 3, true); const m = st.modal; B(360, 500, 400, 96, m.noLabel, () => { st.modal = null; if (m.no) m.no(); }, { style: 'cream', size: 36 }); B(840, 500, 400, 96, m.yesLabel, () => { st.modal = null; m.yes(); }, { style: 'green', size: 36 }); void keep; }
     dirty = false; c.redraw();
@@ -432,8 +434,8 @@ export function makeScreens(c) {
     if (['garden', 'carts'].includes(st.screen) || half % 20 === 0) dirty = true;
   }
   async function start() {
-    draw(); try { [DLG, STORY] = await Promise.all([fetch('content/dialogue.json').then((r) => r.json()), fetch('content/story.json').then((r) => r.json())]); } catch (e) { st.msg = 'Could not load the story files. Please reload the page.'; }
+    draw(); try { [DLG, STORY] = await Promise.all([fetch('content/dialogue.json').then((r) => { if (!r.ok) throw Error('Dialogue HTTP ' + r.status); return r.json(); }), fetch('content/story.json').then((r) => { if (!r.ok) throw Error('Story HTTP ' + r.status); return r.json(); })]); } catch (e) { console.error('Required story content failed:', e); throw e; }
     ['scene/town_gate.jpg', 'scene/sign_broken.png', 'scene/sign_restored.png', 'people/hudson.png'].forEach(img); const saved = c.load(); c.setSign(!!(saved && saved.madlib.restored)); go('title');
   }
-  return { state: st, say, note, cue, emit, press, key, start, everyHalfSecond, frame() { S = c.getS(); if (st.screen === 'video') dirty = true; if (dirty) draw(); }, tap(label) { if (dirty) draw(); const L = [...btns].reverse(), n = (x) => x.label.replace(/\n/g, ' ').toLowerCase(); const b = L.find((x) => x.label && n(x) === label.toLowerCase()) || L.find((x) => x.label && n(x).includes(label.toLowerCase())); if (!b) return false; lastPress = 0; return press(b.x + b.w / 2, b.y + b.h / 2); }, poke(x, y) { if (dirty) draw(); lastPress = 0; return press(x, y); }, labels: () => { if (dirty) draw(); return btns.map((b) => b.label).filter(Boolean); }, propsOn: () => !!c.getS() && !!c.getS().tutorialDone && !c.getS().lesson && !st.modal && !['talk', 'video', 'name', 'title', 'adjust'].includes(st.screen), gardenOpen: () => !!c.getS() && st.screen === 'garden' && !st.modal, go, startLesson, get story() { return STORY; } };
+  return { controls: () => { if (dirty) draw(); return btns.map(({x,y,w,h,label})=>({x,y,w,h,label})); }, state: st, say, note, cue, emit, press, key, start, everyHalfSecond, frame() { S = c.getS(); if (st.screen === 'video') dirty = true; if (dirty) draw(); }, tap(label) { if (dirty) draw(); const L = [...btns].reverse(), n = (x) => x.label.replace(/\n/g, ' ').toLowerCase(); const b = L.find((x) => x.label && n(x) === label.toLowerCase()) || L.find((x) => x.label && n(x).includes(label.toLowerCase())); if (!b) return false; lastPress = 0; return press(b.x + b.w / 2, b.y + b.h / 2); }, poke(x, y) { if (dirty) draw(); lastPress = 0; return press(x, y); }, labels: () => { if (dirty) draw(); return btns.map((b) => b.label).filter(Boolean); }, propsOn: () => !!c.getS() && !!c.getS().tutorialDone && !c.getS().lesson && !st.modal && !['talk', 'video', 'name', 'title', 'adjust'].includes(st.screen), gardenOpen: () => !!c.getS() && st.screen === 'garden' && !st.modal, go, startLesson, get story() { return STORY; } };
 }

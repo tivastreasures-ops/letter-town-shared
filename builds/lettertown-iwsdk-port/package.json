@@ -9,7 +9,9 @@
     "preview": "vite preview --host 0.0.0.0",
     "test:browser": "node scripts/browser-test.mjs",
     "test:gameplay": "node scripts/gameplay-test.mjs",
-    "test:xr": "node scripts/xr-test.mjs"
+    "test:xr": "node scripts/xr-test.mjs",
+    "test:r816": "node scripts/r816-test.mjs",
+    "test:assets": "node scripts/asset-audit.mjs"
   },
   "dependencies": {
     "@iwsdk/core": "1.1.0"
