@@ -1,0 +1,40 @@
+name: Optimize staged Letter Town GLBs
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/optimize_staged_glbs.py'
+      - '.github/workflows/optimize-staged-glbs.yml'
+      - 'assets/staging/originals/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lettertown-mesh-optimization
+  cancel-in-progress: false
+
+jobs:
+  optimize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install Blender
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender
+      - name: Optimize and audit
+        run: blender --background --factory-startup --python tools/optimize_staged_glbs.py
+      - name: Commit reviewed-output candidates and reports
+        run: |
+          git config user.name "Letter Town Asset Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/staging/*_v1.glb assets/staging/*_v1.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "Assets: Blender optimized staging candidates and audit reports"
+            git push
+          fi
