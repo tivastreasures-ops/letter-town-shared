@@ -472,7 +472,7 @@
   "K15": {
     "who": "KIT",
     "text": "Would you like to keep shopping, or are you ready to check out?",
-    "file": null
+    "file": "LT_CH01_KIT_K15_keep_shopping_checkout.mp3"
   },
   "P08": {
     "who": "PHINEAS",
@@ -527,26 +527,26 @@
   "H28": {
     "who": "HUDSON",
     "text": "To press a button, point at it with one finger, then pinch and let go. You can also tap it with a fingertip.",
-    "file": null
+    "file": "LT_CH01_HUDSON_H28_press_button.mp3"
   },
   "H29": {
     "who": "HUDSON",
     "text": "Take your time. Nothing happens until you let go of the pinch, so you can aim first.",
-    "file": null
+    "file": "LT_CH01_HUDSON_H29_aim_first.mp3"
   },
   "M17": {
     "who": "MERRY",
     "text": "To pick a flower, pinch it and pull gently. You can also poke the board in front of you and choose Pick.",
-    "file": null
+    "file": "LT_CH01_MERRY_M17_pick_a_flower.mp3"
   },
   "P14": {
     "who": "PHINEAS",
     "text": "Until you've crafted something, flower arranging makes good practice. Pick up to nine flowers and keep the bouquet with you, or set it on the Flower Cart.",
-    "file": null
+    "file": "LT_CH01_PHINEAS_P14_flower_arranging.mp3"
   },
   "X01": {
     "who": "HUDSON",
     "text": "A neighbor has a little story to share. Look for it at the noticeboard.",
-    "file": null
+    "file": "LT_CH01_HUDSON_X01_story_to_share.mp3"
   }
 }

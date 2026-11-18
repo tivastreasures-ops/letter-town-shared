@@ -60,3 +60,6 @@ R8-17p
 
 R8-17q
 - No code changes to the town beyond 17p. I tried the Librarian's river and the twelve background panels and took both back out: the panels showed as floating painted pieces in the sky and the new river rendered dark slate. The existing river and hills stay.
+
+R8-17r
+- Six new voice lines wired: Kit K15 (keep shopping or check out), Hudson H28, H29 and X01, Merry M17, Phineas P14. Each plays in its own character's voice.
