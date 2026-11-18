@@ -55,7 +55,7 @@ function stepSky(dt) { skyDome.position.copy(camera.position); const wp = new TH
 // the town behind you changes with the story: gate, daytime street, night
 const BACK = { gate: tex('assets/scene/town_gate.jpg'), day: tex('assets/scene/town_day.jpg'), night: tex('assets/scene/town_night.jpg') };
 const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(36, 18.4), new THREE.MeshBasicMaterial({ map: BACK.gate, fog: false })); backdrop.position.set(0, 7.2, -26); backdrop.visible = false; scene.fog = new THREE.Fog('#d9ecf7', 20, 46); town.add(backdrop);
-const signBroken = cutout('assets/scene/sign_broken.png', 1.15, 0.88, -1.35, TABLE + 0.62, -1.7, 0.5);
+const signBroken = cutout('assets/scene/sign_broken.png', 1.15, 0.88, -1.35, TABLE + 0.62, -1.7, 0.5); signBroken.visible = false;   // the broken-sign picture is gone for good
 const signRestored = cutout('assets/scene/sign_restored.png', 1.15, 0.8, -1.35, TABLE + 0.62, -1.7, 0.5); signRestored.visible = false;
 cutout('assets/scene/word_cart.png', 0.95, 0.95, 1.4, TABLE + 0.5, -1.75, -0.5).name = 'flatWord';
 cutout('assets/scene/flower_cart.png', 0.8, 0.8, 2.1, TABLE + 0.42, -1.0, -0.95).name = 'flatFlower';
@@ -96,8 +96,8 @@ function addProp(file, height, x, y, z, ry, opts = {}) {
   gltfLoader.load(`assets/models/${file}.glb`, (g) => { holder.add(fit(g.scene, height)); if (opts.hideFlat) town.children.filter((c) => c.name === opts.hideFlat).forEach((c) => { c.visible = false; }); }, undefined, () => { /* the flat picture stays */ });
   return rec;
 }
-const wordCartProp = addProp('lettercart', 1.35, 1.8, 0, -2.0, -0.5, { hideFlat: 'flatWord', parent: town, kind: 'carts', radius: 0.8, cy: 0.65 });
-const flowerCartProp = addProp('flowercart', 1.2, 2.5, 0, -1.3, -0.95, { hideFlat: 'flatFlower', parent: town, kind: 'carts', radius: 0.8, cy: 0.6 });
+const wordCartProp = addProp('lettercart', 1.35, 0.9, 0, -2.4, -0.3, { hideFlat: 'flatWord', parent: town, kind: 'carts', radius: 0.8, cy: 0.65 });
+const flowerCartProp = addProp('flowercart', 1.2, 3.1, 0, -1.2, -0.95, { hideFlat: 'flatFlower', parent: town, kind: 'carts', radius: 0.8, cy: 0.6 });
 /* what is on each cart, drawn in 3D and refreshed twice a second */
 const stockW = new THREE.Group(), stockF = new THREE.Group(); wordCartProp.holder.add(stockW); flowerCartProp.holder.add(stockF); stockW.scale.setScalar(1.35); stockF.scale.setScalar(1.33);   // the carts are bigger now, so their stock grows with them
 const plaqueTex = {}; function plaque(txt, bg) { const k = txt + bg; if (plaqueTex[k]) return plaqueTex[k]; const c = document.createElement('canvas'); c.width = 256; c.height = 112; const x = c.getContext('2d'); x.fillStyle = bg; x.fillRect(0, 0, 256, 112); x.strokeStyle = '#6b4a2b'; x.lineWidth = 10; x.strokeRect(5, 5, 246, 102); x.fillStyle = '#4b2f6b'; x.font = 'bold 60px Georgia,serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt.toUpperCase(), 128, 58, 230); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return (plaqueTex[k] = t); }
@@ -108,15 +108,18 @@ const vase = new THREE.Group(); { const v = new THREE.Mesh(new THREE.CylinderGeo
 const vaseRec = { holder: vase, kind: 'vase', radius: 0.09, cy: 0.1 }; props.push(vaseRec);
 const vaseFl = new THREE.Group(); vase.add(vaseFl); const pickRecs = []; const SPKEY = { poppy: 'poppy_blue', rose: 'rose_pink', daisy: 'daisy_white', peony: 'peony_pink', lily: 'lily_pink' }; let arrSig = '';
 const vaseFluted = new THREE.Group(); vase.add(vaseFluted); let vaseLoaded = false; const vaseGlass = vase.children.filter((c) => c.isMesh);
-function applyVase() { const f = UI.state.vase === 'fluted'; vaseGlass.forEach((m) => { m.visible = !f; }); vaseFluted.visible = f; if (f && !vaseLoaded) { vaseLoaded = true; flowerModel('vase_fluted', 0.16, (m) => vaseFluted.add(m)); } }
+const vaseClay = new THREE.Group(); vase.add(vaseClay); { const pts = [[0.0, 0], [0.045, 0], [0.058, 0.03], [0.065, 0.065], [0.05, 0.1], [0.036, 0.125], [0.044, 0.14]].map(([x, y]) => new THREE.Vector2(x, y)); const jar = new THREE.Mesh(new THREE.LatheGeometry(pts, 24), new THREE.MeshLambertMaterial({ color: '#c9774a', side: THREE.DoubleSide })); vaseClay.add(jar); const band = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.004, 8, 24), new THREE.MeshLambertMaterial({ color: '#f1d9a0' })); band.rotation.x = Math.PI / 2; band.position.y = 0.07; vaseClay.add(band); vaseClay.visible = false; }
+const VASE_FIT = { glass: { y: 0.07, r: 1 }, fluted: { y: 0.1, r: 1.35 }, clay: { y: 0.1, r: 1.1 } };
+const vaseKey = () => (UI.state.vase === 'fluted' || UI.state.vase === 'clay') ? UI.state.vase : 'glass';
+function applyVase() { const k = vaseKey(), f = k === 'fluted'; vaseGlass.forEach((m) => { m.visible = k === 'glass'; }); vaseFluted.visible = f; vaseClay.visible = k === 'clay'; if (f && !vaseLoaded) { vaseLoaded = true; flowerModel('vase_fluted', 0.16, (m) => vaseFluted.add(m)); } }
 function refreshArr() {
   const on = !!S && UI.state.screen === 'carts'; arrG.visible = on; if (!on) { arrSig = ''; return; } applyVase();
-  const PP = R.pouch(S), arr = UI.state.arr || {}, sig = JSON.stringify([PP.flowers, PP.basket, arr]); if (sig === arrSig) return; arrSig = sig;
+  const PP = R.pouch(S), arr = UI.state.arr || {}, sig = JSON.stringify([PP.flowers, PP.basket, arr, vaseKey()]); if (sig === arrSig) return; arrSig = sig;
   pickRecs.splice(0).forEach((r) => { arrG.remove(r.holder); const i = props.indexOf(r); if (i >= 0) props.splice(i, 1); });
   while (vaseFl.children.length) vaseFl.remove(vaseFl.children[0]);
   let row = 0; R.CFG.species.forEach((k) => { const have = (PP.flowers[k] || 0) + (PP.basket[k] || 0) - (arr[k] || 0); if (have <= 0) return; const h = new THREE.Group(), i = row++; h.position.set(0.2 + (i % 8) * 0.1, TABLE, 0.18 + Math.floor(i / 8) * 0.09); arrG.add(h);
     flowerModel(SPKEY[k] || k, 0.13, (m) => { h.add(m); }); const rec = { holder: h, kind: 'pick:' + k, radius: 0.055, cy: 0.07 }; props.push(rec); pickRecs.push(rec); });
-  let n = 0; Object.keys(arr).forEach((k) => { for (let j = 0; j < arr[k]; j++) { const a = n * 2.4, r = 0.012 * (1 + (n % 4)), idx = n++; flowerModel(SPKEY[k] || k, 0.2, (m) => { m.position.set(Math.cos(a) * r, 0.07, Math.sin(a) * r); m.rotation.z = Math.cos(a) * 0.12 * (1 + idx % 3); m.rotation.x = Math.sin(a) * 0.12 * (1 + idx % 3); vaseFl.add(m); }); } });
+  let n = 0; Object.keys(arr).forEach((k) => { for (let j = 0; j < arr[k]; j++) { const a = n * 2.4, VF = VASE_FIT[vaseKey()], r = 0.012 * VF.r * (1 + (n % 4)), idx = n++; flowerModel(SPKEY[k] || k, 0.2, (m) => { m.position.set(Math.cos(a) * r, VF.y, Math.sin(a) * r); m.rotation.z = Math.cos(a) * 0.12 * (1 + idx % 3); m.rotation.x = Math.sin(a) * 0.12 * (1 + idx % 3); vaseFl.add(m); }); } });
 }
 let stockSig = '';
 function refreshStock() {
@@ -129,8 +132,22 @@ function refreshStock() {
     g.position.set(-0.3 + (i % 3) * 0.3, 0.33, 0.0 + Math.floor(i / 3) * 0.17); stockF.add(g); });
 }
 const bookProp = addProp('townbook', 0.14, -0.7, TABLE, -0.3, 0.3, { kind: 'book', radius: 0.14 });
-const noticeProp = addProp('noticeboard', 0.34, -2.15, TABLE + 0.55, -0.35, 1.0, { kind: 'notice', radius: 0.4 });
-for (const dx of [-0.38, 0.38]) { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.03, TABLE + 0.55, 10), new THREE.MeshLambertMaterial({ color: '#8a5a33' })); post.position.set(dx, -(TABLE + 0.55) / 2 + 0.0, -0.02); noticeProp.holder.add(post); post.position.y = -(TABLE + 0.55) / 2; }
+/* the community board matches the one on the town map: blue tile roof, orange frame, cork face with notes pinned on, a lantern, and stone feet. It is built here from shapes until a Meshy model replaces it. */
+const noticeProp = (() => {
+  const holder = new THREE.Group(); holder.position.set(-2.15, TABLE + 0.55, -0.35); holder.rotation.y = 1.0; stage.add(holder);
+  const rec = { holder, kind: 'notice', radius: 0.4, cy: 0 }; props.push(rec);
+  const M = (c) => new THREE.MeshLambertMaterial({ color: c }), add = (geo, col, x, y, z, rz = 0) => { const m = new THREE.Mesh(geo, M(col)); m.position.set(x, y, z); m.rotation.z = rz; holder.add(m); return m; };
+  const legH = TABLE + 0.55 + 0.08;
+  [-0.14, 0.14].forEach((x) => { add(new THREE.BoxGeometry(0.03, legH, 0.03), '#e6962e', x, 0.08 - legH / 2, 0); add(new THREE.BoxGeometry(0.07, 0.03, 0.07), '#d9a9b3', x, -(TABLE + 0.55) + 0.015, 0); });
+  add(new THREE.BoxGeometry(0.40, 0.20, 0.03), '#e6962e', 0, 0.18, 0);
+  add(new THREE.BoxGeometry(0.35, 0.15, 0.012), '#f0c277', 0, 0.18, 0.012);
+  [['#ffffff', -0.11, 0.21, 0.07, 0.06], ['#ffd1e6', 0.0, 0.16, 0.06, 0.06], ['#fff3b0', 0.1, 0.21, 0.07, 0.06], ['#d9ecff', 0.06, 0.13, 0.06, 0.05], ['#ffffff', -0.1, 0.14, 0.05, 0.05]].forEach(([c, x, y, w, h]) => { const n = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshLambertMaterial({ color: c, side: THREE.DoubleSide })); n.position.set(x, y, 0.0195); n.rotation.z = (x * 3) % 0.2; holder.add(n); });
+  add(new THREE.BoxGeometry(0.25, 0.015, 0.06), '#2e50a8', -0.095, 0.325, 0, 0.5); add(new THREE.BoxGeometry(0.25, 0.015, 0.06), '#2e50a8', 0.095, 0.325, 0, -0.5);
+  add(new THREE.BoxGeometry(0.03, 0.02, 0.062), '#243f8a', 0, 0.365, 0);
+  [-0.07, 0.07].forEach((x) => add(new THREE.SphereGeometry(0.018, 12, 10), '#2fb5b0', x, 0.29, 0.03));
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.02, 12, 10), new THREE.MeshBasicMaterial({ color: '#ffd36b' })); lamp.position.set(0, 0.285, 0.035); holder.add(lamp);
+  return rec;
+})();
 
 /* ---------- a present for the player, shown on the table while a gift is opened ---------- */
 const giftHolder = new THREE.Group(); giftHolder.position.set(0, TABLE + 0.02, -0.32); giftHolder.visible = false; stage.add(giftHolder);
@@ -171,6 +188,14 @@ cobblePatch(new THREE.CircleGeometry(0.9, 32), 1.8, 1.8, -2.7, -1.5);           
 put('fountain', 2.3, 0, -7.0, 0);
 worldModel('trowel', (src) => { src.updateMatrixWorld(true); const bb = new THREE.Box3().setFromObject(src), sz = bb.getSize(new THREE.Vector3()); src.scale.setScalar(0.15 / Math.max(sz.x, sz.y, sz.z, 1e-3)); src.updateMatrixWorld(true); bb.setFromObject(src); const c = bb.getCenter(new THREE.Vector3()); src.position.x -= c.x; src.position.z -= c.z; src.position.y -= bb.min.y; const w = new THREE.Group(); w.add(src); w.position.set(0.8, TABLE, 0.02); w.rotation.y = 0.5; stage.add(w); });   // a small trowel left on the table
 addProp('townhall', 6.0, 0, 0, -12.5, 0, { parent: town });
+/* the edge of town: a river all the way around, grass beyond it, then hills and mountains, so it is clear where the town ends */
+{ const water = new THREE.Mesh(new THREE.RingGeometry(31, 35, 64), new THREE.MeshLambertMaterial({ color: '#6fb9ea', emissive: '#1d4f7a', emissiveIntensity: 0.25 })); water.rotation.x = -Math.PI / 2; water.position.y = 0.03; town.add(water);
+  for (const [r0, r1, col] of [[30.4, 31, '#d9c58f'], [35, 35.6, '#d9c58f']]) { const bank = new THREE.Mesh(new THREE.RingGeometry(r0, r1, 64), new THREE.MeshLambertMaterial({ color: col })); bank.rotation.x = -Math.PI / 2; bank.position.y = 0.025; town.add(bank); }
+  const hr = (() => { let a = 7; return () => { a = (a * 9301 + 49297) % 233280; return a / 233280; }; })();
+  for (let i = 0; i < 44; i++) { const ang = (i / 44) * Math.PI * 2 + hr() * 0.1, big = i % 3 === 0, r = 46 + hr() * 8 + (big ? 6 : 0), h = big ? 9 + hr() * 6 : 3.5 + hr() * 3, w = big ? 9 + hr() * 4 : 7 + hr() * 4;
+    const m = new THREE.Mesh(big ? new THREE.ConeGeometry(w, h * 2, 7) : new THREE.SphereGeometry(w, 14, 10), new THREE.MeshLambertMaterial({ color: big ? (i % 2 ? '#8e9aa8' : '#7f8f9c') : (i % 2 ? '#78b36a' : '#8cc47a') })); if (!big) m.scale.y = h / w; m.position.set(Math.cos(ang) * r, big ? h : 0, Math.sin(ang) * r); town.add(m);
+    if (big) { const cap = new THREE.Mesh(new THREE.ConeGeometry(w * 0.32, h * 0.5, 7), new THREE.MeshLambertMaterial({ color: '#f4f7fb' })); cap.position.set(m.position.x, h * 1.78, m.position.z); town.add(cap); } } }
+
 // Kit's seed shop, where the first cottage used to be
 gltfLoader.load('assets/models/seed_shop.glb', (g) => { const m = fit(g.scene, 2.7); m.position.set(6.6, 0, -0.8); m.rotation.y = -1.3; town.add(m); }, undefined, () => {});
 // the player's own cottage, in front of the Player's Garden, once the Mayor has given it to them
@@ -180,11 +205,11 @@ function placeHome() { const k = S && S.home && S.home.cottage; if (k === homeKe
 // Merry's greenhouse beside the community garden: this is where the seeds, watering can and Super Grow desk lives
 gltfLoader.load('assets/models/merry_greenhouse.glb', (g) => { const m = fit(g.scene, 2.6); m.position.set(-7.0, 0, -2.9); m.rotation.y = 1.06; town.add(m); }, undefined, () => {});
 // the residents stand where they belong: Snowy and Mayor Ren on the town hall steps, Phineas by his workshop and the carts
-[['snowy', -1.1, -10.3, 1.15], ['mayor', 1.1, -10.3, 1.25], ['phineas', 2.4, -0.9, 1.2], ['merry', -5.6, -1.5, 1.2], ['kit', 5.3, -2.1, 1.15]].forEach(([who, x, z, h]) => gltfLoader.load(`assets/models/${who}.glb`, (g) => { const m = fit(g.scene, h); m.position.set(x, 0, z); m.rotation.y = who === 'phineas' ? -0.4 : who === 'merry' ? 1.24 : who === 'kit' ? -1.3 : 0; town.add(m); }, undefined, () => {}));
+[['snowy', -1.1, -10.3, 1.15], ['mayor', 1.1, -10.3, 1.25], ['phineas', 5.0, -3.9, 1.2], ['merry', -5.6, -1.5, 1.2], ['kit', 5.3, -2.1, 1.15]].forEach(([who, x, z, h]) => gltfLoader.load(`assets/models/${who}.glb`, (g) => { const m = fit(g.scene, h); m.position.set(x, 0, z); m.rotation.y = who === 'phineas' ? -1.2 : who === 'merry' ? 1.24 : who === 'kit' ? -1.3 : 0; town.add(m); }, undefined, () => {}));
 [['cottage_new_green', 3.0, 6.8, -3.8, -1.45], ['cottage_new_blue', 3.0, 6.2, -7.2, -1.8], ['cottage_new_green', 3.0, -7.0, -6.8, 1.6], ['cottage_new_blue', 3.0, -7.4, 0.6, 1.2], ['cottage_new_green', 3.0, 5.0, 5.6, 2.6], ['cottage_new_blue', 3.0, -4.6, 6.2, 3.4]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 [[-8.5, -2.5], [-9.8, -7.0], [-8, -11], [8.5, -11], [10.2, -6], [9.6, -1.5], [-4.5, -11.5], [4.8, -12], [-9.5, 3.5], [-6, 7.5], [0, 9.5], [8, 6.5], [10.5, 3], [-12.5, -5], [12.5, -4], [-4.8, 2.2], [4.4, 2.8]].forEach(([x, z], i) => put(i % 2 ? 'tree_flowering' : 'tree_lush', 3.4 + rng() * 1.8, x, z, rng() * 6.28));
 const KEEP = [[0, -0.4, 2.7], [0, -7, 3.0], [3.5, -1.3, 2.9], [-3.2, -1.9, 2.6], [0, -4.3, 1.6], [-4.2, -2.8, 2.7]];   // keep the cobblestone and garden clear of shrubs
-for (let i = 0; i < 70; i++) { const a = rng() * 6.283, r = 2.8 + rng() * 11, x = Math.cos(a) * r, z = -3 + Math.sin(a) * r; if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; const k = ['shrub', 'bush', 'grassclump', 'grassclump'][i % 4]; put(k, k === 'grassclump' ? 0.35 + rng() * 0.3 : 0.6 + rng() * 0.7, x, z, rng() * 6.28); }
+for (let i = 0; i < 30; i++) { const a = rng() * 6.283, r = 2.8 + rng() * 11, x = Math.cos(a) * r, z = -3 + Math.sin(a) * r; if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; const k = ['shrub', 'bush', 'grassclump', 'grassclump'][i % 4]; put(k, k === 'grassclump' ? 0.35 + rng() * 0.3 : 0.6 + rng() * 0.7, x, z, rng() * 6.28); }
 [[-3, 5], [3.4, 7.5], [-8, 9], [7.5, 10], [0, 13], [-11, 6], [11, 8], [-14, -9], [14, -10], [-2, -15], [5, -15]].forEach(([x, z]) => put(rng() < 0.5 ? 'tree_lush' : 'tree_flowering', 3.6 + rng() * 1.6, x, z, rng() * 6.28));
 [['cottage_new_green', 3.0, 1.2, 4.6, 3.14], ['cottage_new_blue', 3.0, -9.5, 6.5, 2.2], ['cottage_new_blue', 3.0, 9.5, 6.8, -2.2]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 const FLW = [['marigold', 0.35], ['buttercup', 0.3], ['sunflower', 0.6], ['violet', 0.3], ['flax', 0.35], ['jonquil', 0.35], ['zinnia', 0.35], ['kopsia', 0.35], ['daisy_white', 0.3], ['rose_pink', 0.4], ['poppy_blue', 0.35], ['peony_pink', 0.35], ['lily_purple', 0.4]];
@@ -199,7 +224,7 @@ const cTexOf = (f) => cTex[f] || (cTex[f] = tex(`assets/blooms/${f}.png`));
 for (let i = 0; i < 12; i++) {
   const x = (i % 6 - 2.5) * 0.55, z = Math.floor(i / 6) * 0.6, g = new THREE.Group(); g.position.set(x, 0, z); comm.add(g);
   const mound = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.23, 0.07, 20), new THREE.MeshLambertMaterial({ color: '#7a5236' })); mound.position.y = 0.035; mound.visible = false; g.add(mound); worldModel('stoneplot', (src) => { const m = fitW(src, 0.62); g.add(m); });
-  const ico = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); ico.position.y = 0.22; g.add(ico);
+  const ico = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); ico.position.y = 0.22; ico.visible = false; g.add(ico);   // stays hidden until a picture is assigned, so no blank white card shows before the game starts
   CP.push({ g, ico, holder: new THREE.Group(), sig: '' }); CP[i].holder.position.y = 0.07; g.add(CP[i].holder);
 }
 function miniPlant(look) {   // a small 3D seed, sprout or bud for the community plots (no flat pictures)
@@ -230,7 +255,7 @@ for (let i = 0; i < 2; i++) worldModel('fence', (src) => { const m = fitW(src, 1
 for (const sx of [-1, 1]) worldModel('fence', (src) => { const m = fitW(src, 1.5); m.rotation.y = Math.PI / 2; m.position.set(sx * 1.95, 0, 0.1); comm.add(m); });
 worldModel('fencepost', (src) => { for (const [sx, sz] of [[-1, -0.62], [1, -0.62], [-1, 0.86], [1, 0.86]]) { const m = fit(src.clone(true), 0.5); m.position.set(sx * 1.95, 0, sz); comm.add(m); } });
 const mixers = [], walkers = [], KIDS = ['anna', 'timmy', 'mary', 'billy', 'sally', 'joe'], KID_H = 1.15; let commOn = true, kidsLoaded = false;
-const CARTS = { word: [1.25, -1.35], flower: [2.1, -0.65] };   // where a neighbor stands to shop
+const CARTS = { word: [0.35, -1.75], flower: [2.7, -0.55] };   // where a neighbor stands to shop
 const SPOTS = [[0, -5.5], [-1.5, -6.2], [1.6, -6.4], [0, -8.4], [-2.2, -4.2], [2.0, -3.4], [-3.0, -0.6], [-2.4, -1.4], [3.2, -0.2], [0.6, -3.0]];   // places to stroll to on the cobblestones
 const DOORS = [[5.0, -0.7], [5.4, -3.8], [5.0, -7.0], [-5.6, -6.6], [-6.0, 0.6], [4.4, 4.5], [-3.8, 5.2], [0.2, 3.7], [0, -10.2], [-8.3, 5.4], [8.0, 5.7]];   // front steps of the cottages and the town hall
 const _desk = new THREE.Vector3();
@@ -344,7 +369,7 @@ function makeTool(kind, home, yaw, build) { const g = new THREE.Group(); build(g
 const PK = R.SPECIES_BY_TIER;
 const packetMat = new THREE.MeshLambertMaterial({ transparent: true, alphaTest: 0.1, side: THREE.DoubleSide }); let packetTier = '';
 function packetFor(tier) { if (tier === packetTier) return; packetTier = tier; const L = PK[tier] || PK.common, f = R.TIER_OF[tier] ? tier : L[Math.floor(Math.random() * L.length)]; packetMat.map = tex(`assets/seeds/${f}.png`); packetMat.needsUpdate = true; }
-makeTool('seeds', new THREE.Vector3(0, TABLE + 0.05, -0.2), 0, (g) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.096), packetMat); m.position.y = 0.01; g.add(m); const m2 = m.clone(); m2.position.z = -0.002; g.add(m2); packetFor('common'); });
+makeTool('seeds', new THREE.Vector3(0, TABLE + 0.05, -0.2), 0, (g) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.096), packetMat); m.position.y = 0.01; g.add(m); const m2 = m.clone(); m2.position.z = -0.002; m2.rotation.y = Math.PI; g.add(m2); /* two-sided: the flower name reads correctly on both faces */ packetFor('common'); });
 const canTool = makeTool('can', new THREE.Vector3(0, TABLE + 0.045, -0.2), Math.PI / 2, (g) => {
   const mat = new THREE.MeshLambertMaterial({ color: '#8fb8d8' }); g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.046, 0.085, 18), mat));
   const a = new THREE.Vector3(0.035, -0.01, 0), b = new THREE.Vector3(0.115, 0.05, 0), d = b.clone().sub(a);
@@ -460,10 +485,54 @@ function readXR() {
     P.ray = { o: stage.worldToLocal(_a.clone()), d: _b.clone().applyQuaternion(stageQinv).normalize() };
   }
 }
+
+/* ---------- grab-and-place letter tiles for the Spelling Book ---------- */
+// One cream tile per letter you own (gold scrollwork, dark purple letter, a number for how many you have) sits on a wooden tray.
+// Pinch a tile, set it in the word row, lift it back out. The poke keyboard on the board still works.
+const LT = { z: -0.11, rowZ: -0.34, size: 0.056, rowSize: 0.07, cols: 13, gap: 0.064, rowGap: 0.077, max: 11 };
+const letterDock = new THREE.Group(); letterDock.visible = false; stage.add(letterDock);
+{ const wood = new THREE.MeshLambertMaterial({ color: '#8a5a32' }), rim = new THREE.MeshLambertMaterial({ color: '#5e3a1c' });
+  const tb = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.02, 0.24), wood); tb.position.set(0, TABLE + 0.01, LT.z); letterDock.add(tb);
+  [[0, -0.12, 0.88, 0.03], [0, 0.12, 0.88, 0.03]].forEach(([x, dz, w, h]) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.035, 0.012), rim); m.position.set(x, TABLE + 0.02, LT.z + dz); letterDock.add(m); });
+  [-0.44, 0.44].forEach((x) => { const m = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.035, 0.24), rim); m.position.set(x, TABLE + 0.02, LT.z); letterDock.add(m); });
+  const rail = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.01, 0.1), new THREE.MeshLambertMaterial({ color: '#e9d3a4' })); rail.position.set(0, TABLE + 0.005, LT.rowZ); letterDock.add(rail);
+  const rl = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.012, 0.008), rim); rl.position.set(0, TABLE + 0.011, LT.rowZ + 0.05); letterDock.add(rl); }
+const dockPool = new THREE.Group(), dockRow = new THREE.Group(); letterDock.add(dockPool); letterDock.add(dockRow);
+const lTileBase = new THREE.MeshLambertMaterial({ color: '#f7ecd2' }), lTileGold = new THREE.MeshStandardMaterial({ color: '#c99a3c', metalness: 0.35, roughness: 0.55 });
+function tileFace(ch, count) { const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); x.fillStyle = '#3b1a5a'; x.font = 'bold 170px Georgia, serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(ch, 128, 140);
+  if (count != null) { x.beginPath(); x.arc(206, 50, 34, 0, 6.283); x.fillStyle = '#c99a3c'; x.fill(); x.lineWidth = 4; x.strokeStyle = '#3b1a5a'; x.stroke(); x.fillStyle = '#3b1a5a'; x.font = 'bold 44px Georgia, serif'; x.fillText(String(count), 206, 53); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; }
+function makeLetterTile(ch, size, count) {
+  const g = new THREE.Group(), base = new THREE.Mesh(new THREE.BoxGeometry(size, size, size * 0.2), lTileBase); g.add(base);
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(size, size), new THREE.MeshBasicMaterial({ map: tileFace(ch, count), transparent: true, depthWrite: false })); face.position.z = size * 0.1 + size * 0.085; g.add(face);
+  const disc = new THREE.Mesh(new THREE.CircleGeometry(size * 0.33, 32), new THREE.MeshBasicMaterial({ color: '#f7ecd2' })); disc.position.z = size * 0.1 + size * 0.07; g.add(disc);   // a cream face over the middle of the gold scrollwork
+  worldModel('tile', (src) => { src.traverse((o) => { if (o.isMesh) o.material = lTileGold; }); src.scale.setScalar(size / 0.06); src.position.z = size * 0.1; g.add(src); });
+  return g;
+}
+const LT_TILT = -1.1, ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const dockOn = () => !!S && UI.state.screen === 'book' && UI.state.bookTab === 'spell';
+let dockSig = '';
+const rowX = (i, n) => (i - (n - 1) / 2) * LT.rowGap;
+function refreshLetterDock() {
+  const on = dockOn(); letterDock.visible = on; if (!on) { dockSig = ''; return; }
+  const bank = R.pouch(S).bank, tr = UI.state.tray || '', held = pointers.some((q) => q.held && q.held.ltile), sig = JSON.stringify([bank, tr, held]); if (sig === dockSig) return; dockSig = sig;
+  while (dockPool.children.length) dockPool.remove(dockPool.children[0]); while (dockRow.children.length) dockRow.remove(dockRow.children[0]);
+  const left = { ...bank }; for (const ch of tr) left[ch] = (left[ch] || 0) - 1;
+  [...ABC].forEach((ch, i) => { const n = left[ch] || 0; if (n <= 0) return; const t = makeLetterTile(ch, LT.size, n), col = i % LT.cols, row = Math.floor(i / LT.cols); t.position.set((col - (LT.cols - 1) / 2) * LT.gap, TABLE + 0.034, LT.z + (row ? 0.045 : -0.045)); t.rotation.x = LT_TILT; t.userData = { ch }; dockPool.add(t); });
+  [...tr].forEach((ch, i) => { const t = makeLetterTile(ch, LT.rowSize); t.position.set(rowX(i, tr.length), TABLE + 0.04, LT.rowZ); t.rotation.x = LT_TILT; t.userData = { ch, idx: i }; dockRow.add(t); });
+}
+function tileGrabAt(pos) {
+  if (!dockOn()) return null; let best = null, bd = 0.05 * (S.settings.pinch > 1 ? S.settings.pinch : 1);
+  for (const t of dockRow.children) { const d = t.position.distanceTo(pos); if (d < bd) { bd = d; best = { ltile: { ch: t.userData.ch, from: 'row', idx: t.userData.idx } }; } }
+  for (const t of dockPool.children) { const d = t.position.distanceTo(pos); if (d < bd) { bd = d; best = { ltile: { ch: t.userData.ch, from: 'pool' } }; } }
+  return best;
+}
+function overRow(pos) { return Math.abs(pos.x) < 0.46 && Math.abs(pos.z - LT.rowZ) < 0.1 && pos.y > TABLE - 0.05 && pos.y < TABLE + 0.3; }
 function plotUnder(pos, r) { let best = null, bd = r; for (const p of plots) { const d = Math.hypot(pos.x - p.g.position.x, pos.z - p.g.position.z); if (d < bd && pos.y > TABLE - 0.02 && pos.y < TABLE + 0.45) { bd = d; best = p; } } return best; }
 function bloomAt(p, out) { return out.copy(p.bloomPos).applyQuaternion(p.g.quaternion).add(p.g.position); }
 function nearestGrab(pos) {
   if (menuBtn.position.distanceTo(pos) < 0.11) return { menu: true };
+  { const tg = tileGrabAt(pos); if (tg) return tg; }
   if (UI.propsOn()) for (const pr of props) if (pr.kind && pr.holder.parent && pr.holder.parent.visible !== false && stage.worldToLocal(pr.holder.getWorldPosition(_c3)).add(_c3o.set(0, pr.cy, 0)).distanceTo(pos) < (pr.kind === 'carts' ? 0.5 : pr.radius + 0.09)) return { prop: pr.kind };
   let best = null, bd = HAND.grabReach * 1.4 * (S && S.settings.pinch > 1 ? S.settings.pinch : 1); if (!UI.gardenOpen()) return null;
   for (const t of tools) { if (t.heldBy) continue; const d = _gp.copy(t.gp).applyQuaternion(t.g.quaternion).add(t.g.position).distanceTo(pos); if (d < bd) { bd = d; best = { tool: t }; } }
@@ -494,6 +563,7 @@ const relP = new THREE.Vector3(), _gp = new THREE.Vector3();
 function grab(P, hit) {
   if (hit.menu) { togglePanel(); return; }
   if (hit.prop) { selectThing(hit); return; }
+  if (hit.ltile) { const L = hit.ltile, m = makeLetterTile(L.ch, LT.rowSize); stage.add(m); m.rotation.x = LT_TILT; if (L.from === 'row') { const tr = UI.state.tray || ''; UI.state.tray = tr.slice(0, L.idx) + tr.slice(L.idx + 1); } P.held = { ltile: L, mesh: m }; dockSig = ''; beep(620, 0.04); UI.say(L.from === 'row' ? `Picked ${L.ch} back up.` : `Holding ${L.ch}. Set it in the word row.`); return; }
   if (hit.tray) { P.held = { tray: true, dx: trayX() - P.pos.x }; UI.say('Slide the tool tray where you like, then let go.'); return; }
   if (hit.tool) { const t = hit.tool; t.heldBy = P; P.held = { tool: t, relQ: P.quat.clone().invert().multiply(t.g.quaternion), relP: _gp.copy(t.gp).applyQuaternion(t.g.quaternion).negate().applyQuaternion(P.quat.clone().invert()).clone() }; t.prev.copy(t.g.position); t.flips.length = 0; t.lastDir = null; UI.state.tool = null; UI.say({ seeds: 'Holding seeds. Let go over an empty plot.', can: 'Holding the can. Tilt the spout down over a plant.', shaker: 'Holding Super Grow. Shake it over a plant.' }[t.kind]); }
   else { hit.plot.heldBy = P; P.held = { plot: hit.plot, txn: ++txn }; UI.say('Got it. Pull!'); }
@@ -501,6 +571,10 @@ function grab(P, hit) {
 }
 function letGo(P, lost) {
   const h = P.held; if (!h) return; P.held = null;
+  if (h.ltile) { const L = h.ltile; stage.remove(h.mesh); dockSig = ''; const tr = UI.state.tray || '';
+    if (!lost && overRow(P.pos) && tr.length < LT.max) { const n = tr.length + 1; let i = 0; while (i < tr.length && rowX(i, n) < P.pos.x) i++; UI.state.tray = tr.slice(0, i) + L.ch + tr.slice(i); beep(780, 0.06); UI.say(`${L.ch} is in your word.`); }
+    else if (L.from === 'row') { beep(300, 0.05); UI.say(`${L.ch} is back on the tray.`); } else UI.say('Set the tile in the word row to use it.');
+    return; }
   if (h.tray) { save(); return; }
   if (h.tool) { const t = h.tool; if (!lost && t.kind === 'seeds') { const p = plotUnder(t.g.position, 0.085); if (p) G.plant(p.i); else UI.say('Seeds go back to the tray. Let go right over a plot.'); } sendHome(t); }
   else { h.plot.heldBy = null; if (!lost) UI.say('Let go too soon. The flower is still there. Pull farther.'); }
@@ -545,13 +619,13 @@ function stepPointers(dt, tnow) {
     if (P.go && P.ray && P.down) { const tt = -P.ray.o.y / P.ray.d.y; if (P.ray.d.y < -0.06 && tt > 0 && tt < 16) { P.go.x = P.ray.o.x + P.ray.d.x * tt; P.go.z = P.ray.o.z + P.ray.d.z * tt; tpRing.position.set(P.go.x, 0.02, P.go.z); tpRing.visible = true; } }
     if (!P.down && P.was && P.go) { const gg = P.go; P.go = null; tpRing.visible = false; if (performance.now() - gg.t > 250 && performance.now() - gg.t < 8000) teleportPoint(gg.x, gg.z); }
     if (!P.down && P.was && P.pend) { const pd = P.pend; P.pend = null; const h = P.ray && boardRay(P.ray); if (performance.now() - pd.t < 1200 && h && Math.hypot(h.uv.x - pd.uv.x, h.uv.y - pd.uv.y) < 110) UI.press(pd.uv.x, pd.uv.y); }   // a board button fires when you let go of the pinch, so you can aim first
-    if (P.held && P.held.tool) useTool(P, dt, tnow); else if (P.held && P.held.tray) { if (S) { S.settings.toolX = Math.max(-0.9, Math.min(0.95, P.pos.x + P.held.dx)); placeTray(); } } else if (P.held) pullBloom(P);
+    if (P.held && P.held.tool) useTool(P, dt, tnow); else if (P.held && P.held.tray) { if (S) { S.settings.toolX = Math.max(-0.9, Math.min(0.95, P.pos.x + P.held.dx)); placeTray(); } } else if (P.held && P.held.ltile) { P.held.mesh.position.copy(P.pos); P.held.mesh.position.y += 0.02; } else if (P.held) pullBloom(P);
     if (!P.down && P.was && P.held) letGo(P, false);
     P.was = P.down;
   }
   dot.visible = !!cursor; if (cursor) { dot.position.copy(cursor).setZ(cursor.z + 0.004); const dn = pointers.some((q) => q.down); dot.material.color.set(dn ? '#4fbf6a' : '#c8745a'); dot.scale.setScalar(dn ? 1.7 : 1.3); }
   for (const p of plots) if (!p.heldBy && p.bloomPos.distanceTo(BLOOM_HOME) > 0.001) p.bloomPos.lerp(BLOOM_HOME, Math.min(1, dt * 12));
-  for (const t of tools) { t.g.scale.setScalar(UI.state.tool === t.kind ? 1.25 : 1); t.g.visible = UI.gardenOpen(); } tray.visible = trayEdge.visible = UI.gardenOpen();
+  for (const t of tools) { t.g.scale.setScalar(UI.state.tool === t.kind ? 1.25 : 1); t.g.visible = UI.gardenOpen(); } tray.visible = trayEdge.visible = UI.gardenOpen(); refreshLetterDock();
 }
 const caster = new THREE.Raycaster(), ndc = new THREE.Vector2();
 renderer.domElement.addEventListener('pointerdown', (e) => {
@@ -595,7 +669,7 @@ function playVideo(src, done) {
 /* ---------- screens and flow live in screens.js ---------- */
 const UI = makeScreens({ R, board, BW, BH, now, video: videoEl, playVideo, save, saveNow, beep, speak, hush, showPerson, setPlace, celebrate, G, startRecenter, recenter: () => { needsRecenter = true; }, exitVR, layout, hidePanel: () => setPanel(false), showPanel: () => setPanel(true), teleport: (k) => teleportTo(k),
   getS: () => S, moveTray, showGift, showWordObject, setCommunity, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, load, clearSave: () => { try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* fine */ } }, newGame: () => R.newGame(now()),
-  setSign: (restored) => { signRestored.visible = restored; signBroken.visible = !restored; }, redraw: () => { boardTex.needsUpdate = true; }, inVR: () => renderer.xr.isPresenting });
+  setSign: (restored) => { signRestored.visible = restored; signBroken.visible = false; }, redraw: () => { boardTex.needsUpdate = true; }, inVR: () => renderer.xr.isPresenting });
 layout(); UI.start();
 
 const clock = new THREE.Clock(); let slow = 0;
@@ -613,5 +687,5 @@ renderer.setAnimationLoop(() => {
   if (renderer.xr.isPresenting) { if (needsRecenter && recenter()) needsRecenter = false; if (recenterAt && performance.now() >= recenterAt) { recenterAt = 0; if (recenter()) UI.say('All set. Everything is in front of you.'); } }
   tick(dt, false); renderer.render(scene, camera);
 });
-window.__lt = { teleportTo, vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
+window.__lt = { teleportTo, dockPool, dockRow, refreshLetterDock, LT, vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
   sim(i, pos, quat, down) { const P = pointers[2 + i]; if (!pos) { P.valid = false; return; } P.valid = true; P.pos.fromArray(pos); if (quat) P.quat.fromArray(quat); else P.quat.identity(); P.down = !!down; } };

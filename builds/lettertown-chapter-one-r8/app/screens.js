@@ -23,6 +23,7 @@ export function makeScreens(c) {
   const P = () => R.pouch(S);
 
   /* ---------- messages, voices, lessons ---------- */
+  const plain = (p) => String(p).replace(/^base-form /, '');   // players do not need the grammar term
   function say(m) { st.msg = m; dirty = true; }
   function note(r) { if (r && r.msg) say(r.msg); if (r && !r.ok) c.beep(190, 0.1); c.save(); dirty = true; }
   function cue(id) { const d = id && DLG[id]; if (!d) return; say(`${nameOf(d.who)}: ${d.text}`); c.speak(d.file); }
@@ -91,7 +92,7 @@ export function makeScreens(c) {
     B(x + 86 + bw, y, 70, h, '▶', () => cyc(1), { size, style: 'cream', off: keys.length < 2 });
   }
   function frameBg() { g.fillStyle = COL.paper; g.fillRect(0, 0, BW, BH); g.strokeStyle = COL.edge; g.lineWidth = 12; g.strokeRect(6, 6, BW - 12, BH - 12); }
-  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-16', BW - 40, 872, 16, COL.soft, 'right'); }
+  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-17', BW - 40, 872, 16, COL.soft, 'right'); }
   function header(title) {
     if (S.lesson) { text(title, 40, 52, 40, COL.ink, 'left', true); const free = st.wait && st.wait.free; if (free) B(BW - 760, 20, 300, 64, "I'm finished", finishPractice, { style: 'green', size: 30 }); B(BW - 440, 20, 100, 64, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 26 }); B(BW - 330, 20, 300, 64, 'Back to Hudson', () => ask('Leave this lesson? You can repeat it any time.', leaveLesson), { style: 'rose', size: 28 }); if (S.usePractice && !free) text('Practice: nothing here uses your real coins or letters', BW / 2 + 60, 52, 24, COL.soft, 'center'); return; }
     const tabs = [['map', 'Map'], ['garden', 'Garden'], ['book', 'Book'], ['dict', 'Dictionary'], ['shop', 'Shop'], ['carts', 'Carts'], ['home', 'Home'], ['story', 'Story'], ['settings', 'Settings']];
@@ -104,7 +105,10 @@ export function makeScreens(c) {
 
   /* ---------- plain lined page, used for every long text ---------- */
   function paper(paras, title, x, y, h, opt = {}) {
-    const im = img('ui/page_plain.png'), w = Math.round(h * 1087 / 1446), k = h / 1446; if (im) g.drawImage(im, x, y, w, h);
+    const im = img(opt.ruled ? 'ui/page_plain.png' : null), w = Math.round(h * 1087 / 1446), k = h / 1446;
+    if (opt.ruled) { if (im) g.drawImage(im, x, y, w, h); }
+    else { for (let i = 5; i >= 1; i--) rr(x + i * 3, y + i * 3, w, h, 14, i % 2 ? '#efe4cc' : '#e6d8b8', '#cdb98d', 1);   // the edge of the pages underneath
+      rr(x, y, w, h, 14, '#fbf3df', '#b99a62', 3); const gr = g.createLinearGradient(x, 0, x + 46, 0); gr.addColorStop(0, 'rgba(120,90,40,0.28)'); gr.addColorStop(1, 'rgba(120,90,40,0)'); g.fillStyle = gr; g.fillRect(x + 3, y + 4, 46, h - 8); rr(x - 14, y - 6, 16, h + 12, 6, '#7a4a2a', '#4e2d17', 2); }   // a real page, with the book's spine on the left
     const px = 23, all = []; paras.forEach((p) => { lines(p, 400, px).forEach((l) => all.push(l)); all.push(''); }); while (all.length && all[all.length - 1] === '') all.pop();
     const per = 14, pages = Math.max(1, Math.ceil(all.length / per)); if (st.page >= pages) st.page = pages - 1;
     text(title, x + w / 2, y + 180 * k, title.length > 28 ? 17 : 22, COL.plum, 'center', true);
@@ -206,12 +210,14 @@ export function makeScreens(c) {
       text(`You have ${p.coins} ${S.usePractice ? 'practice ' : ''}coins`, 380, 135, 34, COL.ink, 'left', true);
       st.shopTab = st.shopTab || 'common'; st.qty = st.qty || {};
       [['common', 'Common'], ['uncommon', 'Uncommon'], ['rare', 'Rare'], ['supergrow', 'Super Grow']].forEach(([id, label], i) => B(380 + i * 295, 160, 280, 62, label, () => { st.shopTab = id; }, { style: st.shopTab === id ? 'gold' : 'cream', size: 28, on: st.shopTab === id }));
-      const items = st.shopTab === 'supergrow' ? [['supergrow', 'Super Grow', 'Shake over a plant for 2 letters']] : R.SPECIES_BY_TIER[st.shopTab].map((f) => ['sp:' + f, cap(f), 'Grows ' + [...new Set(f.toUpperCase())].join(' ')]);
+      const items = st.shopTab === 'supergrow' ? [['supergrow', 'Super Grow', 'Shake over a plant for 2 letters']] : R.SPECIES_BY_TIER[st.shopTab].map((f) => ['sp:' + f, cap(f), 'Grows ' + R.letterOrder(f)]);
       items.forEach(([id, name, sub], i) => { const y = 238 + i * 80, key = id.split(':')[1], one = R.price(id), q = st.qty[id] || 1, total = one * q, sp = id.startsWith('sp:'); rr(380, y, 1170, 72, 16, '#fffdf6', COL.edge, 3);
         const pi = sp ? img(`seeds/${key}.png`) : null; if (pi) { const hh = 62, ww = hh * pi.width / pi.height; g.drawImage(pi, 396, y + 5, ww, hh); }
         text(name, pi ? 478 : 400, y + 36, 28, COL.ink, 'left', true); text(sub, pi ? 770 : 640, y + 36, 21, COL.soft); text(`${one} each`, 1010, y + 36, 22, COL.soft);
+        const doBuy = (itemId, q, tot, what) => ask(`Buy ${what} for ${tot} coins?`, () => { const r = R.buy(S, itemId, q); note(r); if (r.ok) { c.beep(700, 0.08); st.qty[id] = 1; if (sp) st.tier = key; if (S.usePractice) emit('bought'); else ask(`${name} is in your inventory. Keep shopping, or check out?`, () => { cue('K09'); go('map'); }, 'Check out', 'Keep shopping'); } else if (!S.usePractice) cue('K13'); });
+        if (sp) { const five = R.price('sp5:' + key); B(1090, y + 6, 210, 60, `Buy 1 · ${one}`, () => doBuy(id, 1, one, `1 ${name} seed`), { style: 'green', size: 26, off: p.coins < one }); B(1312, y + 6, 238, 60, `5-pack · ${five}`, () => doBuy('sp5:' + key, 1, five, `a 5-pack of ${name} seeds`), { style: 'gold', size: 26, off: p.coins < five }); text(`${one} each`, 1010, y + 36, 22, COL.soft); return; }
         B(1120, y + 6, 60, 60, '−', () => { st.qty[id] = Math.max(1, q - 1); }, { size: 34, style: 'cream' }); text(String(q), 1213, y + 36, 32, COL.ink, 'center', true); B(1246, y + 6, 60, 60, '+', () => { st.qty[id] = Math.min(9, q + 1); }, { size: 34, style: 'cream' });
-        B(1320, y + 6, 220, 60, `Buy · ${total}`, () => ask(`Buy ${q} ${name}${sp ? ' seed' : ''}${q > 1 ? 's' : ''} for ${total} coins?`, () => { const r = R.buy(S, id, q); note(r); if (r.ok) { c.beep(700, 0.08); st.qty[id] = 1; if (sp) st.tier = key; if (S.usePractice) emit('bought'); else ask(`${name} is in your inventory. Keep shopping, or check out?`, () => { cue('K09'); go('map'); }, 'Check out', 'Keep shopping'); } else if (!S.usePractice) cue('K13'); }), { style: 'green', size: 26, off: p.coins < total }); });
+        B(1320, y + 6, 220, 60, `Buy · ${total}`, () => doBuy(id, q, total, `${q} ${name}${q > 1 ? 's' : ''}`), { style: 'green', size: 26, off: p.coins < total }); });
       footer();
     },
     book() {
@@ -221,7 +227,7 @@ export function makeScreens(c) {
         rr(40, 185, 1100, 100, 18, '#ffffff', COL.edge); text(st.tray.split('').join(' ') || 'Tap letters from your Letter Bank', 70, 235, st.tray ? 56 : 30, st.tray ? COL.plum : '#a79f90', 'left', !!st.tray);
         B(1160, 185, 180, 100, 'Erase', () => { st.tray = st.tray.slice(0, -1); }, { style: 'rose', size: 28 }); B(1360, 185, 200, 100, 'Craft', () => craftTray(), { style: 'green', size: 36, off: st.tray.length < R.CFG.minWordLen });
         const left = { ...p.bank }; for (const ch of st.tray) left[ch] = (left[ch] || 0) - 1;
-        const QW = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'], qpos = {}; QW.forEach((r, ri) => r.split('').forEach((ch, ci) => { qpos[ch] = [40 + ri * 50 + ci * 117, 310 + ri * 110]; })); (S.settings.qwerty ? QW.join('') : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ').split('').forEach((ch, i) => { const n = left[ch] || 0, x = S.settings.qwerty ? qpos[ch][0] : 40 + (i % 13) * 117, y = S.settings.qwerty ? qpos[ch][1] : 310 + Math.floor(i / 13) * 150; B(x, y, 106, 130, ch, () => { st.tray += ch; }, { size: 50, off: n <= 0, style: R.letterTier(ch) === 'rare' ? 'purple' : R.letterTier(ch) === 'uncommon' ? 'blue' : 'cream' }); text(n > 0 ? '×' + n : '', x + 86, y + 108, 22, COL.soft, 'right'); });
+        const QW = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'], qpos = {}; QW.forEach((r, ri) => r.split('').forEach((ch, ci) => { qpos[ch] = [40 + ri * 50 + ci * 117, 310 + ri * 110]; })); (S.settings.qwerty ? QW.join('') : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ').split('').forEach((ch, i) => { const n = left[ch] || 0, x = S.settings.qwerty ? qpos[ch][0] : 40 + (i % 13) * 117, y = S.settings.qwerty ? qpos[ch][1] : 310 + Math.floor(i / 13) * 150; const kh = S.settings.qwerty ? 100 : 130; B(x, y, 106, kh, ch, () => { st.tray += ch; }, { size: 50, off: n <= 0, style: R.letterTier(ch) === 'rare' ? 'purple' : R.letterTier(ch) === 'uncommon' ? 'blue' : 'cream' }); text(n > 0 ? '×' + n : '', x + 86, y + kh - 22, 22, COL.soft, 'right'); });
         B(1180, 600, 380, 70, S.settings.qwerty ? 'Layout: QWERTY' : 'Layout: A to Z', () => { S.settings.qwerty = !S.settings.qwerty; c.save(); }, { size: 28, style: 'blue' }); text('Your Letter Bank: tap a letter to add it to the word.', 560, 640, 24, COL.soft, 'center');
         text(`Each letter is worth 1, 2 or 3 coins. A new word sells for double.`, BW / 2, 680, 24, COL.soft, 'center');
       } else if (st.bookTab === 'words') {
@@ -229,7 +235,7 @@ export function makeScreens(c) {
         const off = pager(p.words.length, 6, 1180, 100);
         p.words.slice(off, off + 6).forEach((it, i) => { const y = 185 + i * 100; rr(40, y, 1520, 90, 16, '#fffdf6', COL.edge, 3); text(it.w.toUpperCase(), 70, y + 45, 36, COL.plum, 'left', true); text(`worth ${it.value}`, 420, y + 45, 26, COL.soft);
           if (S.usePractice) { B(640, y + 12, 430, 66, 'Hand to the customer', () => { const r = R.giveWord(S, it.id); note(r); if (r.ok) emit('gave:' + r.w); }, { style: 'green', size: 26 }); B(1100, y + 12, 430, 66, 'Stock on Word Cart', () => { const r = R.stockWord(S, it.id, c.now()); note(r); if (r.ok) emit('stocked:' + it.w); }, { style: 'purple', size: 26 }); }
-          else { const fresh = !p.sold[it.w]; B(640, y + 12, 400, 66, `Sell now: ${it.value * (fresh ? R.CFG.pay.fresh : R.CFG.pay.repeat)} coins`, () => { const r = R.sellNow(S, it.id); note(r); if (r.ok) c.beep(820, 0.08); }, { style: 'gold', size: 26 }); B(1060, y + 12, 470, 66, `Stock on cart: ${it.value * R.CFG.pay.cart} later`, () => { note(R.stockWord(S, it.id, c.now())); c.speak(DLG.P12.file); }, { style: 'purple', size: 26 }); } });
+          else { const fresh = !p.sold[it.w]; B(640, y + 12, 400, 66, `Sell now: ${it.value * (fresh ? R.CFG.pay.fresh : R.CFG.pay.repeat)} coins`, () => { const r = R.sellNow(S, it.id); note(r); if (r.ok) c.beep(820, 0.08); }, { style: 'gold', size: 26 }); B(1060, y + 12, 470, 66, `Stock on cart: ${it.value * R.CFG.pay.cart} later`, () => { note(R.stockWord(S, it.id, c.now())); (S.heardP12 || (S.heardP12 = true, c.speak(DLG.P12.file))); }, { style: 'purple', size: 26 }); } });
       } else {
         const ws = Object.keys(S.discovered).sort(); if (!ws.length) text('Your dictionary. Every word you craft is remembered here, even after you sell it.', BW / 2, 400, 30, '#a79f90', 'center');
         const off = pager(ws.length, 24, 1180, 100), names = { n: 'noun', v: 'verb', a: 'adjective', r: 'adverb', p: 'plural' };
@@ -248,11 +254,11 @@ export function makeScreens(c) {
       text(wc.items.length > 6 ? `${wc.items.length - 6} more waiting behind the cart` : wc.items.length ? 'Oldest sells first.' : 'Empty. Stock words from the Spelling Book.', 410, 525, 24, COL.soft, 'center');
       rr(60, 560, 700, 96, 16, '#fff3d6', COL.edge, 3); text(`Cashbox: ${wc.cashbox} coins`, 90, 608, 34, COL.ink, 'left', true); B(440, 572, 300, 72, wc.cashbox ? `Take ${wc.cashbox} coins` : 'No coins yet', () => { const r = R.collect(S); note(r); if (r.ok) c.beep(900, 0.1); }, { style: 'green', off: !wc.cashbox });
       if (!p.words.length) text('Craft a word in the Spelling Book, then stock it here.', 410, 720, 24, COL.soft, 'center');
-      p.words.slice(0, 3).forEach((it, i) => B(60 + i * 237, 680, 226, 84, `Stock\n${it.w.toUpperCase()}`, () => { const r = R.stockWord(S, it.id, c.now()); note(r); if (r.ok) { if (S.usePractice) emit('stocked:' + it.w); else c.speak(DLG.P12.file); } }, { style: 'purple', size: 24 }));
+      p.words.slice(0, 3).forEach((it, i) => B(60 + i * 237, 680, 226, 84, `Stock\n${it.w.toUpperCase()}`, () => { const r = R.stockWord(S, it.id, c.now()); note(r); if (r.ok) { if (S.usePractice) emit('stocked:' + it.w); else (S.heardP12 || (S.heardP12 = true, c.speak(DLG.P12.file))); } }, { style: 'purple', size: 24 }));
       } else pickCart(30, 'word', 'Word Cart', 'scene/word_cart.png', 'Sells crafted words');
       if (st.cartSel === 'flower') {
       rr(810, 100, 760, 695, 22, '#fffdf6', COL.edge); const fi = img('scene/flower_cart.png'); if (fi) g.drawImage(fi, 825, 105, 130, 146);
-      text('Flower Cart', 980, 140, 40, COL.ink, 'left', true); [['glass', 'Glass vase'], ['fluted', 'Blue vase']].forEach(([k, label], i) => B(1250 + i * 160, 128, 150, 48, label, () => { st.vase = k; }, { size: 20, r: 10, style: (st.vase || 'glass') === k ? 'gold' : 'cream', on: (st.vase || 'glass') === k })); text('Arrange up to 9 cut flowers into a bouquet.', 980, 192, 24, COL.soft);
+      text('Flower Cart', 980, 140, 40, COL.ink, 'left', true); [['glass', 'Glass'], ['fluted', 'Blue'], ['clay', 'Clay']].forEach(([k, label], i) => B(1220 + i * 115, 128, 108, 48, label, () => { st.vase = k; }, { size: 20, r: 10, style: (st.vase || 'glass') === k ? 'gold' : 'cream', on: (st.vase || 'glass') === k })); text('Arrange up to 9 cut flowers into a bouquet.', 980, 192, 24, COL.soft);
       const own = (k) => (p.flowers[k] || 0) + (p.basket[k] || 0), total = Object.values(st.arr).reduce((a, b) => a + b, 0);
       st.arrPage = st.arrPage || 0; const SPP = 8, spl = R.CFG.species.slice(st.arrPage * SPP, st.arrPage * SPP + SPP); text(`Flowers ${st.arrPage * SPP + 1}-${st.arrPage * SPP + spl.length} of ${R.CFG.species.length}`, 1190, 568, 22, COL.soft, 'center'); B(830, 548, 120, 40, '◀', () => { st.arrPage = Math.max(0, st.arrPage - 1); }, { size: 22, off: st.arrPage === 0, r: 10 }); B(1430, 548, 120, 40, '▶', () => { st.arrPage = Math.min(Math.ceil(R.CFG.species.length / SPP) - 1, st.arrPage + 1); }, { size: 22, off: (st.arrPage + 1) * SPP >= R.CFG.species.length, r: 10 });
       spl.forEach((k, i) => { const x = 830 + (i % 2) * 365, y = 245 + Math.floor(i / 2) * 66, have = own(k), n = st.arr[k] || 0; rr(x, y, 350, 58, 12, have ? '#fdf0f5' : '#f3efe6', COL.edge, 2); text(k.replace(/_/g, ' '), x + 10, y + 20, 19, have ? COL.ink : '#a79f90', 'left', true); text(`you have ${have}`, x + 10, y + 43, 17, COL.soft);
@@ -304,11 +310,11 @@ export function makeScreens(c) {
       frameBg(); header(); const M = S.madlib;
       [['tale', 'The Welcome Story'], ['saved', `Storybook (${M.stories.length})`], ['journal', `Journal (${S.journal.length})`]].forEach(([id, label], i) => B(40 + i * 310, 100, 296, 64, label, () => { st.storyTab = id; st.page = 0; st.pick = null; st.read = null; }, { style: st.storyTab === id ? 'gold' : 'cream', size: 28, on: st.storyTab === id }));
       if (st.storyTab === 'tale') {
-        if (st.pick) { const sl = STORY.slots.find((s) => s.id === st.pick), opts = R.slotOptions(S, sl, true); text(`Blank ${sl.id}: choose ${R.article(sl.prompt)} ${sl.prompt}`, 40, 215, 36, COL.ink, 'left', true); B(1330, 180, 230, 64, 'Back', () => { st.pick = null; st.page = 0; }, { size: 28 });
-          if (!opts.length) wrap(`You have not discovered ${R.article(sl.prompt)} ${sl.prompt} yet. Craft one in the Spelling Book and it will appear here.`, BW / 2, 420, 1100, 32, '#a79f90', 'center');
+        if (st.pick) { const sl = STORY.slots.find((s) => s.id === st.pick), opts = R.slotOptions(S, sl, true); text(`Blank ${sl.id}: choose ${R.article(plain(sl.prompt))} ${plain(sl.prompt)}`, 40, 215, 36, COL.ink, 'left', true); B(1330, 180, 230, 64, 'Back', () => { st.pick = null; st.page = 0; }, { size: 28 });
+          if (!opts.length) wrap(`You have not discovered ${R.article(plain(sl.prompt))} ${plain(sl.prompt)} yet. Craft one in the Spelling Book and it will appear here.`, BW / 2, 420, 1100, 32, '#a79f90', 'center');
           const off = pager(opts.length, 20, 600, 730); opts.slice(off, off + 20).forEach((w, i) => B(40 + (i % 4) * 385, 270 + Math.floor(i / 4) * 90, 370, 78, w.toUpperCase(), () => { note(R.choose(S, STORY, sl.id, w)); st.pick = null; st.page = 0; }, { size: 30, style: M.picks[sl.id] === w ? 'gold' : 'cream' })); return footer(); }
-        const px = 1040, pw = paper(R.renderStory(STORY, M.picks, (sl) => `[${sl.id}: ${sl.prompt}]`), STORY.title, px, 88, 715, { ax: 690, ay: 700 }).w; void pw;
-        STORY.slots.forEach((sl, i) => { const x = 40 + (i % 3) * 330, y = 200 + Math.floor(i / 3) * 84, w = M.picks[sl.id]; B(x, y, 316, 72, w ? `${sl.id}. ${w.toUpperCase()}` : `${sl.id}. ${sl.prompt}`, () => { st.pick = sl.id; st.page = 0; }, { size: w ? 26 : 22, style: w ? 'green' : 'cream', bold: !!w }); });
+        const allIn = STORY.slots.every((sl) => M.picks[sl.id]); if (allIn) { const px = 1040, pw = paper(R.renderStory(STORY, M.picks, (sl) => `[${sl.id}: ${plain(sl.prompt)}]`), STORY.title, px, 88, 715, { ax: 690, ay: 700 }).w; void pw; } else wrap('Pick a word for each blank. Your own words come first. The story appears when every blank is filled.', 1400, 330, 560, 30, COL.soft, 'center');
+        STORY.slots.forEach((sl, i) => { const x = 40 + (i % 3) * 330, y = 200 + Math.floor(i / 3) * 84, w = M.picks[sl.id]; B(x, y, 316, 72, w ? `${sl.id}. ${w.toUpperCase()}` : `${sl.id}. ${plain(sl.prompt)}`, () => { st.pick = sl.id; st.page = 0; }, { size: w ? 26 : 22, style: w ? 'green' : 'cream', bold: !!w }); });
         const filled = STORY.slots.every((sl) => M.picks[sl.id]);
         B(40, 560, 316, 72, 'Surprise me', () => { note(R.surprise(S, STORY)); }, { style: 'purple', size: 28 });
         B(370, 560, 616, 72, M.restored ? 'Save this telling' : 'Finish the story', () => ask(M.restored ? 'Save this new telling in your Storybook?' : 'Finish the story and restore the Welcome Sign?', finishStory), { style: 'gold', size: 30, off: !filled });
@@ -317,7 +323,7 @@ export function makeScreens(c) {
         if (st.read != null && M.stories[st.read]) { paper(M.stories[st.read].text, M.stories[st.read].title || 'Your story', (BW - 526) / 2, 88, 715, { ax: 120, ay: 380 }); B(40, 700, 300, 64, 'All stories', () => { st.read = null; st.page = 0; }, { size: 26 }); }
         else { if (!M.stories.length) text('Your finished stories will be kept here to read again.', BW / 2, 420, 32, '#a79f90', 'center'); M.stories.slice(-6).forEach((s, i, arr) => { const idx = M.stories.length - arr.length + i; B(60, 200 + i * 95, 1480, 82, s.title ? s.title : `Telling ${idx + 1}: a ${s.picks[1]} ${s.picks[2]}, and the whole town began to ${s.picks[3]}`, () => { st.read = idx; st.page = 0; }, { size: 26, bold: false }); }); }
       } else {
-        const j = S.journal[S.journal.length - 1]; if (!j) text('Cat Girl writes in the journal when Chapter One is complete.', BW / 2, 420, 32, '#a79f90', 'center'); else paper(j.text.split('\n'), "Cat Girl's journal", (BW - 526) / 2, 88, 715, { ax: 120, ay: 380 });
+        const j = S.journal[S.journal.length - 1]; if (!j) text('Cat Girl writes in the journal when Chapter One is complete.', BW / 2, 420, 32, '#a79f90', 'center'); else paper(j.text.split('\n'), "Cat Girl's journal", (BW - 526) / 2, 88, 715, { ruled: true, ax: 120, ay: 380 });
       }
       footer();
     },
@@ -332,7 +338,7 @@ export function makeScreens(c) {
     community() {
       frameBg(); header(); c.setCommunity(true); text("The Player's Garden", BW / 2, 138, 44, COL.ink, 'center', true);
       const cm = S.comm, p = S.real; st.ctool = st.ctool || 'water';
-      wrap('Twelve shared plots. Anyone can plant, water or pick, and nobody keeps track of who did. Flowers grow slowly here, three times slower than at home.', BW / 2, 190, 1300, 26, COL.soft, 'center', 2);
+      wrap('Twelve garden plots by your cottage. Plant, water or pick here. Flowers grow three times slower here than at the greenhouse desk.', BW / 2, 190, 1300, 26, COL.soft, 'center', 2);
       [['seeds', 'Plant'], ['water', 'Water'], ['pick', 'Pick']].forEach(([k, label], i) => B(90 + i * 300, 245, 280, 70, label, () => { st.ctool = k; say(`${label} selected. Now choose a plot.`); }, { style: st.ctool === k ? 'gold' : 'cream', on: st.ctool === k }));
       seedPicker(1000, 245, 330, 70, 22);
       cm.plots.forEach((pl, i) => { const x = 40 + (i % 6) * 258, y = 335 + Math.floor(i / 6) * 215, d = pl.plant;
@@ -346,7 +352,7 @@ export function makeScreens(c) {
     },
     mini() {
       frameBg(); header(); const mm = st.mini; if (!mm) { go('notice'); return; } const sty = mm.m.story;
-      if (mm.pick) { const sl = sty.slots.find((x) => x.id === mm.pick), opts = R.slotOptions(S, sl, true); text(`Blank ${sl.id}: choose ${R.article(sl.prompt)} ${sl.prompt}`, 40, 215, 36, COL.ink, 'left', true); B(1330, 180, 230, 64, 'Back', () => { mm.pick = null; st.page = 0; }, { size: 28 });
+      if (mm.pick) { const sl = sty.slots.find((x) => x.id === mm.pick), opts = R.slotOptions(S, sl, true); text(`Blank ${sl.id}: choose ${R.article(plain(sl.prompt))} ${plain(sl.prompt)}`, 40, 215, 36, COL.ink, 'left', true); B(1330, 180, 230, 64, 'Back', () => { mm.pick = null; st.page = 0; }, { size: 28 });
         const off = pager(opts.length, 20, 600, 730); opts.slice(off, off + 20).forEach((w, i) => B(40 + (i % 4) * 385, 270 + Math.floor(i / 4) * 90, 370, 78, w.toUpperCase(), () => { mm.picks[sl.id] = w; mm.pick = null; st.page = 0; }, { size: 30, style: mm.picks[sl.id] === w ? 'gold' : 'cream' })); return footer(); }
       text(`${mm.m.who}'s story`, 40, 135, 36, COL.plum, 'left', true); paper(R.renderStory(sty, mm.picks, (sl) => `[${sl.id}: ${sl.prompt}]`), sty.title, 1040, 88, 715, { ax: 690, ay: 700 });
       sty.slots.forEach((sl, i) => { const w = mm.picks[sl.id]; B(40, 180 + i * 84, 600, 72, w ? `${sl.id}. ${w.toUpperCase()}` : `${sl.id}. choose ${R.article(sl.prompt)} ${sl.prompt}`, () => { mm.pick = sl.id; st.page = 0; }, { size: w ? 28 : 24, style: w ? 'green' : 'cream', bold: !!w }); });
@@ -411,7 +417,7 @@ export function makeScreens(c) {
   }
 
   function draw() {
-    btns = []; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, BW, BH); (SCREENS[st.screen] || SCREENS.loading)();
+    btns = []; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, BW, BH); try { (SCREENS[st.screen] || SCREENS.loading)(); } catch (e) { if (S) throw e; btns = []; g.clearRect(0, 0, BW, BH); SCREENS.loading(); }   // a screen opened before the game exists shows the loading screen instead of an error
     if (st.modal) { const keep = btns; btns = []; g.fillStyle = 'rgba(60,40,30,0.55)'; g.fillRect(0, 0, BW, BH); rr(300, 270, 1000, 360, 30, COL.paper, COL.edge, 8); wrap(st.modal.text, BW / 2, 350, 880, 38, COL.ink, 'center', 3, true); const m = st.modal; B(360, 500, 400, 96, m.noLabel, () => { st.modal = null; if (m.no) m.no(); }, { style: 'cream', size: 36 }); B(840, 500, 400, 96, m.yesLabel, () => { st.modal = null; m.yes(); }, { style: 'green', size: 36 }); void keep; }
     dirty = false; c.redraw();
   }
@@ -428,7 +434,7 @@ export function makeScreens(c) {
     if (ev.wordSales.length) { say(`A customer bought ${ev.wordSales.map((x) => x.w.toUpperCase()).join(', ')}. The coins are in the cashbox.`); c.beep(900, 0.08); c.save(); }
     if (ev.flowerSales.length) { say(`A bouquet sold for ${ev.flowerSales.reduce((a, b) => a + b.value, 0)} coins.`); c.beep(900, 0.08); c.save(); }
     if (ev.bloomed) c.save(); checkBloom();
-    if (S.tutorialDone && !S.madlib.restored && !S.madlib.nudged && !st.talk && R.madReady(S, STORY)) { S.madlib.nudged = true; c.save(); cue('R15'); }
+    if (S.tutorialDone && !S.madlib.restored && !S.madlib.nudged && !st.talk && R.madReady(S, STORY) && Object.keys(S.discovered).length >= 12) { S.madlib.nudged = true; c.save(); cue('R15'); }
     if (['garden', 'carts'].includes(st.screen) || half % 20 === 0) dirty = true;
   }
   async function start() {

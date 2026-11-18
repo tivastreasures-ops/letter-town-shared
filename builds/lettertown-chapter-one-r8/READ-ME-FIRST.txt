@@ -1,10 +1,10 @@
-LETTER TOWN - CHAPTER ONE (Quest 3 / WebXR edition) - ROUND 8
+LETTER TOWN - CHAPTER ONE (Quest 3 / WebXR edition) - ROUND 1
 Built Nov 14-15, 2026 by the Professor (Claude) after the Director's GO. Round 1 added Nov 15.
 
 HOW TO PUT IT ONLINE
-1. Unzip. You get one folder called "lettertown-chapter-one-r8" (a different name on purpose, so it does not replace the Arcade's "lettertown" folder).
+1. Unzip. You get one folder called "lettertown-ch1" (a different name on purpose, so it does not replace the Arcade's "lettertown" folder).
 2. Upload the whole folder to GreenGeeks inside public_html.
-3. On the Quest 3, open the Quest browser and go to  https://YOUR-SITE/lettertown-chapter-one-r8/   (must be https)
+3. On the Quest 3, open the Quest browser and go to  https://YOUR-SITE/lettertown-ch1/   (must be https)
 4. The opening film plays first. Then press "Enter VR" (or "Enter" to play on the flat screen).
 5. Put the controllers down so hand tracking takes over. The first thing you see in VR is the Make it comfortable screen.
 It also runs on a computer or phone at the same address: click or tap everything.
@@ -18,7 +18,7 @@ HOW YOU PLAY
 - Settings tab: text size, volume, sound on/off, table height, reach, recenter, exit VR, erase save.
 - The game saves by itself after every action. "Continue" on the title screen picks up where you left off.
 
-WHAT CHANGED IN ROUND 8
+WHAT CHANGED IN ROUND 1
 - First visit plays landing-page-opening-video. Every later visit plays letter-town-start. Both end on the Ivy entrance picture with Enter and Enter VR.
 - The end-chapter-one film plays on the story board when the Welcome Sign is restored (Skip works).
 - Tutorial lines now advance by themselves (Auto is on; you can turn it off). The speech box is small; the resident stands in 3D in front of their home.

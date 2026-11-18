@@ -164,12 +164,12 @@ export function harvest(S, i, txn) {
 }
 
 /* ---------- Kit's seed shop ---------- */
-export function price(item) { const [kind, tier] = item.split(':'); return kind === 'supergrow' ? CFG.prices.supergrow : kind === 'sp' ? (TIER_OF[tier] ? CFG.prices.seed[TIER_OF[tier]] : undefined) : CFG.prices[kind][tier]; }
+export function price(item) { const [kind, tier] = item.split(':'); return kind === 'supergrow' ? CFG.prices.supergrow : kind === 'sp' ? (TIER_OF[tier] ? CFG.prices.seed[TIER_OF[tier]] : undefined) : kind === 'sp5' ? (TIER_OF[tier] ? CFG.prices.pack[TIER_OF[tier]] : undefined) : CFG.prices[kind][tier]; }
 export function buy(S, item, qty) {
   const g = pouch(S), [kind, tier] = item.split(':'), n = Math.max(1, Math.min(99, Math.floor(qty) || 1)), one = price(item), cost = one == null ? null : one * n; if (cost == null) return no('The shop does not sell that.');
   if (g.coins < cost) return no(`Not enough coins. You need ${cost - g.coins} more.`, 'coins');
-  g.pk = g.pk || {}; g.coins -= cost; if (kind === 'sp') g.pk[tier] = (g.pk[tier] || 0) + n; else if (kind === 'seed') g.seeds[tier] += n; else if (kind === 'pack') g.seeds[tier] += 5 * n; else g.doses += n;
-  return ok(kind === 'supergrow' ? (n === 1 ? 'One Super Grow, all yours.' : `${n} Super Grow, all yours.`) : kind === 'sp' ? `${n} ${tier} seed${n > 1 ? 's' : ''}, all yours.` : `${kind === 'pack' ? 'Five' : 'One'} ${tier} seed${kind === 'pack' ? 's' : ''}, all yours.`);
+  g.pk = g.pk || {}; g.coins -= cost; if (kind === 'sp') g.pk[tier] = (g.pk[tier] || 0) + n; else if (kind === 'sp5') g.pk[tier] = (g.pk[tier] || 0) + 5 * n; else if (kind === 'seed') g.seeds[tier] += n; else if (kind === 'pack') g.seeds[tier] += 5 * n; else g.doses += n;
+  return ok(kind === 'supergrow' ? (n === 1 ? 'One Super Grow, all yours.' : `${n} Super Grow, all yours.`) : kind === 'sp' ? `${n} ${tier} seed${n > 1 ? 's' : ''}, all yours.` : kind === 'sp5' ? `A 5-pack of ${tier} seeds, all yours.` : `${kind === 'pack' ? 'Five' : 'One'} ${tier} seed${kind === 'pack' ? 's' : ''}, all yours.`);
 }
 
 /* ---------- spelling ---------- */
@@ -246,9 +246,9 @@ export function putAway(S, slot) { const H = S.home; if (!H.placed[slot]) return
 /* ---------- the Mad Lib ---------- */
 export const STARTER = { adjective: ['bright', 'tiny', 'sleepy', 'golden', 'silly', 'gentle', 'cozy', 'brave', 'sparkly', 'curious'], noun: ['lantern', 'bridge', 'kitten', 'teapot', 'feather', 'pumpkin', 'compass', 'umbrella', 'biscuit', 'moon'], verb: ['dance', 'giggle', 'wander', 'sparkle', 'whisper', 'bounce', 'bake', 'wave', 'sing', 'twirl'], plural_noun: ['lanterns', 'pebbles', 'pancakes', 'ribbons', 'acorns', 'bubbles', 'buttons', 'snowflakes'] };
 export function slotOptions(S, slot, loan) {
-  const out = loan ? [...(STARTER[slot.category] || [])] : [];
-  for (const w of Object.keys(S.discovered)) { const k = S.discovered[w]; if (slot.category === 'adjective' && k.includes('a')) out.push(w); else if (slot.category === 'verb' && k.includes('v')) out.push(w); else if (slot.category === 'noun' && k.includes('n')) out.push(w); else if (slot.category === 'plural_noun') { if (k.includes('p')) out.push(w); else if (k.includes('n')) out.push(pluralOf(w)); } }
-  return [...new Set(out)].sort();
+  const own = [], lent = loan ? [...(STARTER[slot.category] || [])] : [];   // the words the player spelled come first; the town's loaned words follow
+  for (const w of Object.keys(S.discovered)) { const k = S.discovered[w]; if (slot.category === 'adjective' && k.includes('a')) own.push(w); else if (slot.category === 'verb' && k.includes('v')) own.push(w); else if (slot.category === 'noun' && k.includes('n')) own.push(w); else if (slot.category === 'plural_noun') { if (k.includes('p')) own.push(w); else if (k.includes('n')) own.push(pluralOf(w)); } }
+  const mine = [...new Set(own)].sort(); return [...mine, ...[...new Set(lent)].filter((w) => !mine.includes(w)).sort()];
 }
 export function madReady(S, story) { return story.slots.every((s) => slotOptions(S, s).length > 0); }
 export function choose(S, story, slotId, word) { const s = story.slots.find((x) => x.id === slotId); if (!s) return no('No such blank.'); if (!slotOptions(S, s, true).includes(word)) return no('That word does not fit this blank.'); S.madlib.picks[slotId] = word; return ok('Chosen.'); }
@@ -264,3 +264,6 @@ export function completeStory(S, story, now, journalText) {
   if (first) { S.madlib.restored = true; S.journal.push({ id: 'ch1', at: now, text: journalText(S) }); }
   return ok(first ? 'The Welcome Sign shines again!' : 'A new telling is saved in your Storybook.', { first });
 }
+
+/* the letters a flower can give, vowels first and then the rest in alphabetical order, each once */
+export function letterOrder(word) { const u = [...new Set(String(word).toUpperCase().replace(/[^A-Z]/g, ''))], V = 'AEIOU'; return [...u.filter((c) => V.includes(c)).sort(), ...u.filter((c) => !V.includes(c)).sort()].join(' '); }

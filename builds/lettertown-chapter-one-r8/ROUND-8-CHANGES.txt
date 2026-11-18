@@ -1,65 +1,10 @@
-ROUND 8 (copy of Round 7, which is untouched in builds/lettertown-chapter-one)
-Nov 16 2026, the Professor.
 
-CHANGED
-- Plants now grow through the 3D seed (Golden Magic Seed), then the 3D sprout (Sprout Seedling), then the 3D bud in the flower's own color, then the bloom. Garden table and community plots.
-- Each flower gets a bud in its own color. Flowers with their own color use it; the rest are mapped: yellow = buttercup, jonquil, marigold, sunflower; pink = chrysanthemum, plumeria, zinnia; blue = flax; purple = violet; white = kopsia.
-- Blooms sit on the soil instead of floating 5.5 cm above it.
-- 2D screens (Garden, community) use the seed, sprout and bud pictures from Drive instead of shapes drawn by code.
-NEW FILES: assets/models/flowers/seed_magic.glb, sprout_seedling.glb; assets/blooms/pseed.png, psprout.png, pbud_<color>.png
-
-NOT DONE YET: peony/poppy merge, per-flower seed shop and quantity counters, second vase, resident placement, anchoring, interiors.
-
-Round 8, part 2
-- Poppy merged into peony (14 flowers). Peony has six colors; black and blue use the old poppy art and models. Old saves are converted.
-- One tier list: common rose, daisy, peony; uncommon lily, sunflower, buttercup, marigold, plumeria, violet, chrysanthemum; rare flax, jonquil, kopsia, zinnia.
-- Seed shop: tabs for Common, Uncommon, Rare and Super Grow. Every flower has its own packet. Each row has a minus/plus counter and a Buy button with the total. Buying a packet selects it for planting.
-- Garden and community garden: a seed picker (arrows) chooses the packet to plant. Old mixed seeds still work as "Any common/uncommon/rare".
-- Flower Cart: choose the glass vase or the Blue Fluted Vase (your Meshy model, 512 px).
-- Plot soil mound uses your soil tile (mirrored so the seam does not show).
-Not done yet: a third vase, seed shop interior, navigation fixes, building interiors.
-
-Round 8, part 3
-- Teleport is clamped to the town bounds (no walking off the edge into the clouds).
-- A burst of VR "reset" events recenters the table only once per 4 seconds, so the table stops chasing your head.
-
-Round 8, part 4
-- Grab reach is about 40% bigger, grows with the Pinch setting; props (book, shop, vase) and the menu button are easier to hit; Pinch setting goes up to 260%.
-
-Round 8, part 5
-- The tool tray moves to the side of the hand you pinch with first (still adjustable with the Table buttons).
-
-Round 8, part 6
-- Home screen: the cutaway cottage now has the roof color of the cottage you chose (rose = red, bluebell = blue, honey = gold). Before, every home showed the blue-roof house.
-- Snowy and Mayor Ren stand on the town hall steps; Phineas stands by the workshop and carts.
-
-Round 8, part 7
-- Garden plots use your 3D soil mound (soilmound.glb: 8,326 triangles already; I cut the textures from three 4096 px PNGs, 54 MB, to one 512 px color map, 0.6 MB).
-
-Round 8, part 8
-- Both carts are about 35% bigger (and easier to grab). Bouquets on the flower cart are made of your 3D flower models, in the species that went into each bouquet, instead of colored balls.
-
-Round 8, part 9
-- Cart buttons say what they do: "Take 12 coins" / "No coins yet"; "Keep 5 for later" / "Sell on the flower cart" / "Add flowers first".
-
-Round 8, part 10
-- Carts screen: choose which cart you are working at (Word Cart or Flower Cart); the other shows as a picture with a "Work at the ..." button.
-- The 2D cart pictures are now renders of your 3D carts, so they match.
-
-Round 8, part 11
-- Tapping "Thank you!" on a present now bursts it: 160 confetti pieces plus a pop sound.
-- A crafted word appears on the table as an object for a few seconds: your item art when the word has one (bed, lamp, cup...), an emoji for about 70 common words, otherwise the word on a tile. This is a stopgap until each word has 3D art.
-
-Round 8, part 12
-- Fixed a crash on startup: the seed-packet check ran before a game was loaded and stopped the whole scene (blank sky, no town). Label now reads Build R8-12.
-
-Build R8-13: free ground teleporting turned off (travel is by the map only, so accidental pinches can't move you); Return to Garden button on the Adjust screen; QWERTY / A-to-Z letter layout toggle in the Spelling Book.
-
-R8-14: Merry now stands on the pad in front of the community garden, facing the garden. Kit waits until the seed shop 3D model exists.
-
-R8-15: Merry Greenhouse (new 3D model, 10K triangles) stands beside the community garden with Merry in front; clicking Merry on the map opens the desk (seeds, watering can, Super Grow). Community garden renamed Player's Garden. Phineas workshop is the old green cottage model. Old fenced yard removed. Player home placement waits for the new cottage models.
-
-R8-16
-- Seed Shop 3D model in town; Kit stands beside it.
-- Four 3D cottages (Pink, White, Flower Box, Forest Green); picker shows four cards; chosen cottage sits in front of the Player's Garden.
-- Merry's greenhouse = desk setup; Phineas workshop = green cottage.
+R8-17
+- Fixed: QWERTY row overlap; null 'lesson' error; blank white cards before the game starts; Player's Garden text.
+- Town: broken "Welcome to Letter Town" sign removed (restored sign still appears when the story is finished); community board rebuilt in 3D to match the map art; Word Cart and Flower Cart moved apart; Phineas stands in front of his green workshop facing the player; fewer trees; river around the town with hills and snowy mountains beyond it as a clear edge.
+- Seeds: Buy 1 or 5-pack for every flower (5-pack 20 / 30 / 45); packet is two-sided with the name on both faces; "Grows" letters now list vowels first, then the rest alphabetically (Zinnia = A I N Z).
+- Word Cart line ("only goods you deliberately place...") plays once. Clay vase added; flowers sit correctly in whichever vase is chosen.
+- Story picker: plain word types (no "base-form"), story text hidden until every blank is filled, your own words listed first. The Mayor's "everything we need" now waits for 12 discovered words.
+- Spelling Book: real paper-page look; ruled lines only in the journal.
+- Letter tiles: a wooden tray holds one tile per letter with a count badge; pinch a tile, set it in the word row, lift it back out. Poke keyboard still works.
+- Not done in R8-17: Hudson by the sign, Kit through her front door, the misplaced tree, a Meshy-quality community board and extra 3D vases (blue and clay are the only two besides glass).
