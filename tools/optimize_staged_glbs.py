@@ -89,15 +89,15 @@ def process(name, cap):
     lo, hi = bounds(objects)
     for obj in bpy.context.scene.objects:
         if obj.parent is None:
-            obj.location.y -= lo[1]
+            obj.location.z -= lo[2]
     bpy.context.view_layer.update()
 
     images_changed = 0
     textures = []
     for img in bpy.data.images:
-        if img.source != "FILE" or not img.has_data:
+        if img.type != "IMAGE":
             continue
-        if max(img.size) > 1024:
+        if max(img.size) > 1024 and img.has_data:
             width, height = img.size
             factor = 1024 / max(width, height)
             img.scale(max(1, round(width * factor)), max(1, round(height * factor)))
@@ -113,17 +113,18 @@ def process(name, cap):
     out = STAGE / (name + "_v1.glb")
     report = STAGE / (name + "_v1.txt")
     bpy.ops.export_scene.gltf(filepath=str(out), export_format="GLB",
-        export_yup=False, export_apply=False, export_texcoords=True,
+        export_yup=True, export_apply=False, export_texcoords=True,
         export_normals=True, export_materials="EXPORT", export_image_format="AUTO")
-    dims = [hi[i] - lo[i] for i in range(3)]
+    # Export with glTF Y-up: X stays X, Blender Z becomes glTF Y, Blender Y becomes glTF Z.
+    dims = [hi[0] - lo[0], hi[2] - lo[2], hi[1] - lo[1]]
     # Watertight is not required for open furniture/surfaces, but always reported.
     report.write_text("\n".join([
         f"asset: {name}_v1.glb",
         f"source: assets/staging/originals/{name}_orig.glb",
         "units: Blender imported scene units (typically metres for glTF)",
         f"bounding box X x Y x Z: {dims[0]:.5f} x {dims[1]:.5f} x {dims[2]:.5f}",
-        f"base min y: {lo[1]:.5f}",
-        f"target height: {dims[1]:.5f} scene units",
+        f"base min y: {lo[2]:.5f}",
+        f"target height: {dims[1]:.5f} scene units (glTF Y-up)",
         f"triangle count: {after}",
         f"original triangle count: {before}",
         f"watertight: {'yes' if after_manifold else 'no'}",
@@ -131,7 +132,7 @@ def process(name, cap):
         "texture format: embedded glTF/GLB (source format preserved or Blender re-encoded)",
         f"textures: {'; '.join(textures) or 'none detected'}",
         f"textures resized to max 1024: {images_changed}",
-        "changes: mesh decimation where over budget; packed textures; scene base translated to y=0",
+        "changes: mesh decimation where over budget; packed textures; Blender Z base translated to zero; exported glTF Y-up",
         "review: AUTOMATED PASS ONLY. Visual appearance/UV fidelity and gameplay scale require review before integration.",
     ]) + "\n", encoding="utf-8")
     if after > cap:
