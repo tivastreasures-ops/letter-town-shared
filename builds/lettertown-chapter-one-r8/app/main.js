@@ -212,12 +212,15 @@ gltfLoader.load('assets/models/merry_greenhouse.glb', (g) => { const m = fit(g.s
 [['cottage_new_green', 3.0, 6.8, -3.8, -1.45], ['cottage_new_blue', 3.0, 6.2, -7.2, -1.8], ['cottage_new_green', 3.0, -7.0, -6.8, 1.6], ['cottage_new_blue', 3.0, -7.4, 0.6, 1.2], ['cottage_new_green', 3.0, 5.0, 5.6, 2.6], ['cottage_new_blue', 3.0, -4.6, 6.2, 3.4]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 [[-8.5, -2.5], [-9.8, -7.0], [-8, -11], [8.5, -11], [10.2, -6], [9.6, -1.5], [-4.5, -11.5], [4.8, -12], [-9.5, 3.5], [-6, 7.5], [0, 9.5], [8, 6.5], [10.5, 3], [-12.5, -5], [12.5, -4], [-4.8, 2.2], [4.4, 2.8]].forEach(([x, z], i) => put(i % 2 ? 'tree_flowering' : 'tree_lush', 3.4 + rng() * 1.8, x, z, rng() * 6.28));
 const KEEP = [[0, -0.4, 2.7], [0, -7, 3.0], [3.5, -1.3, 2.9], [-3.2, -1.9, 2.6], [0, -4.3, 1.6], [-4.2, -2.8, 2.7]];   // keep the cobblestone and garden clear of shrubs
-for (let i = 0; i < 30; i++) { const a = rng() * 6.283, r = 2.8 + rng() * 11, x = Math.cos(a) * r, z = -3 + Math.sin(a) * r; if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; const k = ['shrub', 'bush', 'grassclump', 'grassclump'][i % 4]; put(k, k === 'grassclump' ? 0.35 + rng() * 0.3 : 0.6 + rng() * 0.7, x, z, rng() * 6.28); }
+// APPROVED MAP: hand-placed landscaping, never scatter bushes into NPCs or roads.
+const NPC_CLEAR = [[-1.1, -10.3], [1.1, -10.3], [5, -3.9], [-5.6, -1.5], [5.3, -2.1]];
+const SCENERY_SPOTS = [['shrub', 0.8, -10, -3], ['grassclump', 0.4, -11, -1], ['bush', 0.7, -10, 3], ['shrub', 0.8, -8, 4], ['grassclump', 0.4, -8, 7], ['bush', 0.7, -5, 9], ['shrub', 0.8, 9, 3], ['grassclump', 0.4, 11, 1], ['bush', 0.7, 11, -3], ['shrub', 0.8, 10, -9], ['grassclump', 0.4, 7, -11], ['bush', 0.7, 5, 9]];
+SCENERY_SPOTS.forEach(([k, h, x, z]) => { if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr + 0.6)) return; if (NPC_CLEAR.some(([nx, nz]) => Math.hypot(x - nx, z - nz) < 2.2)) return; put(k, h, x, z, 0); });
 [[-3, 5], [3.4, 7.5], [-8, 9], [7.5, 10], [0, 13], [-11, 6], [11, 8], [-14, -9], [14, -10], [-2, -15], [5, -15]].forEach(([x, z]) => put(rng() < 0.5 ? 'tree_lush' : 'tree_flowering', 3.6 + rng() * 1.6, x, z, rng() * 6.28));
 [['cottage_new_green', 3.0, 1.2, 4.6, 3.14], ['cottage_new_blue', 3.0, -9.5, 6.5, 2.2], ['cottage_new_blue', 3.0, 9.5, 6.8, -2.2]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 const FLW = [['marigold', 0.35], ['buttercup', 0.3], ['sunflower', 0.6], ['violet', 0.3], ['flax', 0.35], ['jonquil', 0.35], ['zinnia', 0.35], ['kopsia', 0.35], ['daisy_white', 0.3], ['rose_pink', 0.4], ['poppy_blue', 0.35], ['peony_pink', 0.35], ['lily_purple', 0.4]];
 for (let i = 0; i < 48; i++) { const a = rng() * 6.283, r = 2.6 + rng() * 9, x = Math.cos(a) * r, z = -2 + Math.sin(a) * r; if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; const [k, h] = FLW[i % FLW.length]; flowerModel(k, h * (0.8 + rng() * 0.5), (m) => { m.position.set(x, 0, z); m.rotation.y = rng() * 6.28; world.add(m); }); }
-for (let i = 0; i < 10; i++) { const a = i / 10 * 6.283; put('bush', 0.9, Math.cos(a) * 3.3, -7 + Math.sin(a) * 3.3, rng() * 6.28); }   // a ring of bushes around the fountain plaza
+// APPROVED MAP: the fountain plaza stays open, no ring of bushes.
 
 /* ---------- the community garden: twelve shared plots in the town square, and neighbors strolling through ---------- */
 const comm = new THREE.Group(); comm.position.set(-4.2, 0, -2.8); comm.rotation.y = 0.89; comm.visible = true; town.add(comm);
@@ -262,6 +265,10 @@ gltfLoader.load('assets/models/community_board.glb', (g) => { const m = fit(g.sc
 gltfLoader.load('assets/models/pink_cloud.glb', (g) => { [[-30, 7, -24, 15], [-10, 9, -38, 18], [18, 7, -34, 14], [34, 9, -10, 17], [-36, 8, 12, 16]].forEach(([x, y, z, w], i) => { const m = g.scene.clone(true); m.traverse((o) => { if (o.material) { o.material = o.material.clone(); o.material.fog = false; if (o.material.emissive) { o.material.emissive.set('#d9d0f2'); o.material.emissiveIntensity = 0.7; if (o.material.emissiveMap === null) o.material.emissiveMap = o.material.map; } } }); const h = new THREE.Group(); h.add(m); h.scale.setScalar(w / 0.96); h.position.set(x, y, z); h.rotation.y = i * 1.3; h.userData = { x, z, a: i * 1.1, bob: i }; scene.add(h); pinkClouds.push(h); }); });   // additive distant clouds at the town edge; the sky and fluffy clouds stay as they were
 const edgeScenery = new THREE.Group(); town.add(edgeScenery);   // the Librarian's world-edge kit: trees, shrubs, rocks and the bridge, placed from town_layout_v1.json
 fetch('assets/world_layout_v1.json').then((r) => r.json()).then((L) => { L.objects.filter((o) => ['tree_lush_edge', 'tree_flowering_edge', 'shrub_edge', 'rock_edge', 'bridge_edge'].includes(o.asset)).forEach((o) => { worldModel(o.asset, (m) => { const h = new THREE.Group(); h.add(m); h.position.set(o.x, o.y || 0, o.z); h.rotation.y = o.rotationY || 0; h.scale.setScalar(o.scale || 1); edgeScenery.add(h); }); }); }).catch(() => { /* no layout file: the town stays as it was */ });
+// APPROVED MAP: the south entrance. A continuous cobblestone road runs from the cottage and board path to the bridge; the welcome sign (the archway) stands over it, and Hudson lives beside it.
+cobblePatch(new THREE.PlaneGeometry(2.2, 27), 2.2, 27, 0, 17.5);
+addProp('archway', 3.2, 0, 0, 29.5, 0, { parent: town });
+gltfLoader.load('assets/models/hudson.glb', (g) => { const m = fit(g.scene, 1.0); m.position.set(2.2, 0, 29.2); m.rotation.y = -0.4; town.add(m); });
 const mixers = [], walkers = [], KIDS = ['anna', 'timmy', 'mary', 'billy', 'sally', 'joe'], KID_H = 1.15; let commOn = true, kidsLoaded = false;
 const CARTS = { word: [0.35, -1.75], flower: [2.7, -0.55] };   // where a neighbor stands to shop
 const SPOTS = [[0, -5.5], [-1.5, -6.2], [1.6, -6.4], [0, -8.4], [-2.2, -4.2], [2.0, -3.4], [-3.0, -0.6], [-2.4, -1.4], [3.2, -0.2], [0.6, -3.0]];   // places to stroll to on the cobblestones
@@ -419,7 +426,7 @@ function stepBits(dt) { for (const b of bits) { if (b.life <= 0) continue; b.lif
 
 
 /* ---------- moving around: the town slides around you, so your table, tools and panel always stay in reach ---------- */
-const TP = { home: [0, 0], yard: [3.6, 3.4], carts: [2.2, 0.7], fountain: [0, -4.1], townhall: [0, -8.9], cottages: [4.8, -1.0], commgarden: [-2.7, -0.5], merry: [-3.6, -0.2] }, TP_LOOK = { home: [0, -2], yard: [3.6, 0], carts: [1.9, -1.6], fountain: [0, -7], townhall: [0, -12.5], cottages: [8.3, -2], commgarden: [-4.2, -2.8], merry: [-6.8, -2.8] };
+const TP = { home: [0, 0], yard: [3.6, 3.4], carts: [2.2, 0.7], fountain: [0, -4.1], townhall: [0, -8.9], cottages: [4.8, -1.0], commgarden: [-2.7, -0.5], merry: [-3.6, -0.2], gate: [0, 24.5] }, TP_LOOK = { home: [0, -2], yard: [3.6, 0], carts: [1.9, -1.6], fountain: [0, -7], townhall: [0, -12.5], cottages: [8.3, -2], commgarden: [-4.2, -2.8], merry: [-6.8, -2.8], gate: [0, 29.5] };
 let tpName = 'home'; const _tp = new THREE.Vector3();
 function placeTown(x, z, lx, lz) { const th = Math.atan2(lx - x, -(lz - z)); const c = Math.cos(th), sn = Math.sin(th); town.rotation.y = th; town.position.set(-(x * c + z * sn), 0, -(-x * sn + z * c)); }
 function teleportTo(k, quiet) { const a = TP[k]; if (!a) return; tpName = k; placeTown(a[0], a[1], TP_LOOK[k][0], TP_LOOK[k][1]); if (!quiet) beep(560, 0.06); }

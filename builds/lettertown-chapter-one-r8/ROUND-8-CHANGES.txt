@@ -52,3 +52,8 @@ R8-17n
 
 R8-17o
 - World edge: the Librarian's kit is placed from town_layout_v1.json: 32 low-poly trees, 24 shrubs, 12 rocks and the bridge, in a ring 16 m or more from every teleport spot. Not yet integrated, by design: the distant panels, the replacement roads and the replacement river, because of seams and double rendering.
+
+R8-17p
+- Approved map: the random shrub scatter and the fountain bush ring are gone. Landscaping is hand-placed with clear space around the residents (the Librarian's branch, applied to this build).
+- South entrance: a continuous cobblestone road runs from the board path to the bridge, the welcome sign (the archway) stands over it at the south entrance, and Hudson stands beside it, one metre tall. There is a new 'gate' teleport spot.
+- Not done yet: the river replacement, the background panels, and moving the board and workshop to the map.
