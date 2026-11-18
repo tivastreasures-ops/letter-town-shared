@@ -117,37 +117,37 @@
   "M06": {
     "who": "MERRY",
     "text": "See the bud? When the flower is ready, you'll be able to harvest it.",
-    "file": null
+    "file": "LT_CH01_MERRY_M06_bud.mp3"
   },
   "M07": {
     "who": "MERRY",
     "text": "Now pick the bloom. You can use a simple selection or the hand controls if you have them.",
-    "file": null
+    "file": "LT_CH01_MERRY_M07_pick_bloom.mp3"
   },
   "M08": {
     "who": "MERRY",
     "text": "Lovely! You've collected a letter for your Letter Bank and a cut flower for your flower collection.",
-    "file": null
+    "file": "LT_CH01_MERRY_M08_collected.mp3"
   },
   "M09": {
     "who": "MERRY",
     "text": "The letter and the flower are separate keepsakes. You can spend the letter without losing the flower.",
-    "file": null
+    "file": "LT_CH01_MERRY_M09_keepsakes.mp3"
   },
   "M10": {
     "who": "MERRY",
     "text": "Practice here as often as you like. Nothing from this practice garden costs your real supplies.",
-    "file": null
+    "file": "LT_CH01_MERRY_M10_practice_free.mp3"
   },
   "M11": {
     "who": "MERRY",
     "text": "Would you like another try? Gardens are very patient teachers.",
-    "file": null
+    "file": "LT_CH01_MERRY_M11_another_try.mp3"
   },
   "M12": {
     "who": "MERRY",
     "text": "You've got it! Return to Hudson when you're ready, and we'll see you again anytime.",
-    "file": null
+    "file": "LT_CH01_MERRY_M12_return_hudson.mp3"
   },
   "H10": {
     "who": "HUDSON",
@@ -162,7 +162,7 @@
   "K01": {
     "who": "KIT",
     "text": "Oh! A customer! Welcome to my seed shop! I'm Kit. Please mind the seedlings. They're very nosy.",
-    "file": null
+    "file": "LT_CH01_KIT_K01_welcome.mp3"
   },
   "K02": {
     "who": "KIT",
@@ -172,12 +172,12 @@
   "K03": {
     "who": "KIT",
     "text": "Those are practice coins, not your real money. Go on, try something fancy!",
-    "file": null
+    "file": "LT_CH01_KIT_K03_practice_coins.mp3"
   },
   "K04": {
     "who": "KIT",
     "text": "A fine choice! Every seed is a little promise waiting to happen.",
-    "file": null
+    "file": "LT_CH01_KIT_K04_fine_choice.mp3"
   },
   "K05": {
     "who": "KIT",
