@@ -46,3 +46,6 @@ R8-17l
 
 R8-17m
 - Housewarming gift: the present box is replaced by the blue gift bag (the Librarian's blue_gift_bag_v1, 3.8 MB).
+
+R8-17n
+- Seed shop screen: the seed shop artwork now shows at the left with Kit standing in front, and the seed packets sit on the shelf rows.

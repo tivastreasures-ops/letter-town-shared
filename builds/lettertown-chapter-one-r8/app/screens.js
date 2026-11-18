@@ -92,7 +92,7 @@ export function makeScreens(c) {
     B(x + 86 + bw, y, 70, h, '▶', () => cyc(1), { size, style: 'cream', off: keys.length < 2 });
   }
   function frameBg() { g.fillStyle = COL.paper; g.fillRect(0, 0, BW, BH); g.strokeStyle = COL.edge; g.lineWidth = 12; g.strokeRect(6, 6, BW - 12, BH - 12); }
-  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-17m', BW - 40, 872, 16, COL.soft, 'right'); }
+  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-17n', BW - 40, 872, 16, COL.soft, 'right'); }
   function header(title) {
     if (S.lesson) { text(title, 40, 52, 40, COL.ink, 'left', true); const free = st.wait && st.wait.free; if (free) B(BW - 760, 20, 300, 64, "I'm finished", finishPractice, { style: 'green', size: 30 }); B(BW - 440, 20, 100, 64, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 26 }); B(BW - 330, 20, 300, 64, 'Back to Hudson', () => ask('Leave this lesson? You can repeat it any time.', leaveLesson), { style: 'rose', size: 28 }); if (S.usePractice && !free) text('Practice: nothing here uses your real coins or letters', BW / 2 + 60, 52, 24, COL.soft, 'center'); return; }
     const tabs = [['map', 'Map'], ['garden', 'Garden'], ['book', 'Book'], ['dict', 'Dictionary'], ['shop', 'Shop'], ['carts', 'Carts'], ['home', 'Home'], ['story', 'Story'], ['settings', 'Settings']];
@@ -206,7 +206,7 @@ export function makeScreens(c) {
       footer();
     },
     shop() {
-      frameBg(); header(S.usePractice ? "Kit's seed shop (practice)" : "Kit's seed shop"); const p = P(); const kit = img('people/kit.png'); if (kit) g.drawImage(kit, 40, 150, 280, 280 * kit.height / kit.width);
+      frameBg(); header(S.usePractice ? "Kit's seed shop (practice)" : "Kit's seed shop"); const p = P(); const fac = img('scene/facade_seed_shop.png'); let fy = 150; if (fac) { const fw = 330, fh = Math.min(400, fw * fac.height / fac.width); g.drawImage(fac, 30, fy, fw, fh); fy += fh - 20; } const kit = img('people/kit.png'); if (kit) { const kh = Math.min(300, 880 - fy), kw = kh * kit.width / kit.height; g.drawImage(kit, 190 - kw / 2, fy, kw, kh); }
       text(`You have ${p.coins} ${S.usePractice ? 'practice ' : ''}coins`, 380, 135, 34, COL.ink, 'left', true);
       st.shopTab = st.shopTab || 'common'; st.qty = st.qty || {};
       [['common', 'Common'], ['uncommon', 'Uncommon'], ['rare', 'Rare'], ['supergrow', 'Super Grow']].forEach(([id, label], i) => B(380 + i * 295, 160, 280, 62, label, () => { st.shopTab = id; }, { style: st.shopTab === id ? 'gold' : 'cream', size: 28, on: st.shopTab === id }));
