@@ -9,3 +9,4 @@ R8-17
 - Letter tiles: a wooden tray holds one tile per letter with a count badge; pinch a tile, set it in the word row, lift it back out. Poke keyboard still works.
 - Not done in R8-17: Hudson by the sign, Kit through her front door, the misplaced tree, a Meshy-quality community board and extra 3D vases (blue and clay are the only two besides glass).
 - Town book: new thinned model (1.5 MB, 2,384 triangles), resized to sit flat on the table.
+- Fix: leaving VR (Exit button) could leave the screen black. The flat view (camera, projection, canvas size) is now restored when the headset session ends, and a failed step in the exit handler can no longer stop the rest.

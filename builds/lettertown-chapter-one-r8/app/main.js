@@ -639,6 +639,8 @@ let recenterAt = 0, needsRecenter = false, lastReset = 0; const head = new THREE
 function recenter() { const cam = renderer.xr.getCamera(); cam.getWorldPosition(head); if (head.lengthSq() === 0) return false; cam.getWorldQuaternion(hq); he.setFromQuaternion(hq, 'YXZ'); stage.rotation.set(0, he.y, 0); stage.position.set(head.x, head.y - (S ? S.settings.tableDrop : 0.45) - TABLE, head.z); stage.updateMatrixWorld(true); return true; }
 function startRecenter() { recenterAt = performance.now() + 3000; UI.say('Recentering in 3 seconds. Sit comfortably and look straight ahead.'); }
 const vrBtn = document.getElementById('vr'), noteEl = document.getElementById('note');
+// after the headset session ends, put the camera, projection and canvas back to the normal flat view so the page is never left black
+function restoreFlatView() { try { renderer.setRenderTarget(null); renderer.setScissorTest(false); camera.position.set(0, TABLE + 0.66, 0.62); camera.up.set(0, 1, 0); camera.lookAt(0, TABLE + 0.33, -0.6); camera.fov = 60; camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight); renderer.setViewport(0, 0, innerWidth, innerHeight); } catch (e) { /* fine */ } }
 function exitVR() { const s = renderer.xr.getSession(); if (s) s.end(); else UI.say('You are not in VR right now.'); }
 let vrOK = false;
 const vrReady = (async () => {
@@ -650,7 +652,7 @@ async function enterVR() {
   if (!vrOK) return; if (renderer.xr.isPresenting) return exitVR(); beep(440, 0.01);
   try { const s = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['local-floor', 'hand-tracking'] }); renderer.xr.setReferenceSpaceType('local-floor'); await renderer.xr.setSession(s);
     vrBtn.textContent = 'Exit VR'; setTimeout(() => { needsRecenter = true; }, 600); const ref = renderer.xr.getReferenceSpace(); if (ref && ref.addEventListener) ref.addEventListener('reset', () => { const t = performance.now(); if (t - lastReset > 4000) needsRecenter = true; lastReset = t; });
-    s.addEventListener('end', () => { vrBtn.textContent = 'Enter VR'; stage.position.set(0, 0, 0); stage.rotation.set(0, 0, 0); pointers.forEach((P) => { if (P.held) letGo(P, true); }); saveNow(); });
+    s.addEventListener('end', () => { vrBtn.textContent = 'Enter VR'; try { stage.position.set(0, 0, 0); stage.rotation.set(0, 0, 0); pointers.forEach((P) => { if (P.held) letGo(P, true); }); } catch (e) { /* keep going so the screen always comes back */ } try { saveNow(); } catch (e) { /* fine */ } restoreFlatView(); setTimeout(restoreFlatView, 250); setTimeout(restoreFlatView, 1000); });
   } catch (e) { noteEl.textContent = 'Could not start VR: ' + e.message; }
 }
 vrBtn.onclick = enterVR;
