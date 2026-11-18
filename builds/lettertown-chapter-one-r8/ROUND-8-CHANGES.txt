@@ -26,3 +26,6 @@ R8-17f (Nov 17, late evening) - from the Director's playtest
 R8-17g (Nov 17, late evening)
 - Community garden: point at or touch a grown flower in the neighbor garden to pick it. You get the letter and a cut flower, and the plot is freed.
 - Story pickers: the "choose a..." wording is gone from the blank list, the blank header and the hint (now just the word type). Hudson's story no longer shows the story text before every blank is filled.
+
+R8-17h (Nov 17, late evening)
+- Home tab now shows the cottage from the front (facade), not the dollhouse cutaway. The four facade pictures (assets/scene/facade_*.png) are rendered from the same 3D cottage models that stand in town. The long Seeds line and the storage line were shortened so they no longer run into each other.
