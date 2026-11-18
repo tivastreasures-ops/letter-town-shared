@@ -212,12 +212,24 @@ gltfLoader.load('assets/models/merry_greenhouse.glb', (g) => { const m = fit(g.s
 [['cottage_new_green', 3.0, 6.8, -3.8, -1.45], ['cottage_new_blue', 3.0, 6.2, -7.2, -1.8], ['cottage_new_green', 3.0, -7.0, -6.8, 1.6], ['cottage_new_blue', 3.0, -7.4, 0.6, 1.2], ['cottage_new_green', 3.0, 5.0, 5.6, 2.6], ['cottage_new_blue', 3.0, -4.6, 6.2, 3.4]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 [[-8.5, -2.5], [-9.8, -7.0], [-8, -11], [8.5, -11], [10.2, -6], [9.6, -1.5], [-4.5, -11.5], [4.8, -12], [-9.5, 3.5], [-6, 7.5], [0, 9.5], [8, 6.5], [10.5, 3], [-12.5, -5], [12.5, -4], [-4.8, 2.2], [4.4, 2.8]].forEach(([x, z], i) => put(i % 2 ? 'tree_flowering' : 'tree_lush', 3.4 + rng() * 1.8, x, z, rng() * 6.28));
 const KEEP = [[0, -0.4, 2.7], [0, -7, 3.0], [3.5, -1.3, 2.9], [-3.2, -1.9, 2.6], [0, -4.3, 1.6], [-4.2, -2.8, 2.7]];   // keep the cobblestone and garden clear of shrubs
-for (let i = 0; i < 30; i++) { const a = rng() * 6.283, r = 2.8 + rng() * 11, x = Math.cos(a) * r, z = -3 + Math.sin(a) * r; if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; const k = ['shrub', 'bush', 'grassclump', 'grassclump'][i % 4]; put(k, k === 'grassclump' ? 0.35 + rng() * 0.3 : 0.6 + rng() * 0.7, x, z, rng() * 6.28); }
+// APPROVED MAP: hand-placed landscaping, never scatter bushes into NPCs or roads.
+const NPC_CLEAR = [[-1.1,-10.3],[1.1,-10.3],[5,-3.9],[-5.6,-1.5],[5.3,-2.1]];
+const SCENERY_SPOTS = [
+  ['shrub',0.8,-10,-3],['grassclump',0.4,-11,-1],['bush',0.7,-10,3],
+  ['shrub',0.8,-8,4],['grassclump',0.4,-8,7],['bush',0.7,-5,9],
+  ['shrub',0.8,9,3],['grassclump',0.4,11,1],['bush',0.7,11,-3],
+  ['shrub',0.8,10,-9],['grassclump',0.4,7,-11],['bush',0.7,5,9]
+];
+SCENERY_SPOTS.forEach(([k,h,x,z]) => {
+  if (KEEP.some(([kx,kz,kr]) => Math.hypot(x-kx,z-kz)<kr+0.6)) return;
+  if (NPC_CLEAR.some(([nx,nz]) => Math.hypot(x-nx,z-nz)<2.2)) return;
+  put(k,h,x,z,0);
+});
 [[-3, 5], [3.4, 7.5], [-8, 9], [7.5, 10], [0, 13], [-11, 6], [11, 8], [-14, -9], [14, -10], [-2, -15], [5, -15]].forEach(([x, z]) => put(rng() < 0.5 ? 'tree_lush' : 'tree_flowering', 3.6 + rng() * 1.6, x, z, rng() * 6.28));
 [['cottage_new_green', 3.0, 1.2, 4.6, 3.14], ['cottage_new_blue', 3.0, -9.5, 6.5, 2.2], ['cottage_new_blue', 3.0, 9.5, 6.8, -2.2]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 const FLW = [['marigold', 0.35], ['buttercup', 0.3], ['sunflower', 0.6], ['violet', 0.3], ['flax', 0.35], ['jonquil', 0.35], ['zinnia', 0.35], ['kopsia', 0.35], ['daisy_white', 0.3], ['rose_pink', 0.4], ['poppy_blue', 0.35], ['peony_pink', 0.35], ['lily_purple', 0.4]];
 for (let i = 0; i < 48; i++) { const a = rng() * 6.283, r = 2.6 + rng() * 9, x = Math.cos(a) * r, z = -2 + Math.sin(a) * r; if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; const [k, h] = FLW[i % FLW.length]; flowerModel(k, h * (0.8 + rng() * 0.5), (m) => { m.position.set(x, 0, z); m.rotation.y = rng() * 6.28; world.add(m); }); }
-for (let i = 0; i < 10; i++) { const a = i / 10 * 6.283; put('bush', 0.9, Math.cos(a) * 3.3, -7 + Math.sin(a) * 3.3, rng() * 6.28); }   // a ring of bushes around the fountain plaza
+// APPROVED MAP: fountain plaza stays open; no ring of bushes around walkways.
 
 /* ---------- the community garden: twelve shared plots in the town square, and neighbors strolling through ---------- */
 const comm = new THREE.Group(); comm.position.set(-4.2, 0, -2.8); comm.rotation.y = 0.89; comm.visible = true; town.add(comm);
