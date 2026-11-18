@@ -229,6 +229,7 @@ for (let i = 0; i < 12; i++) {
   const ico = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); ico.position.y = 0.22; ico.visible = false; g.add(ico);   // stays hidden until a picture is assigned, so no blank white card shows before the game starts
   CP.push({ g, ico, holder: new THREE.Group(), sig: '' }); CP[i].holder.position.y = 0.07; g.add(CP[i].holder);
 }
+CP.forEach((c, i) => { props.push({ holder: c.holder, kind: 'cplot:' + i, radius: 0.28, cy: 0.25 }); });   // point at or touch a neighbor-garden flower to pick it when it is ready
 function miniPlant(look) {   // a small 3D seed, sprout or bud for the community plots (no flat pictures)
   const g = new THREE.Group(), soil = new THREE.MeshLambertMaterial({ color: '#5b3a24' }), green = new THREE.MeshLambertMaterial({ color: '#5a9a48' }), leaf = new THREE.MeshLambertMaterial({ color: '#6fb45a' });
   if (look === 'seed') { const m = new THREE.Mesh(new THREE.SphereGeometry(0.07, 14, 10), soil); m.scale.y = 0.45; m.position.y = 0.02; g.add(m); return g; }
@@ -555,6 +556,7 @@ function rayPick(ray) {
 }
 function selectThing(hit) {
   if (!hit) return; if (hit.menu) return togglePanel(); if (hit.board) return UI.press(hit.board.x, hit.board.y);
+  if (hit.prop && /^cplot:/.test(hit.prop)) { const r = G.cPick(+hit.prop.slice(6)); if (r && r.ok) { const pp = CP[+hit.prop.slice(6)]; if (pp) pp.sig = ''; drawCommunity(); } return; }
   if (hit.prop && /^pick:|^vase$/.test(hit.prop)) { const a = UI.state.arr = UI.state.arr || {}, tot = Object.values(a).reduce((x, y) => x + y, 0); if (hit.prop === 'vase') { const ks = Object.keys(a).filter((k) => a[k] > 0); if (ks.length) a[ks[ks.length - 1]]--; beep(380, 0.05); } else if (tot < 9) { a[hit.prop.slice(5)] = (a[hit.prop.slice(5)] || 0) + 1; beep(660, 0.06); } else UI.say('The vase is full. Nine flowers is a bouquet.'); arrSig = ''; refreshArr(); return; }
   if (hit.prop) { beep(520, 0.05); setPanel(true); return UI.go(hit.prop === 'book' ? 'book' : hit.prop === 'carts' ? 'carts' : 'notice'); }
   if (hit.tool) { UI.state.tool = UI.state.tool === hit.tool.kind ? null : hit.tool.kind; UI.say(UI.state.tool ? `${{ seeds: 'Seeds', can: 'Watering can', shaker: 'Super Grow' }[UI.state.tool]} selected. Now choose a plot.` : 'Nothing selected.'); beep(500, 0.05); return; }
@@ -692,5 +694,5 @@ renderer.setAnimationLoop(() => {
   if (renderer.xr.isPresenting) { if (needsRecenter && recenter()) needsRecenter = false; if (recenterAt && performance.now() >= recenterAt) { recenterAt = 0; if (recenter()) UI.say('All set. Everything is in front of you.'); } }
   tick(dt, false); renderer.render(scene, camera);
 });
-window.__lt = { teleportTo, dockPool, dockRow, refreshLetterDock, LT, vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
+window.__lt = { selectThing, props, teleportTo, dockPool, dockRow, refreshLetterDock, LT, vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
   sim(i, pos, quat, down) { const P = pointers[2 + i]; if (!pos) { P.valid = false; return; } P.valid = true; P.pos.fromArray(pos); if (quat) P.quat.fromArray(quat); else P.quat.identity(); P.down = !!down; } };

@@ -22,3 +22,7 @@ R8-17f (Nov 17, late evening) - from the Director's playtest
 - Clay vase is now her Meshy Orange Floral Vase (assets/models/flowers/vase_orange.glb). The hand-built clay vase is hidden.
 - Community garden plots: dirt now sits under the stone plots so the plants no longer float.
 - Tool tray: a grab handle on the front edge so it is clear it slides left and right.
+
+R8-17g (Nov 17, late evening)
+- Community garden: point at or touch a grown flower in the neighbor garden to pick it. You get the letter and a cut flower, and the plot is freed.
+- Story pickers: the "choose a..." wording is gone from the blank list, the blank header and the hint (now just the word type). Hudson's story no longer shows the story text before every blank is filled.

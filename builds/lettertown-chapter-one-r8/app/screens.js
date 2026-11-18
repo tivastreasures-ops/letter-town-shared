@@ -92,7 +92,7 @@ export function makeScreens(c) {
     B(x + 86 + bw, y, 70, h, '▶', () => cyc(1), { size, style: 'cream', off: keys.length < 2 });
   }
   function frameBg() { g.fillStyle = COL.paper; g.fillRect(0, 0, BW, BH); g.strokeStyle = COL.edge; g.lineWidth = 12; g.strokeRect(6, 6, BW - 12, BH - 12); }
-  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-17f', BW - 40, 872, 16, COL.soft, 'right'); }
+  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-17g', BW - 40, 872, 16, COL.soft, 'right'); }
   function header(title) {
     if (S.lesson) { text(title, 40, 52, 40, COL.ink, 'left', true); const free = st.wait && st.wait.free; if (free) B(BW - 760, 20, 300, 64, "I'm finished", finishPractice, { style: 'green', size: 30 }); B(BW - 440, 20, 100, 64, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 26 }); B(BW - 330, 20, 300, 64, 'Back to Hudson', () => ask('Leave this lesson? You can repeat it any time.', leaveLesson), { style: 'rose', size: 28 }); if (S.usePractice && !free) text('Practice: nothing here uses your real coins or letters', BW / 2 + 60, 52, 24, COL.soft, 'center'); return; }
     const tabs = [['map', 'Map'], ['garden', 'Garden'], ['book', 'Book'], ['dict', 'Dictionary'], ['shop', 'Shop'], ['carts', 'Carts'], ['home', 'Home'], ['story', 'Story'], ['settings', 'Settings']];
@@ -310,7 +310,7 @@ export function makeScreens(c) {
       frameBg(); header(); const M = S.madlib;
       [['tale', 'The Welcome Story'], ['saved', `Storybook (${M.stories.length})`], ['journal', `Journal (${S.journal.length})`]].forEach(([id, label], i) => B(40 + i * 310, 100, 296, 64, label, () => { st.storyTab = id; st.page = 0; st.pick = null; st.read = null; }, { style: st.storyTab === id ? 'gold' : 'cream', size: 28, on: st.storyTab === id }));
       if (st.storyTab === 'tale') {
-        if (st.pick) { const sl = STORY.slots.find((s) => s.id === st.pick), opts = R.slotOptions(S, sl, true); text(`Blank ${sl.id}: choose ${R.article(plain(sl.prompt))} ${plain(sl.prompt)}`, 40, 215, 36, COL.ink, 'left', true); B(1330, 180, 230, 64, 'Back', () => { st.pick = null; st.page = 0; }, { size: 28 });
+        if (st.pick) { const sl = STORY.slots.find((s) => s.id === st.pick), opts = R.slotOptions(S, sl, true); text(`Blank ${sl.id}: ${plain(sl.prompt)}`, 40, 215, 36, COL.ink, 'left', true); B(1330, 180, 230, 64, 'Back', () => { st.pick = null; st.page = 0; }, { size: 28 });
           if (!opts.length) wrap(`You have not discovered ${R.article(plain(sl.prompt))} ${plain(sl.prompt)} yet. Craft one in the Spelling Book and it will appear here.`, BW / 2, 420, 1100, 32, '#a79f90', 'center');
           const off = pager(opts.length, 20, 600, 730); opts.slice(off, off + 20).forEach((w, i) => B(40 + (i % 4) * 385, 270 + Math.floor(i / 4) * 90, 370, 78, w.toUpperCase(), () => { note(R.choose(S, STORY, sl.id, w)); st.pick = null; st.page = 0; }, { size: 30, style: M.picks[sl.id] === w ? 'gold' : 'cream' })); return footer(); }
         const allIn = STORY.slots.every((sl) => M.picks[sl.id]); if (allIn) { const px = 1040, pw = paper(R.renderStory(STORY, M.picks, (sl) => `[${sl.id}: ${plain(sl.prompt)}]`), STORY.title, px, 88, 715, { ax: 690, ay: 700 }).w; void pw; } else wrap('Pick a word for each blank. Your own words come first. The story appears when every blank is filled.', 1400, 330, 560, 30, COL.soft, 'center');
@@ -318,7 +318,7 @@ export function makeScreens(c) {
         const filled = STORY.slots.every((sl) => M.picks[sl.id]);
         B(40, 560, 316, 72, 'Surprise me', () => { note(R.surprise(S, STORY)); }, { style: 'purple', size: 28 });
         B(370, 560, 616, 72, M.restored ? 'Save this telling' : 'Finish the story', () => ask(M.restored ? 'Save this new telling in your Storybook?' : 'Finish the story and restore the Welcome Sign?', finishStory), { style: 'gold', size: 30, off: !filled });
-        text(filled ? 'Every blank is filled. Finish whenever you like.' : 'Choose a blank, then choose a word for it. No hurry.', 500, 665, 24, COL.soft, 'center');
+        text(filled ? 'Every blank is filled. Finish whenever you like.' : 'Tap a blank, then tap a word for it. No hurry.', 500, 665, 24, COL.soft, 'center');
       } else if (st.storyTab === 'saved') {
         if (st.read != null && M.stories[st.read]) { paper(M.stories[st.read].text, M.stories[st.read].title || 'Your story', (BW - 526) / 2, 88, 715, { ax: 120, ay: 380 }); B(40, 700, 300, 64, 'All stories', () => { st.read = null; st.page = 0; }, { size: 26 }); }
         else { if (!M.stories.length) text('Your finished stories will be kept here to read again.', BW / 2, 420, 32, '#a79f90', 'center'); M.stories.slice(-6).forEach((s, i, arr) => { const idx = M.stories.length - arr.length + i; B(60, 200 + i * 95, 1480, 82, s.title ? s.title : `Telling ${idx + 1}: a ${s.picks[1]} ${s.picks[2]}, and the whole town began to ${s.picks[3]}`, () => { st.read = idx; st.page = 0; }, { size: 26, bold: false }); }); }
@@ -352,10 +352,10 @@ export function makeScreens(c) {
     },
     mini() {
       frameBg(); header(); const mm = st.mini; if (!mm) { go('notice'); return; } const sty = mm.m.story;
-      if (mm.pick) { const sl = sty.slots.find((x) => x.id === mm.pick), opts = R.slotOptions(S, sl, true); text(`Blank ${sl.id}: choose ${R.article(plain(sl.prompt))} ${plain(sl.prompt)}`, 40, 215, 36, COL.ink, 'left', true); B(1330, 180, 230, 64, 'Back', () => { mm.pick = null; st.page = 0; }, { size: 28 });
+      if (mm.pick) { const sl = sty.slots.find((x) => x.id === mm.pick), opts = R.slotOptions(S, sl, true); text(`Blank ${sl.id}: ${plain(sl.prompt)}`, 40, 215, 36, COL.ink, 'left', true); B(1330, 180, 230, 64, 'Back', () => { mm.pick = null; st.page = 0; }, { size: 28 });
         const off = pager(opts.length, 20, 600, 730); opts.slice(off, off + 20).forEach((w, i) => B(40 + (i % 4) * 385, 270 + Math.floor(i / 4) * 90, 370, 78, w.toUpperCase(), () => { mm.picks[sl.id] = w; mm.pick = null; st.page = 0; }, { size: 30, style: mm.picks[sl.id] === w ? 'gold' : 'cream' })); return footer(); }
-      text(`${mm.m.who}'s story`, 40, 135, 36, COL.plum, 'left', true); paper(R.renderStory(sty, mm.picks, (sl) => `[${sl.id}: ${sl.prompt}]`), sty.title, 1040, 88, 715, { ax: 690, ay: 700 });
-      sty.slots.forEach((sl, i) => { const w = mm.picks[sl.id]; B(40, 180 + i * 84, 600, 72, w ? `${sl.id}. ${w.toUpperCase()}` : `${sl.id}. choose ${R.article(sl.prompt)} ${sl.prompt}`, () => { mm.pick = sl.id; st.page = 0; }, { size: w ? 28 : 24, style: w ? 'green' : 'cream', bold: !!w }); });
+      text(`${mm.m.who}'s story`, 40, 135, 36, COL.plum, 'left', true); const filled0 = sty.slots.every((sl) => mm.picks[sl.id]); if (filled0) paper(R.renderStory(sty, mm.picks, (sl) => `[${sl.id}: ${sl.prompt}]`), sty.title, 1040, 88, 715, { ax: 690, ay: 700 }); else text('Pick a word for each blank. Your story appears here when every blank is filled.', 1300, 330, 26, COL.soft, 'center');
+      sty.slots.forEach((sl, i) => { const w = mm.picks[sl.id]; B(40, 180 + i * 84, 600, 72, w ? `${sl.id}. ${w.toUpperCase()}` : `${sl.id}. ${plain(sl.prompt)}`, () => { mm.pick = sl.id; st.page = 0; }, { size: w ? 28 : 24, style: w ? 'green' : 'cream', bold: !!w }); });
       const filled = sty.slots.every((sl) => mm.picks[sl.id]);
       B(40, 620, 300, 72, 'Surprise me', () => { sty.slots.forEach((sl) => { const o = R.slotOptions(S, sl, true); mm.picks[sl.id] = o[Math.floor(Math.random() * o.length)]; }); }, { style: 'purple', size: 28 });
       B(360, 620, 280, 72, 'Finish', () => ask('Finish this story and keep it in your Storybook?', () => { const text2 = R.renderStory(sty, mm.picks, () => '...'); S.madlib.stories.push({ title: sty.title, picks: mm.picks, text: text2 }); S.mini.offered[mm.m.who + ':read'] = true; st.mini = null; st.storyTab = 'saved'; st.read = S.madlib.stories.length - 1; c.save(); go('story'); say('Saved in your Storybook.'); }), { style: 'gold', size: 30, off: !filled });
