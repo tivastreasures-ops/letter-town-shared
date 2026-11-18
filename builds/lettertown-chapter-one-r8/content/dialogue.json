@@ -82,7 +82,7 @@
   "H08": {
     "who": "HUDSON",
     "text": "Next up is Merry's Green Room! She'll show you how to grow a letter flower, water it, and pick it.",
-    "file": null
+    "file": "LT_CH01_HUDSON_H08_next_merry.mp3"
   },
   "H09": {
     "who": "HUDSON",
@@ -92,17 +92,17 @@
   "M01": {
     "who": "MERRY",
     "text": "Hello, new friend! I'm Merry. Welcome to the Green Room! Every wonderful word begins somewhere.",
-    "file": null
+    "file": "LT_CH01_MERRY_M01_welcome.mp3"
   },
   "M02": {
     "who": "MERRY",
     "text": "Let's start with a seed. Choose one, then pick an empty garden plot.",
-    "file": null
+    "file": "LT_CH01_MERRY_M02_choose_seed.mp3"
   },
   "M03": {
     "who": "MERRY",
     "text": "There we go! A tiny beginning! Now we'll help it grow.",
-    "file": null
+    "file": "LT_CH01_MERRY_M03_planted.mp3"
   },
   "M04": {
     "who": "MERRY",
@@ -112,7 +112,7 @@
   "M05": {
     "who": "MERRY",
     "text": "Perfect! You don't have to hurry a flower, but you can help it along.",
-    "file": null
+    "file": "LT_CH01_MERRY_M05_watered.mp3"
   },
   "M06": {
     "who": "MERRY",
@@ -152,12 +152,12 @@
   "H10": {
     "who": "HUDSON",
     "text": "You've grown a flower! Now let's visit Kit. She knows practically everything about seeds.",
-    "file": null
+    "file": "LT_CH01_HUDSON_H10_visit_kit.mp3"
   },
   "H11": {
     "who": "HUDSON",
     "text": "Kit has a practice wallet for you. Try different seeds without spending your actual coins.",
-    "file": null
+    "file": "LT_CH01_HUDSON_H11_practice_wallet.mp3"
   },
   "K01": {
     "who": "KIT",
@@ -167,7 +167,7 @@
   "K02": {
     "who": "KIT",
     "text": "See those seed packets? Pick whichever one interests you. This is a practice visit, so experiment!",
-    "file": null
+    "file": "LT_CH01_KIT_K02_packets.mp3"
   },
   "K03": {
     "who": "KIT",
