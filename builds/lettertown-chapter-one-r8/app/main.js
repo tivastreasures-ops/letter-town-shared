@@ -3,8 +3,8 @@
 // The story board in front of you can be poked with a fingertip or pointed at and pinched. Mouse and touch work too.
 import * as THREE from '../vendor/three/three.module.min.js';
 import * as R from '../rules/game.js';
-import { makeScreens } from './screens.js?v=20';
-import { runIntro } from './intro.js?v=20';
+import { makeScreens } from './screens.js?v=21';
+import { runIntro } from './intro.js?v=21';
 import { GLTFLoader } from '../vendor/three/jsm/loaders/GLTFLoader.js';
 
 const Q = new URLSearchParams(location.search);
