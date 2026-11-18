@@ -92,7 +92,7 @@ export function makeScreens(c) {
     B(x + 86 + bw, y, 70, h, '▶', () => cyc(1), { size, style: 'cream', off: keys.length < 2 });
   }
   function frameBg() { g.fillStyle = COL.paper; g.fillRect(0, 0, BW, BH); g.strokeStyle = COL.edge; g.lineWidth = 12; g.strokeRect(6, 6, BW - 12, BH - 12); }
-  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-21', BW - 40, 872, 16, COL.soft, 'right'); }
+  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-22', BW - 40, 872, 16, COL.soft, 'right'); }
   function header(title) {
     if (S.lesson) { text(title, 40, 52, 40, COL.ink, 'left', true); const free = st.wait && st.wait.free; if (free) B(BW - 760, 20, 300, 64, "I'm finished", finishPractice, { style: 'green', size: 30 }); B(BW - 440, 20, 100, 64, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 26 }); B(BW - 330, 20, 300, 64, 'Back to Hudson', () => ask('Leave this lesson? You can repeat it any time.', leaveLesson), { style: 'rose', size: 28 }); if (S.usePractice && !free) text('Practice: nothing here uses your real coins or letters', BW / 2 + 60, 52, 24, COL.soft, 'center'); return; }
     const tabs = [['map', 'Map'], ['garden', 'Garden'], ['book', 'Book'], ['dict', 'Dictionary'], ['shop', 'Shop'], ['carts', 'Carts'], ['home', 'Home'], ['story', 'Story'], ['settings', 'Settings']];
@@ -180,7 +180,7 @@ export function makeScreens(c) {
       const k = MW / 1446, hot = (x0, y0, x1, y1, fn) => btns.push({ x: MX + x0 * k, y: MY + y0 * k, w: (x1 - x0) * k, h: (y1 - y0) * k, fn });
       hot(560, 10, 900, 300, () => { c.teleport('townhall'); go('story'); cue(S.madlib.restored ? 'R22' : 'R21'); });              // Town Hall
       hot(170, 160, 430, 440, () => { c.teleport('carts'); go('carts'); cue('P08'); });                                           // Carpenter's shop: the two carts
-      hot(990, 140, 1260, 440, () => { c.teleport('cottages'); go('shop'); cue('K10'); });                                           // Seed shop
+      hot(990, 140, 1260, 440, () => { c.teleport('seedshop'); go('shop'); cue('K10'); });                                           // Seed shop
       hot(140, 470, 400, 720, () => { go('notice'); S.heard = S.heard || {}; if (!S.heard.R19) { S.heard.R19 = true; cue('R19'); c.save(); } });                                          // Message board
       hot(1020, 470, 1300, 720, () => { c.teleport('home'); go('home'); });                                                           // Home
       hot(450, 300, 980, 560, () => { c.teleport('merry'); go('garden'); cue('M13'); });                                          // Merry's greenhouse: the desk with seeds, watering can and Super Grow
