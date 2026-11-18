@@ -40,3 +40,6 @@ R8-17j
 
 R8-17k
 - Community garden: the Cozy Bulletin Board (the Librarian's 4,750-triangle v2, 0.95 MB) now stands behind the fence at the right end. Position and size need a look in the headset.
+
+R8-17l
+- Pink cloud: five lilac clouds (the Librarian's pink_cloud_v1, 10,303 triangles) drift slowly at the town edge. The sky and the fluffy clouds are unchanged.
