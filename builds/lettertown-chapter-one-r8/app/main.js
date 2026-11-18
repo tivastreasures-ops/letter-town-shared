@@ -62,7 +62,7 @@ cutout('assets/scene/flower_cart.png', 0.8, 0.8, 2.1, TABLE + 0.42, -1.0, -0.95)
 const PEOPLE = ['hudson', 'snowy', 'merry', 'kit', 'phineas', 'mayor'];
 // each resident stands in front of their home, on a little grass stage behind the story board
 const HOMES = { hudson: 'archway', snowy: 'cozycottage', merry: 'merry_greenhouse', kit: 'seed_shop', phineas: 'cottage_green', mayor: 'townhall' };
-const HOME_H = { hudson: 0.95, snowy: 0.85, merry: 0.95, kit: 0.95, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.46, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
+const HOME_H = { hudson: 0.95, snowy: 0.85, merry: 0.95, kit: 0.95, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.62, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
 const gltfLoader = new GLTFLoader(), vig = new THREE.Group(); vig.visible = false; stage.add(vig);
 const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.33, 0.03, 40), new THREE.MeshLambertMaterial({ color: '#a8d08a' })); stand.position.y = -0.015; vig.add(stand);
 const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.34, 3, 32), new THREE.MeshLambertMaterial({ color: '#b98a55' })); plinth.position.y = -1.53; vig.add(plinth);   // a wooden pedestal down to the ground, so nobody floats
@@ -109,9 +109,10 @@ const vaseRec = { holder: vase, kind: 'vase', radius: 0.09, cy: 0.1 }; props.pus
 const vaseFl = new THREE.Group(); vase.add(vaseFl); const pickRecs = []; const SPKEY = { poppy: 'poppy_blue', rose: 'rose_pink', daisy: 'daisy_white', peony: 'peony_pink', lily: 'lily_pink' }; let arrSig = '';
 const vaseFluted = new THREE.Group(); vase.add(vaseFluted); let vaseLoaded = false; const vaseGlass = vase.children.filter((c) => c.isMesh);
 const vaseClay = new THREE.Group(); vase.add(vaseClay); { const pts = [[0.0, 0], [0.045, 0], [0.058, 0.03], [0.065, 0.065], [0.05, 0.1], [0.036, 0.125], [0.044, 0.14]].map(([x, y]) => new THREE.Vector2(x, y)); const jar = new THREE.Mesh(new THREE.LatheGeometry(pts, 24), new THREE.MeshLambertMaterial({ color: '#c9774a', side: THREE.DoubleSide })); vaseClay.add(jar); const band = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.004, 8, 24), new THREE.MeshLambertMaterial({ color: '#f1d9a0' })); band.rotation.x = Math.PI / 2; band.position.y = 0.07; vaseClay.add(band); vaseClay.visible = false; }
+const vaseOrange = new THREE.Group(); vase.add(vaseOrange); vaseOrange.visible = false; let vaseOrangeLoaded = false;   // her Meshy terracotta vase replaces the hand-built clay one
 const VASE_FIT = { glass: { y: 0.07, r: 1 }, fluted: { y: 0.1, r: 1.35 }, clay: { y: 0.1, r: 1.1 } };
 const vaseKey = () => (UI.state.vase === 'fluted' || UI.state.vase === 'clay') ? UI.state.vase : 'glass';
-function applyVase() { const k = vaseKey(), f = k === 'fluted'; vaseGlass.forEach((m) => { m.visible = k === 'glass'; }); vaseFluted.visible = f; vaseClay.visible = k === 'clay'; if (f && !vaseLoaded) { vaseLoaded = true; flowerModel('vase_fluted', 0.16, (m) => vaseFluted.add(m)); } }
+function applyVase() { const k = vaseKey(), f = k === 'fluted'; vaseGlass.forEach((m) => { m.visible = k === 'glass'; }); vaseFluted.visible = f; vaseClay.visible = false; vaseOrange.visible = k === 'clay'; if (k === 'clay' && !vaseOrangeLoaded) { vaseOrangeLoaded = true; flowerModel('vase_orange', 0.16, (m) => vaseOrange.add(m)); } if (f && !vaseLoaded) { vaseLoaded = true; flowerModel('vase_fluted', 0.16, (m) => vaseFluted.add(m)); } }
 function refreshArr() {
   const on = !!S && UI.state.screen === 'carts'; arrG.visible = on; if (!on) { arrSig = ''; return; } applyVase();
   const PP = R.pouch(S), arr = UI.state.arr || {}, sig = JSON.stringify([PP.flowers, PP.basket, arr, vaseKey()]); if (sig === arrSig) return; arrSig = sig;
@@ -224,7 +225,7 @@ const CP = [], cTex = {}, cGlb = {};   // one little scene per community plot, r
 const cTexOf = (f) => cTex[f] || (cTex[f] = tex(`assets/blooms/${f}.png`));
 for (let i = 0; i < 12; i++) {
   const x = (i % 6 - 2.5) * 0.55, z = Math.floor(i / 6) * 0.6, g = new THREE.Group(); g.position.set(x, 0, z); comm.add(g);
-  const mound = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.23, 0.07, 20), new THREE.MeshLambertMaterial({ color: '#7a5236' })); mound.position.y = 0.035; mound.visible = false; g.add(mound); worldModel('stoneplot', (src) => { const m = fitW(src, 0.62); g.add(m); });
+  const mound = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.07, 20), new THREE.MeshLambertMaterial({ color: '#5b3a24' })); mound.position.y = 0.035; mound.visible = true; g.add(mound); worldModel('stoneplot', (src) => { const m = fitW(src, 0.62); g.add(m); });
   const ico = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); ico.position.y = 0.22; ico.visible = false; g.add(ico);   // stays hidden until a picture is assigned, so no blank white card shows before the game starts
   CP.push({ g, ico, holder: new THREE.Group(), sig: '' }); CP[i].holder.position.y = 0.07; g.add(CP[i].holder);
 }
@@ -296,7 +297,7 @@ function stepKids(dt) {
     w.x += (dx / d) * 0.6 * dt; w.z += (dz / d) * 0.6 * dt;
     const rx = w.x - _desk.x, rz = w.z - _desk.z, rd = Math.hypot(rx, rz), KO = 1.7; if (rd < KO) { w.x = _desk.x + (rx / (rd || 1)) * KO; w.z = _desk.z + (rz / (rd || 1)) * KO; }   // never through the desk
     w.m.position.x = w.x; w.m.position.z = w.z; const want = Math.atan2(dx, dz); w.m.rotation.y += Math.atan2(Math.sin(want - w.m.rotation.y), Math.cos(want - w.m.rotation.y)) * Math.min(1, dt * 4);
-    if (kidGround <= 0) { const bb = new THREE.Box3().setFromObject(w.m, true); if (isFinite(bb.min.y)) w.m.position.y -= bb.min.y * 0.9; }
+    if (kidGround <= 0) { const bb = new THREE.Box3().setFromObject(w.m, true); if (isFinite(bb.min.y)) w.m.position.y -= bb.min.y; w.m.position.y += 0.07; }
   });
   if (kidGround <= 0) kidGround = 0.4;
 }
@@ -383,7 +384,8 @@ makeTool('shaker', new THREE.Vector3(0, TABLE + 0.05, -0.17), 0, (g) => { g.add(
 // a small tray the player can slide to the left or right side of the table; the three tools live on it
 const tray = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.03, 0.56), new THREE.MeshLambertMaterial({ color: '#c99a5b' })); stage.add(tray);
 const trayEdge = new THREE.Mesh(new THREE.BoxGeometry(0.27, 0.012, 0.59), new THREE.MeshLambertMaterial({ color: '#a87b43' })); stage.add(trayEdge);
-function placeTray() { const x = trayX(); tray.position.set(x, TABLE + 0.015, TRAY.z); trayEdge.position.set(x, TABLE + 0.006, TRAY.z); for (const t of tools) { t.home.set(x, TABLE + TRAY.y + (t.kind === 'can' ? 0.07 : 0.055), TRAY.z + TRAY.offs[t.kind]); if (!t.heldBy) { t.g.position.copy(t.home); } } }
+const trayHandle = new THREE.Group(); { const hm = new THREE.MeshLambertMaterial({ color: '#7a4f24' }); const bar = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.016, 0.018), hm); trayHandle.add(bar); [-0.06, 0.06].forEach((dx) => { const k = new THREE.Mesh(new THREE.SphereGeometry(0.014, 12, 8), hm); k.position.set(dx, 0, 0); trayHandle.add(k); }); const post = new THREE.MeshLambertMaterial({ color: '#a87b43' }); [-0.045, 0.045].forEach((dx) => { const l = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.016, 0.03), post); l.position.set(dx, -0.002, -0.02); trayHandle.add(l); }); } stage.add(trayHandle);   // a grab handle on the front edge so it is clear the tray slides left and right
+function placeTray() { const x = trayX(); tray.position.set(x, TABLE + 0.015, TRAY.z); trayEdge.position.set(x, TABLE + 0.006, TRAY.z); trayHandle.position.set(x, TABLE + 0.042, TRAY.z + 0.29); for (const t of tools) { t.home.set(x, TABLE + TRAY.y + (t.kind === 'can' ? 0.07 : 0.055), TRAY.z + TRAY.offs[t.kind]); if (!t.heldBy) { t.g.position.copy(t.home); } } }
 function moveTray(dir) { if (!S) return; S.settings.toolX = dir; placeTray(); save(); }
 tools.forEach((t) => { t.gp = new THREE.Vector3(); });
 tools.find((t) => t.kind === 'can').gp.set(-0.075, 0.015, 0);   // the can is lifted by its handle
