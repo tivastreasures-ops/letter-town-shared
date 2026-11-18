@@ -37,3 +37,6 @@ R8-17i
 
 R8-17j
 - Tutorial book: the Map tab now shows the town map picture instead of a text list.
+
+R8-17k
+- Community garden: the Cozy Bulletin Board (the Librarian's 4,750-triangle v2, 0.95 MB) now stands behind the fence at the right end. Position and size need a look in the headset.

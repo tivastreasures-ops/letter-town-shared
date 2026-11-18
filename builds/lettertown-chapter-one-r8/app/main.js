@@ -257,6 +257,7 @@ function drawCommunity() {
 for (let i = 0; i < 2; i++) worldModel('fence', (src) => { const m = fitW(src, 1.95); m.position.set((i - 0.5) * 1.95, 0, -0.62); comm.add(m); });   // fence along the back
 for (const sx of [-1, 1]) worldModel('fence', (src) => { const m = fitW(src, 1.5); m.rotation.y = Math.PI / 2; m.position.set(sx * 1.95, 0, 0.1); comm.add(m); });
 worldModel('fencepost', (src) => { for (const [sx, sz] of [[-1, -0.62], [1, -0.62], [-1, 0.86], [1, 0.86]]) { const m = fit(src.clone(true), 0.5); m.position.set(sx * 1.95, 0, sz); comm.add(m); } });
+gltfLoader.load('assets/models/community_board.glb', (g) => { const m = fit(g.scene, 1.15); m.position.set(1.55, 0, -0.85); m.rotation.y = -0.35; comm.add(m); });   // the Cozy Bulletin Board stands behind the community fence
 const mixers = [], walkers = [], KIDS = ['anna', 'timmy', 'mary', 'billy', 'sally', 'joe'], KID_H = 1.15; let commOn = true, kidsLoaded = false;
 const CARTS = { word: [0.35, -1.75], flower: [2.7, -0.55] };   // where a neighbor stands to shop
 const SPOTS = [[0, -5.5], [-1.5, -6.2], [1.6, -6.4], [0, -8.4], [-2.2, -4.2], [2.0, -3.4], [-3.0, -0.6], [-2.4, -1.4], [3.2, -0.2], [0.6, -3.0]];   // places to stroll to on the cobblestones
