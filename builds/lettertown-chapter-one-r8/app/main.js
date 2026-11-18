@@ -131,7 +131,7 @@ function refreshStock() {
     for (let k = 0; k < n; k++) { const sp = list[k % list.length], a = k * 2.4, r = 0.012 + 0.012 * (k % 3), kk = k; flowerModel(SPKEY[sp] || sp, 0.15, (m) => { m.position.set(Math.cos(a) * r, 0.0, Math.sin(a) * r); m.rotation.z = Math.cos(a) * 0.15; m.rotation.x = Math.sin(a) * 0.15; m.rotation.y = kk; g.add(m); }); }
     g.position.set(-0.3 + (i % 3) * 0.3, 0.33, 0.0 + Math.floor(i / 3) * 0.17); stockF.add(g); });
 }
-const bookProp = addProp('townbook', 0.14, -0.7, TABLE, -0.3, 0.3, { kind: 'book', radius: 0.14 });
+const bookProp = addProp('townbook', 0.036, -0.7, TABLE, -0.3, 0.3, { kind: 'book', radius: 0.14 });
 /* the community board matches the one on the town map: blue tile roof, orange frame, cork face with notes pinned on, a lantern, and stone feet. It is built here from shapes until a Meshy model replaces it. */
 const noticeProp = (() => {
   const holder = new THREE.Group(); holder.position.set(-2.15, TABLE + 0.55, -0.35); holder.rotation.y = 1.0; stage.add(holder);
