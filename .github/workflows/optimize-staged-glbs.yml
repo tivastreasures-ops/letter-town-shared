@@ -41,5 +41,16 @@ jobs:
           git add assets/staging/*_v1.glb assets/staging/*_v1.txt
           if ! git diff --cached --quiet; then
             git commit -m "Assets: Blender optimized staging candidates and audit reports"
-            git push
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                break
+              fi
+              if [ "$attempt" = 5 ]; then
+                echo "Unable to push after five fetch-and-rebase attempts" >&2
+                exit 1
+              fi
+              sleep 3
+            done
           fi
