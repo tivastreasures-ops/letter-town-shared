@@ -26,9 +26,14 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
+          /usr/bin/python3 -c 'import numpy; print(numpy.__version__)'
       - name: Optimize and audit
-        run: blender --background --factory-startup --python tools/optimize_staged_glbs.py
+        run: |
+          set -o pipefail
+          blender --background --factory-startup --python tools/optimize_staged_glbs.py 2>&1 | tee blender-processing.log
+          test "$(grep -c '^SUCCESS ' blender-processing.log)" -eq 8
+          ! grep -q '^FAILED ' blender-processing.log
       - name: Commit reviewed-output candidates and reports
         run: |
           git config user.name "Letter Town Asset Bot"
