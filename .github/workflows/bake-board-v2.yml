@@ -1,0 +1,43 @@
+name: Bake bulletin board v2 high-to-low
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/bake_board_v2.py'
+      - '.github/workflows/bake-board-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  board:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -o Acquire::Retries=3 -o Acquire::http::Timeout=20
+          sudo apt-get install -y blender python3-numpy
+      - name: Bake and preview the bulletin board
+        run: |
+          set -o pipefail
+          blender --background --factory-startup --python tools/bake_board_v2.py 2>&1 | tee bake-log.txt
+          grep -q '^SUCCESS baked ' bake-log.txt
+          test -s assets/staging/cozy_bulletin_board_v2.glb
+          test -s assets/staging/cozy_bulletin_board_v2_baked.png
+          test -s assets/staging/previews/cozy_bulletin_board_v2_preview.png
+      - name: Commit the v2 candidate and visual proof
+        run: |
+          git config user.name "Letter Town Asset Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/staging/cozy_bulletin_board_v2.glb assets/staging/cozy_bulletin_board_v2.txt assets/staging/cozy_bulletin_board_v2_baked.png assets/staging/previews/cozy_bulletin_board_v2_preview.png
+          git commit -m "Assets: baked bulletin board v2 with color atlas and rendered preview"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 5 ]; then exit 1; fi
+            sleep 3
+          done
