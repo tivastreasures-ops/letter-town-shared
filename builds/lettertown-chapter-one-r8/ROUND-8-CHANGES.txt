@@ -29,3 +29,8 @@ R8-17g (Nov 17, late evening)
 
 R8-17h (Nov 17, late evening)
 - Home tab now shows the cottage from the front (facade), not the dollhouse cutaway. The four facade pictures (assets/scene/facade_*.png) are rendered from the same 3D cottage models that stand in town. The long Seeds line and the storage line were shortened so they no longer run into each other.
+
+R8-17i
+- Tutorial: removed the green disc and brown pedestal that sat over every dialogue card. Hudson, Snowy and the others now stand on the ground to the left of the card, with their homes.
+- Seed card: has a wooden stick handle, tilts back and turns to face you while it rests on the tray.
+- Vase: thin flower models (flax, violet, jonquil, plumeria) are doubled crosswise and every flower is turned a different way, so none read as a flat sheet.
