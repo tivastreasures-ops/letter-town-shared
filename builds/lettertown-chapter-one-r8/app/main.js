@@ -153,7 +153,7 @@ const noticeProp = (() => {
 
 /* ---------- a present for the player, shown on the table while a gift is opened ---------- */
 const giftHolder = new THREE.Group(); giftHolder.position.set(0, TABLE + 0.02, -0.32); giftHolder.visible = false; stage.add(giftHolder);
-gltfLoader.load('assets/models/giftbox.glb', (g) => { giftHolder.add(fit(g.scene, 0.22)); }, undefined, () => { /* no box model: the tiles still show */ });
+gltfLoader.load('assets/models/giftbag.glb', (g) => { giftHolder.add(fit(g.scene, 0.26)); }, undefined, () => { /* no box model: the tiles still show */ });
 // a crafted word becomes an object on the table: her item art when she has it, otherwise an emoji (a stopgap until each word has 3D art)
 const EMO = { cat: '🐱', dog: '🐶', sun: '☀️', moon: '🌙', star: '⭐', tree: '🌳', bird: '🐦', fish: '🐟', rose: '🌹', rain: '🌧️', leaf: '🍃', seed: '🌱', bell: '🔔', cake: '🍰', door: '🚪', nest: '🪹', tea: '🍵', hat: '🎩', bee: '🐝', bear: '🐻', bunny: '🐰', duck: '🦆', frog: '🐸', crab: '🦀', cow: '🐮', pig: '🐷', owl: '🦉', fox: '🦊', heart: '❤️', kite: '🪁', boat: '⛵', ship: '🚢', car: '🚗', bus: '🚌', key: '🔑', gift: '🎁', ring: '💍', shoe: '👟', sock: '🧦', apple: '🍎', pear: '🍐', plum: '🍑', corn: '🌽', milk: '🥛', flower: '🌸', cloud: '☁️', snow: '❄️', fire: '🔥', wind: '💨', rock: '🪨', shell: '🐚', bread: '🍞', egg: '🥚', pie: '🥧', jam: '🍓', bed: '🛏️', chair: '🪑', lamp: '💡', book: '📖', cup: '☕', mug: '☕', clock: '⏰', drum: '🥁', bat: '🦇', ant: '🐜', lion: '🦁', horse: '🐴', mouse: '🐭', snail: '🐌', camel: '🐫' };
 let wordObj = null;

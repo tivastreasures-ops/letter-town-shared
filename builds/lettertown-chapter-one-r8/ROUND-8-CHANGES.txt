@@ -43,3 +43,6 @@ R8-17k
 
 R8-17l
 - Pink cloud: five lilac clouds (the Librarian's pink_cloud_v1, 10,303 triangles) drift slowly at the town edge. The sky and the fluffy clouds are unchanged.
+
+R8-17m
+- Housewarming gift: the present box is replaced by the blue gift bag (the Librarian's blue_gift_bag_v1, 3.8 MB).
