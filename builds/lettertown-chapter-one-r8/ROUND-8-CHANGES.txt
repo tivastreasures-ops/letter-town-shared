@@ -77,3 +77,5 @@ R8-21: screen-draw errors are now always caught (logged, board falls back to the
 R8-22: real residents at their real places for lessons (no miniature scenes); old white clouds removed, 10 pink clouds; town book larger; tool tray handle on the long side; Super Grow faces the player; TABLE button hides/shows the wooden planks; seed shop teleport spot moved off the flower cart.
 
 R8-23: Distant hills panels flipped upright (art was upside down). Flower arranging area (vase and flower rows) moved to the front-middle of the table, within easy reach.
+
+R8-24: Wired three more recorded lines into play (M15 first bloom, K12 purchase, R13/R20 message board). 19 recorded lines remain unplayed: they belong to replay prompts, sold-out and trade moments, decorating (still 'coming soon') and cart-stocking events that do not exist yet.

@@ -3,8 +3,8 @@
 // The story board in front of you can be poked with a fingertip or pointed at and pinched. Mouse and touch work too.
 import * as THREE from '../vendor/three/three.module.min.js';
 import * as R from '../rules/game.js';
-import { makeScreens } from './screens.js?v=23';
-import { runIntro } from './intro.js?v=23';
+import { makeScreens } from './screens.js?v=24';
+import { runIntro } from './intro.js?v=24';
 import { GLTFLoader } from '../vendor/three/jsm/loaders/GLTFLoader.js';
 
 const Q = new URLSearchParams(location.search);
@@ -453,7 +453,7 @@ const G = {
   plant(i) { const r = R.plant(S, i, G.seedTier()); UI.note(r); if (r.ok) { beep(520, 0.08); UI.emit('planted'); } else if (r.code === 'noseed') UI.cue('M13'); return r; },
   water(i) { const r = R.water(S, i); UI.note(r); if (r.ok) { beep(660, 0.08); UI.emit('watered'); } return r; },
   boost(i) { const r = R.superGrow(S, i); UI.note(r); if (r.ok) { beep(880, 0.1); burst(plots[i], '#ffd34d', 10); UI.emit('boosted'); } return r; },
-  pick(i, id) { const r = R.harvest(S, i, id == null ? ++txn : id); if (r.code === 'dup') return r; UI.note(r); if (r.ok) { burst(plots[i], '#ff9ec4', 16); popTiles(plots[i], r.letters || []); beep(740, 0.07); setTimeout(() => beep(990, 0.1), 80); plots[i].bloomPos.copy(BLOOM_HOME); plots[i].heldBy = null; if (!S.usePractice) UI.cue(r.freed ? 'M16' : null); UI.emit('harvested'); } else if (r.code === 'growing' && !S.usePractice) UI.cue('M14'); return r; },
+  pick(i, id) { const r = R.harvest(S, i, id == null ? ++txn : id); if (r.code === 'dup') return r; UI.note(r); if (r.ok) { burst(plots[i], '#ff9ec4', 16); popTiles(plots[i], r.letters || []); beep(740, 0.07); setTimeout(() => beep(990, 0.1), 80); plots[i].bloomPos.copy(BLOOM_HOME); plots[i].heldBy = null; if (!S.usePractice) UI.cue(r.freed ? 'M16' : (S.heard && S.heard.M15 ? null : ((S.heard = S.heard || {}).M15 = true, 'M15'))); UI.emit('harvested'); } else if (r.code === 'growing' && !S.usePractice) UI.cue('M14'); return r; },
 };
 
 /* ---------- pointers (hands, controllers, pretend hands for checks) ---------- */
