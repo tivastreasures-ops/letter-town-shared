@@ -2,7 +2,7 @@
 
 Isolated port on `lettertown-iwsdk-port`. Round 7 and Round 8 are protected and unchanged.
 
-Updated from R8-16 source commit `1a9f5cee5e87aab64e6dcf69b58477889231e5d7`. See [R8-16-REPORT.md](R8-16-REPORT.md) for integration and validation limits.
+Updated to R8-24 (`961b34ee7f0aa57e027869c46e2620ea9d7f9020`) plus the authored gift-bag repair. See [LATEST-UPDATE.md](LATEST-UPDATE.md) for the current integration and complete hosting ZIP instructions.
 
 ## Run
 
@@ -18,7 +18,7 @@ For development: `npm run dev`. The non-destructive bootstrap script installs th
 
 IWSDK `@iwsdk/core@1.1.0` creates the renderer, camera, scene and XR session. `LetterTownSystem` runs the adapted Round 8 game on the SDK's frame loop. The original hand interactions and canvas screens remain integrated; this port does not replace them with SDK stock interactions. Approved gloves remain the hand visuals.
 
-`src/index.js`, `src/screens.js` and `src/intro.js` derive from Round 8. Rules/dictionary are imported directly from the protected Round 8 files. `npm run stage` verifies the pinned source manifest and copies baseline plus target-local R8-16 assets into a content-fingerprinted release directory. Vite fingerprints JavaScript. No service worker or deployment storage reset is used.
+`src/index.js`, `src/screens.js` and `src/intro.js` derive from Round 8. Rules/dictionary are pinned to the latest upstream snapshot under `rules/`. `npm run stage` verifies the pinned source manifest and copies baseline plus target-local R8-16 assets into a content-fingerprinted release directory. Vite fingerprints JavaScript. No service worker or deployment storage reset is used.
 
 ## Controls and saves
 
@@ -33,6 +33,7 @@ npm run test:browser
 npm run test:gameplay
 npm run test:xr
 npm run test:r816
+npm run test:latest
 npm run test:assets
 ```
 

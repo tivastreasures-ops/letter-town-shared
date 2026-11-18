@@ -3,7 +3,7 @@
 // The story board in front of you can be poked with a fingertip or pointed at and pinched. Mouse and touch work too.
 import * as THREE from '@iwsdk/core';
 import { World, createSystem } from '@iwsdk/core';
-import * as R from '../../lettertown-chapter-one-r8/rules/game.js';
+import * as R from '../rules/game.js';
 import { makeScreens } from './screens.js';
 import { runIntro } from './intro.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -59,22 +59,23 @@ const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: fals
 const skyDome = new THREE.Mesh(new THREE.SphereGeometry(52, 32, 16), skyMat); skyDome.renderOrder = -10; skyDome.frustumCulled = false; scene.add(skyDome);
 function puffTexture() { const c = document.createElement('canvas'); c.width = 256; c.height = 128; const x = c.getContext('2d'); for (const [px, py, r] of [[60, 78, 34], [100, 62, 44], [150, 66, 46], [192, 80, 32], [128, 84, 40], [84, 90, 28], [176, 92, 28]]) { const g = x.createRadialGradient(px, py, r * 0.15, px, py, r); g.addColorStop(0, 'rgba(255,255,255,0.95)'); g.addColorStop(0.7, 'rgba(255,255,255,0.7)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.beginPath(); x.arc(px, py, r, 0, 7); x.fill(); } const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; }
 const puffT = puffTexture(), clouds = [];
-for (let i = 0; i < 16; i++) { const a = (i / 16) * 6.283 + (i % 3) * 0.2, r = 30 + (i % 4) * 5, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: puffT, transparent: true, depthWrite: false, fog: false, opacity: 0.95 })); const w = 14 + (i % 5) * 4; sp.scale.set(w, w * 0.45, 1); sp.position.set(Math.cos(a) * r, 11 + (i % 5) * 3.2, Math.sin(a) * r); sp.userData = { a, r, y: sp.position.y, sp: 0.004 + (i % 3) * 0.002 }; clouds.push(sp); scene.add(sp); }
-function stepSky(dt) { skyDome.position.copy(camera.position); const wp = new THREE.Vector3(); try { camera.getWorldPosition(wp); skyDome.position.copy(wp); } catch (e) { /* flat view */ } clouds.forEach((c) => { const u = c.userData; u.a += u.sp * dt; c.position.set(wp.x + Math.cos(u.a) * u.r, u.y, wp.z + Math.sin(u.a) * u.r); }); }
+for (let i = 0; i < 16; i++) { const a = (i / 16) * 6.283 + (i % 3) * 0.2, r = 30 + (i % 4) * 5, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: puffT, transparent: true, depthWrite: false, fog: false, opacity: 0.95 })); const w = 14 + (i % 5) * 4; sp.scale.set(w, w * 0.45, 1); sp.position.set(Math.cos(a) * r, 11 + (i % 5) * 3.2, Math.sin(a) * r); sp.userData = { a, r, y: sp.position.y, sp: 0.004 + (i % 3) * 0.002 }; sp.visible = false; clouds.push(sp); /* old white clouds retired: only the pink clouds now */ }
+const pinkClouds = [];
+function stepSky(dt) { pinkClouds.forEach((h) => { const u = h.userData; u.a += dt * 0.02; h.position.x = u.x + Math.sin(u.a) * 2.5; h.position.y += Math.sin(u.a * 3 + u.bob) * 0.0015; }); skyDome.position.copy(camera.position); const wp = new THREE.Vector3(); try { camera.getWorldPosition(wp); skyDome.position.copy(wp); } catch (e) { /* flat view */ } clouds.forEach((c) => { const u = c.userData; u.a += u.sp * dt; c.position.set(wp.x + Math.cos(u.a) * u.r, u.y, wp.z + Math.sin(u.a) * u.r); }); }
 // the town behind you changes with the story: gate, daytime street, night
 const BACK = { gate: tex('assets/scene/town_gate.jpg'), day: tex('assets/scene/town_day.jpg'), night: tex('assets/scene/town_night.jpg') };
 const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(36, 18.4), new THREE.MeshBasicMaterial({ map: BACK.gate, fog: false })); backdrop.position.set(0, 7.2, -26); backdrop.visible = false; scene.fog = new THREE.Fog('#d9ecf7', 20, 46); town.add(backdrop);
-const signBroken = cutout('assets/scene/sign_broken.png', 1.15, 0.88, -1.35, TABLE + 0.62, -1.7, 0.5);
+const signBroken = cutout('assets/scene/sign_broken.png', 1.15, 0.88, -1.35, TABLE + 0.62, -1.7, 0.5); signBroken.visible = false;   // the broken-sign picture is gone for good
 const signRestored = cutout('assets/scene/sign_restored.png', 1.15, 0.8, -1.35, TABLE + 0.62, -1.7, 0.5); signRestored.visible = false;
 cutout('assets/scene/word_cart.png', 0.95, 0.95, 1.4, TABLE + 0.5, -1.75, -0.5).name = 'flatWord';
 cutout('assets/scene/flower_cart.png', 0.8, 0.8, 2.1, TABLE + 0.42, -1.0, -0.95).name = 'flatFlower';
 const PEOPLE = ['hudson', 'snowy', 'merry', 'kit', 'phineas', 'mayor'];
 // each resident stands in front of their home, on a little grass stage behind the story board
-const HOMES = { hudson: 'archway', snowy: 'cozycottage', merry: 'merry_greenhouse', kit: 'seed_shop', phineas: 'cottage_green', mayor: 'townhall' };
-const HOME_H = { hudson: 0.95, snowy: 0.85, merry: 0.95, kit: 0.95, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.46, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
+const HOMES = { hudson: 'archway', snowy: 'townhall', merry: 'merry_greenhouse', kit: 'seed_shop', phineas: 'cozycottage', mayor: 'townhall' };
+const HOME_H = { hudson: 0.95, snowy: 0.95, merry: 0.95, kit: 0.95, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.62, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
 const gltfLoader = new GLTFLoader(), vig = new THREE.Group(); vig.visible = false; stage.add(vig);
-const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.33, 0.03, 40), new THREE.MeshLambertMaterial({ color: '#a8d08a' })); stand.position.y = -0.015; vig.add(stand);
-const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.34, 3, 32), new THREE.MeshLambertMaterial({ color: '#b98a55' })); plinth.position.y = -1.53; vig.add(plinth);   // a wooden pedestal down to the ground, so nobody floats
+const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.33, 0.03, 40), new THREE.MeshLambertMaterial({ color: '#a8d08a' })); stand.position.y = -0.015; stand.visible = false; vig.add(stand);   // no platform: people stand on the town's own ground now
+const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.34, 3, 32), new THREE.MeshLambertMaterial({ color: '#b98a55' })); plinth.position.y = -1.53; plinth.visible = false; vig.add(plinth);   // a wooden pedestal down to the ground, so nobody floats
 const VIG = {}; let vigWho = null, vigSide = 'center';
 function fit(o, height) { o.updateMatrixWorld(true); const box = new THREE.Box3().setFromObject(o, true), sz = box.getSize(new THREE.Vector3()); o.scale.setScalar(height / Math.max(sz.y, 1e-3)); o.updateMatrixWorld(true); box.setFromObject(o, true); const c = box.getCenter(new THREE.Vector3()); o.position.x -= c.x; o.position.z -= c.z; o.position.y -= box.min.y; const w = new THREE.Group(); w.add(o); return w; }
 function loadVig(k) {
@@ -84,8 +85,9 @@ function loadVig(k) {
   gltfLoader.load(`assets/models/${k}.glb`, (g) => { v.char = fit(g.scene, CHAR_H[k]); v.char.position.set(-0.16, 0, 0.14); v.root.add(v.char); done(); }, undefined, () => { v.failed = true; done(); });
 }
 function applyVig() { const v = VIG[vigWho]; Object.keys(VIG).forEach((k) => { VIG[k].root.visible = k === vigWho && !!VIG[k].char; }); vig.visible = !!(v && v.char); }
-function placeVig() { vig.position.set(vigSide === 'left' ? -0.72 : -0.04, TABLE + (vigSide === 'left' ? 0.3 : 0.5), vigSide === 'left' ? -1.45 : -1.6); vig.scale.setScalar(vigSide === 'left' ? 1.05 : 1.3); }
-function showPerson(who, side = 'center') { const k = who && PEOPLE.find((p) => who.toLowerCase().startsWith(p)); vigWho = k || null; vigSide = side; placeVig(); if (!k) { vig.visible = false; return; } loadVig(k); applyVig(); }
+function placeVig() { vig.position.set(vigSide === 'left' ? -1.5 : -1.35, 0, vigSide === 'left' ? -2.0 : -1.9); vig.scale.setScalar(1.4); }   // standing on the ground beside the board, no pedestal
+const PERSON_TP = { hudson: 'gate', snowy: 'townhall', mayor: 'townhall', merry: 'merry', kit: 'seedshop', phineas: 'phineas' };
+function showPerson(who, side = 'center') { const k = who && PEOPLE.find((p) => who.toLowerCase().startsWith(p)); vigWho = k || null; vig.visible = false; /* no miniature: the real resident stands at their real place; we go there */ if (k && PERSON_TP[k] && tpName !== PERSON_TP[k]) teleportTo(PERSON_TP[k], true); }
 let placeName = 'gate';
 // the sky follows the player's real clock: dawn, day, dusk, night (add ?hour=20 to the address to preview)
 function clockHour() { if (Q.has('hour')) return num('hour', 12); const d = new Date(); return d.getHours() + d.getMinutes() / 60; }
@@ -105,27 +107,31 @@ function addProp(file, height, x, y, z, ry, opts = {}) {
   gltfLoader.load(`assets/models/${file}.glb`, (g) => { holder.add(fit(g.scene, height)); if (opts.hideFlat) town.children.filter((c) => c.name === opts.hideFlat).forEach((c) => { c.visible = false; }); }, undefined, () => { /* the flat picture stays */ });
   return rec;
 }
-const wordCartProp = addProp('lettercart', 1.35, 1.8, 0, -2.0, -0.5, { hideFlat: 'flatWord', parent: town, kind: 'carts', radius: 0.8, cy: 0.65 });
-const flowerCartProp = addProp('flowercart', 1.2, 2.5, 0, -1.3, -0.95, { hideFlat: 'flatFlower', parent: town, kind: 'carts', radius: 0.8, cy: 0.6 });
+const wordCartProp = addProp('lettercart', 1.35, 0.9, 0, -2.4, -0.3, { hideFlat: 'flatWord', parent: town, kind: 'carts', radius: 0.8, cy: 0.65 });
+const flowerCartProp = addProp('flowercart', 1.2, 3.1, 0, -1.2, -0.95, { hideFlat: 'flatFlower', parent: town, kind: 'carts', radius: 0.8, cy: 0.6 });
 /* what is on each cart, drawn in 3D and refreshed twice a second */
 const stockW = new THREE.Group(), stockF = new THREE.Group(); wordCartProp.holder.add(stockW); flowerCartProp.holder.add(stockF); stockW.scale.setScalar(1.35); stockF.scale.setScalar(1.33);   // the carts are bigger now, so their stock grows with them
 const plaqueTex = {}; function plaque(txt, bg) { const k = txt + bg; if (plaqueTex[k]) return plaqueTex[k]; const c = document.createElement('canvas'); c.width = 256; c.height = 112; const x = c.getContext('2d'); x.fillStyle = bg; x.fillRect(0, 0, 256, 112); x.strokeStyle = '#6b4a2b'; x.lineWidth = 10; x.strokeRect(5, 5, 246, 102); x.fillStyle = '#4b2f6b'; x.font = 'bold 60px Georgia,serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt.toUpperCase(), 128, 58, 230); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return (plaqueTex[k] = t); }
 const FCOL = { rose: '#e88aa5', daisy: '#fffdf4', poppy: '#e8453c', peony: '#f2a6c4', lily: '#f6b5d8', sunflower: '#ffc928', violet: '#8a63d2', marigold: '#ff9a1f', buttercup: '#ffe14a', zinnia: '#e2557a', chrysanthemum: '#f4d36b', kopsia: '#f08bb0', jonquil: '#ffd84a', flax: '#6d8fe8', plumeria: '#fff0c7' };
 /* real 3D arranging: pick cut flowers from the shelf, they stand in the vase; touch the vase to take the last one out */
 const arrG = new THREE.Group(); arrG.visible = false; stage.add(arrG);
-const vase = new THREE.Group(); { const v = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.04, 0.14, 20, 1, true), new THREE.MeshLambertMaterial({ color: '#cfe6f2', transparent: true, opacity: 0.8, side: THREE.DoubleSide })); v.position.y = 0.07; vase.add(v); const bt = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.01, 20), new THREE.MeshLambertMaterial({ color: '#9dc3d8' })); bt.position.y = 0.005; vase.add(bt); } vase.position.set(0.58, TABLE, 0.02); arrG.add(vase);
+const vase = new THREE.Group(); { const v = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.04, 0.14, 20, 1, true), new THREE.MeshLambertMaterial({ color: '#cfe6f2', transparent: true, opacity: 0.8, side: THREE.DoubleSide })); v.position.y = 0.07; vase.add(v); const bt = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.01, 20), new THREE.MeshLambertMaterial({ color: '#9dc3d8' })); bt.position.y = 0.005; vase.add(bt); } vase.position.set(0.0, TABLE, -0.2); arrG.add(vase);
 const vaseRec = { holder: vase, kind: 'vase', radius: 0.09, cy: 0.1 }; props.push(vaseRec);
-const vaseFl = new THREE.Group(); vase.add(vaseFl); const pickRecs = []; const SPKEY = { poppy: 'poppy_blue', rose: 'rose_pink', daisy: 'daisy_white', peony: 'peony_pink', lily: 'lily_pink' }; let arrSig = '';
+const vaseFl = new THREE.Group(); vase.add(vaseFl); const pickRecs = []; const SPKEY = { poppy: 'poppy_blue', rose: 'rose_pink', daisy: 'daisy_white', peony: 'peony_pink', lily: 'lily_pink' }; const THIN = { flax: 1, violet: 1, jonquil: 1, plumeria: 1 }; let arrSig = '';
 const vaseFluted = new THREE.Group(); vase.add(vaseFluted); let vaseLoaded = false; const vaseGlass = vase.children.filter((c) => c.isMesh);
-function applyVase() { const f = UI.state.vase === 'fluted'; vaseGlass.forEach((m) => { m.visible = !f; }); vaseFluted.visible = f; if (f && !vaseLoaded) { vaseLoaded = true; flowerModel('vase_fluted', 0.16, (m) => vaseFluted.add(m)); } }
+const vaseClay = new THREE.Group(); vase.add(vaseClay); { const pts = [[0.0, 0], [0.045, 0], [0.058, 0.03], [0.065, 0.065], [0.05, 0.1], [0.036, 0.125], [0.044, 0.14]].map(([x, y]) => new THREE.Vector2(x, y)); const jar = new THREE.Mesh(new THREE.LatheGeometry(pts, 24), new THREE.MeshLambertMaterial({ color: '#c9774a', side: THREE.DoubleSide })); vaseClay.add(jar); const band = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.004, 8, 24), new THREE.MeshLambertMaterial({ color: '#f1d9a0' })); band.rotation.x = Math.PI / 2; band.position.y = 0.07; vaseClay.add(band); vaseClay.visible = false; }
+const vaseOrange = new THREE.Group(); vase.add(vaseOrange); vaseOrange.visible = false; let vaseOrangeLoaded = false;   // her Meshy terracotta vase replaces the hand-built clay one
+const VASE_FIT = { glass: { y: 0.07, r: 1 }, fluted: { y: 0.1, r: 1.35 }, clay: { y: 0.1, r: 1.1 } };
+const vaseKey = () => (UI.state.vase === 'fluted' || UI.state.vase === 'clay') ? UI.state.vase : 'glass';
+function applyVase() { const k = vaseKey(), f = k === 'fluted'; vaseGlass.forEach((m) => { m.visible = k === 'glass'; }); vaseFluted.visible = f; vaseClay.visible = false; vaseOrange.visible = k === 'clay'; if (k === 'clay' && !vaseOrangeLoaded) { vaseOrangeLoaded = true; flowerModel('vase_orange', 0.16, (m) => vaseOrange.add(m)); } if (f && !vaseLoaded) { vaseLoaded = true; flowerModel('vase_fluted', 0.16, (m) => vaseFluted.add(m)); } }
 function refreshArr() {
   const on = !!S && UI.state.screen === 'carts'; arrG.visible = on; if (!on) { arrSig = ''; return; } applyVase();
-  const PP = R.pouch(S), arr = UI.state.arr || {}, sig = JSON.stringify([PP.flowers, PP.basket, arr]); if (sig === arrSig) return; arrSig = sig;
+  const PP = R.pouch(S), arr = UI.state.arr || {}, sig = JSON.stringify([PP.flowers, PP.basket, arr, vaseKey()]); if (sig === arrSig) return; arrSig = sig;
   pickRecs.splice(0).forEach((r) => { arrG.remove(r.holder); const i = props.indexOf(r); if (i >= 0) props.splice(i, 1); });
   while (vaseFl.children.length) vaseFl.remove(vaseFl.children[0]);
-  let row = 0; R.CFG.species.forEach((k) => { const have = (PP.flowers[k] || 0) + (PP.basket[k] || 0) - (arr[k] || 0); if (have <= 0) return; const h = new THREE.Group(), i = row++; h.position.set(0.2 + (i % 8) * 0.1, TABLE, 0.18 + Math.floor(i / 8) * 0.09); arrG.add(h);
+  let row = 0; R.CFG.species.forEach((k) => { const have = (PP.flowers[k] || 0) + (PP.basket[k] || 0) - (arr[k] || 0); if (have <= 0) return; const h = new THREE.Group(), i = row++; h.position.set(-0.4 + (i % 9) * 0.1, TABLE, 0.04 - Math.floor(i / 9) * 0.09); arrG.add(h);
     flowerModel(SPKEY[k] || k, 0.13, (m) => { h.add(m); }); const rec = { holder: h, kind: 'pick:' + k, radius: 0.055, cy: 0.07 }; props.push(rec); pickRecs.push(rec); });
-  let n = 0; Object.keys(arr).forEach((k) => { for (let j = 0; j < arr[k]; j++) { const a = n * 2.4, r = 0.012 * (1 + (n % 4)), idx = n++; flowerModel(SPKEY[k] || k, 0.2, (m) => { m.position.set(Math.cos(a) * r, 0.07, Math.sin(a) * r); m.rotation.z = Math.cos(a) * 0.12 * (1 + idx % 3); m.rotation.x = Math.sin(a) * 0.12 * (1 + idx % 3); vaseFl.add(m); }); } });
+  let n = 0; Object.keys(arr).forEach((k) => { for (let j = 0; j < arr[k]; j++) { const a = n * 2.4, VF = VASE_FIT[vaseKey()], r = 0.012 * VF.r * (1 + (n % 4)), idx = n++; flowerModel(SPKEY[k] || k, 0.2, (m) => { m.position.set(Math.cos(a) * r, VF.y, Math.sin(a) * r); m.rotation.z = Math.cos(a) * 0.12 * (1 + idx % 3); m.rotation.x = Math.sin(a) * 0.12 * (1 + idx % 3); m.rotation.y = idx * 1.7; vaseFl.add(m); if (THIN[k]) { const m2 = m.clone(); m2.rotation.y += Math.PI / 2; vaseFl.add(m2); } }); } });
 }
 let stockSig = '';
 function refreshStock() {
@@ -137,13 +143,68 @@ function refreshStock() {
     for (let k = 0; k < n; k++) { const sp = list[k % list.length], a = k * 2.4, r = 0.012 + 0.012 * (k % 3), kk = k; flowerModel(SPKEY[sp] || sp, 0.15, (m) => { m.position.set(Math.cos(a) * r, 0.0, Math.sin(a) * r); m.rotation.z = Math.cos(a) * 0.15; m.rotation.x = Math.sin(a) * 0.15; m.rotation.y = kk; g.add(m); }); }
     g.position.set(-0.3 + (i % 3) * 0.3, 0.33, 0.0 + Math.floor(i / 3) * 0.17); stockF.add(g); });
 }
-const bookProp = addProp('townbook', 0.14, -0.7, TABLE, -0.3, 0.3, { kind: 'book', radius: 0.14 });
-const noticeProp = addProp('noticeboard', 0.34, -2.15, TABLE + 0.55, -0.35, 1.0, { kind: 'notice', radius: 0.4 });
-for (const dx of [-0.38, 0.38]) { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.03, TABLE + 0.55, 10), new THREE.MeshLambertMaterial({ color: '#8a5a33' })); post.position.set(dx, -(TABLE + 0.55) / 2 + 0.0, -0.02); noticeProp.holder.add(post); post.position.y = -(TABLE + 0.55) / 2; }
+const bookProp = addProp('townbook', 0.055, -0.7, TABLE, -0.3, 0.3, { kind: 'book', radius: 0.14 });
+/* the community board matches the one on the town map: blue tile roof, orange frame, cork face with notes pinned on, a lantern, and stone feet. It is built here from shapes until a Meshy model replaces it. */
+const noticeProp = (() => {
+  const holder = new THREE.Group(); holder.position.set(-2.15, TABLE + 0.55, -0.35); holder.rotation.y = 1.0; stage.add(holder);
+  const rec = { holder, kind: 'notice', radius: 0.4, cy: 0 }; props.push(rec);
+  const M = (c) => new THREE.MeshLambertMaterial({ color: c }), add = (geo, col, x, y, z, rz = 0) => { const m = new THREE.Mesh(geo, M(col)); m.position.set(x, y, z); m.rotation.z = rz; holder.add(m); return m; };
+  const legH = TABLE + 0.55 + 0.08;
+  [-0.14, 0.14].forEach((x) => { add(new THREE.BoxGeometry(0.03, legH, 0.03), '#e6962e', x, 0.08 - legH / 2, 0); add(new THREE.BoxGeometry(0.07, 0.03, 0.07), '#d9a9b3', x, -(TABLE + 0.55) + 0.015, 0); });
+  add(new THREE.BoxGeometry(0.40, 0.20, 0.03), '#e6962e', 0, 0.18, 0);
+  add(new THREE.BoxGeometry(0.35, 0.15, 0.012), '#f0c277', 0, 0.18, 0.012);
+  [['#ffffff', -0.11, 0.21, 0.07, 0.06], ['#ffd1e6', 0.0, 0.16, 0.06, 0.06], ['#fff3b0', 0.1, 0.21, 0.07, 0.06], ['#d9ecff', 0.06, 0.13, 0.06, 0.05], ['#ffffff', -0.1, 0.14, 0.05, 0.05]].forEach(([c, x, y, w, h]) => { const n = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshLambertMaterial({ color: c, side: THREE.DoubleSide })); n.position.set(x, y, 0.0195); n.rotation.z = (x * 3) % 0.2; holder.add(n); });
+  add(new THREE.BoxGeometry(0.25, 0.015, 0.06), '#2e50a8', -0.095, 0.325, 0, 0.5); add(new THREE.BoxGeometry(0.25, 0.015, 0.06), '#2e50a8', 0.095, 0.325, 0, -0.5);
+  add(new THREE.BoxGeometry(0.03, 0.02, 0.062), '#243f8a', 0, 0.365, 0);
+  [-0.07, 0.07].forEach((x) => add(new THREE.SphereGeometry(0.018, 12, 10), '#2fb5b0', x, 0.29, 0.03));
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.02, 12, 10), new THREE.MeshBasicMaterial({ color: '#ffd36b' })); lamp.position.set(0, 0.285, 0.035); holder.add(lamp);
+  return rec;
+})();
 
 /* ---------- a present for the player, shown on the table while a gift is opened ---------- */
 const giftHolder = new THREE.Group(); giftHolder.position.set(0, TABLE + 0.02, -0.32); giftHolder.visible = false; stage.add(giftHolder);
-gltfLoader.load('assets/models/giftbox.glb', (g) => { giftHolder.add(fit(g.scene, 0.22)); }, undefined, () => { /* no box model: the tiles still show */ });
+// Director hotfix: replace the perforated Meshy giftbag with a closed, lightweight
+// storybook gift bag until the original GLB can be repaired and validated.
+// Keep giftHolder, position, visibility and gameplay triggers unchanged.
+{
+  const bag = new THREE.Group();
+  const paper = new THREE.MeshStandardMaterial({ color: 0xf4c9d8, roughness: 0.88, side: THREE.DoubleSide });
+  const side = new THREE.MeshStandardMaterial({ color: 0xd990ad, roughness: 0.9, side: THREE.DoubleSide });
+  const trim = new THREE.MeshStandardMaterial({ color: 0xfff2c9, roughness: 0.85 });
+  const W = 0.19, H = 0.21, D = 0.105;
+  const panel = (w,h,d,x,y,z,mat) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.position.set(x,y,z); bag.add(m); return m; };
+  // Solid front, back, sides and bottom: no open polygon edges or transparency.
+  panel(W,H,0.006,0,H/2,D/2,paper);
+  panel(W,H,0.006,0,H/2,-D/2,paper);
+  panel(0.006,H,D,-W/2,H/2,0,side);
+  panel(0.006,H,D,W/2,H/2,0,side);
+  panel(W,0.007,D,0,0.0035,0,paper);
+  // Folded top rim gives the bag an intentional open top, not missing faces.
+  panel(W+0.012,0.012,0.012,0,H, D/2,trim);
+  panel(W+0.012,0.012,0.012,0,H,-D/2,trim);
+  panel(0.012,0.012,D, W/2,H,0,trim);
+  panel(0.012,0.012,D,-W/2,H,0,trim);
+  const cord = new THREE.MeshStandardMaterial({ color: 0x9e6581, roughness: 0.75 });
+  // Rope handles are simple curved tubes with endpoints attached to the panels.
+  for (const z of [-D/2-0.005,D/2+0.005]) {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.047,H-0.014,z),
+      new THREE.Vector3(-0.044,H+0.043,z),
+      new THREE.Vector3(0,H+0.056,z),
+      new THREE.Vector3(0.044,H+0.043,z),
+      new THREE.Vector3(0.047,H-0.014,z)
+    ]);
+    bag.add(new THREE.Mesh(new THREE.TubeGeometry(curve,16,0.005,6,false),cord));
+  }
+  // Center on the table and keep the same 0.26m overall display height.
+  const bounds = new THREE.Box3().setFromObject(bag);
+  const size = bounds.getSize(new THREE.Vector3());
+  const center = bounds.getCenter(new THREE.Vector3());
+  bag.position.set(-center.x,-bounds.min.y,-center.z);
+  const wrap = new THREE.Group(); wrap.add(bag);
+  wrap.scale.setScalar(0.26/size.y);
+  giftHolder.add(wrap);
+}
 // a crafted word becomes an object on the table: her item art when she has it, otherwise an emoji (a stopgap until each word has 3D art)
 const EMO = { cat: '🐱', dog: '🐶', sun: '☀️', moon: '🌙', star: '⭐', tree: '🌳', bird: '🐦', fish: '🐟', rose: '🌹', rain: '🌧️', leaf: '🍃', seed: '🌱', bell: '🔔', cake: '🍰', door: '🚪', nest: '🪹', tea: '🍵', hat: '🎩', bee: '🐝', bear: '🐻', bunny: '🐰', duck: '🦆', frog: '🐸', crab: '🦀', cow: '🐮', pig: '🐷', owl: '🦉', fox: '🦊', heart: '❤️', kite: '🪁', boat: '⛵', ship: '🚢', car: '🚗', bus: '🚌', key: '🔑', gift: '🎁', ring: '💍', shoe: '👟', sock: '🧦', apple: '🍎', pear: '🍐', plum: '🍑', corn: '🌽', milk: '🥛', flower: '🌸', cloud: '☁️', snow: '❄️', fire: '🔥', wind: '💨', rock: '🪨', shell: '🐚', bread: '🍞', egg: '🥚', pie: '🥧', jam: '🍓', bed: '🛏️', chair: '🪑', lamp: '💡', book: '📖', cup: '☕', mug: '☕', clock: '⏰', drum: '🥁', bat: '🦇', ant: '🐜', lion: '🦁', horse: '🐴', mouse: '🐭', snail: '🐌', camel: '🐫' };
 let wordObj = null;
@@ -178,8 +239,17 @@ cobblePatch(new THREE.PlaneGeometry(5.2, 1.7), 5.2, 1.7, 3.5, -1.3);            
 cobblePatch(new THREE.PlaneGeometry(1.9, 1.5), 1.9, 1.5, -2.35, -1.5);            // the road to the community garden
 cobblePatch(new THREE.CircleGeometry(0.9, 32), 1.8, 1.8, -2.7, -1.5);              // the little pad in front of the garden
 put('fountain', 2.3, 0, -7.0, 0);
-worldModel('trowel', (src) => { src.updateMatrixWorld(true); const bb = new THREE.Box3().setFromObject(src), sz = bb.getSize(new THREE.Vector3()); src.scale.setScalar(0.15 / Math.max(sz.x, sz.y, sz.z, 1e-3)); src.updateMatrixWorld(true); bb.setFromObject(src); const c = bb.getCenter(new THREE.Vector3()); src.position.x -= c.x; src.position.z -= c.z; src.position.y -= bb.min.y; const w = new THREE.Group(); w.add(src); w.position.set(0.8, TABLE, 0.02); w.rotation.y = 0.5; stage.add(w); });   // a small trowel left on the table
+// shovel removed for now (Director, Nov 17)
+// worldModel('trowel', (src) => { src.updateMatrixWorld(true); const bb = new THREE.Box3().setFromObject(src), sz = bb.getSize(new THREE.Vector3()); src.scale.setScalar(0.15 / Math.max(sz.x, sz.y, sz.z, 1e-3)); src.updateMatrixWorld(true); bb.setFromObject(src); const c = bb.getCenter(new THREE.Vector3()); src.position.x -= c.x; src.position.z -= c.z; src.position.y -= bb.min.y; const w = new THREE.Group(); w.add(src); w.position.set(0.8, TABLE, 0.02); w.rotation.y = 0.5; stage.add(w); });   // a small trowel left on the table
 addProp('townhall', 6.0, 0, 0, -12.5, 0, { parent: town });
+/* the edge of town: a river all the way around, grass beyond it, then hills and mountains, so it is clear where the town ends */
+{ const water = new THREE.Mesh(new THREE.RingGeometry(31, 35, 64), new THREE.MeshLambertMaterial({ color: '#6fb9ea', emissive: '#1d4f7a', emissiveIntensity: 0.25 })); water.rotation.x = -Math.PI / 2; water.position.y = 0.03; town.add(water); window.__water = water;
+  for (const [r0, r1, col] of [[30.4, 31, '#d9c58f'], [35, 35.6, '#d9c58f']]) { const bank = new THREE.Mesh(new THREE.RingGeometry(r0, r1, 64), new THREE.MeshLambertMaterial({ color: col })); bank.rotation.x = -Math.PI / 2; bank.position.y = 0.025; town.add(bank); }
+  window.__hills = []; const hr = (() => { let a = 7; return () => { a = (a * 9301 + 49297) % 233280; return a / 233280; }; })();
+  for (let i = 0; i < 44; i++) { const ang = (i / 44) * Math.PI * 2 + hr() * 0.1, big = i % 3 === 0, r = 46 + hr() * 8 + (big ? 6 : 0), h = big ? 9 + hr() * 6 : 3.5 + hr() * 3, w = big ? 9 + hr() * 4 : 7 + hr() * 4;
+    const m = new THREE.Mesh(big ? new THREE.ConeGeometry(w, h * 2, 7) : new THREE.SphereGeometry(w, 14, 10), new THREE.MeshLambertMaterial({ color: big ? (i % 2 ? '#8e9aa8' : '#7f8f9c') : (i % 2 ? '#78b36a' : '#8cc47a') })); if (!big) m.scale.y = h / w; m.position.set(Math.cos(ang) * r, big ? h : 0, Math.sin(ang) * r); town.add(m); window.__hills.push(m);
+    if (big) { const cap = new THREE.Mesh(new THREE.ConeGeometry(w * 0.32, h * 0.5, 7), new THREE.MeshLambertMaterial({ color: '#f4f7fb' })); cap.position.set(m.position.x, h * 1.78, m.position.z); town.add(cap); window.__hills.push(cap); } } }
+
 // Kit's seed shop, where the first cottage used to be
 const seedShop = addProp('seed_shop', 2.7, 6.6, 0, -0.8, -1.3, { parent: town, kind: 'shop', radius: 1.1, cy: 1 }); seedShop.holder.name = 'seed-shop';
 // the player's own cottage, in front of the Player's Garden, once the Mayor has given it to them
@@ -209,16 +279,19 @@ function placeHome() {
 const greenhouse = addProp('merry_greenhouse', 2.6, -7, 0, -2.9, 1.06, { parent: town, kind: 'greenhouse', radius: 1.1, cy: 1 }); greenhouse.holder.name = 'merry-greenhouse';
 const workshop = addProp('cottage_green', 2.5, 3.3, 0, -3.1, -0.4, { parent: town, kind: 'workshop', radius: 1.1, cy: 1 }); workshop.holder.name = 'phineas-workshop';
 // the residents stand where they belong: Snowy and Mayor Ren on the town hall steps, Phineas by his workshop and the carts
-[['snowy', -1.1, -10.3, 1.15], ['mayor', 1.1, -10.3, 1.25], ['phineas', 2.4, -0.9, 1.2], ['merry', -5.6, -1.5, 1.2], ['kit', 5.3, -2.1, 1.15]].forEach(([who, x, z, h]) => gltfLoader.load(`assets/models/${who}.glb`, (g) => { const m = fit(g.scene, h); m.position.set(x, 0, z); m.rotation.y = who === 'phineas' ? -0.4 : who === 'merry' ? 1.24 : who === 'kit' ? -1.3 : 0; town.add(m); }, undefined, () => {}));
+[['snowy', -1.1, -10.3, 1.15], ['mayor', 1.1, -10.3, 1.25], ['phineas', 5.0, -3.9, 1.2], ['merry', -5.6, -1.5, 1.2], ['kit', 5.3, -2.1, 1.15]].forEach(([who, x, z, h]) => gltfLoader.load(`assets/models/${who}.glb`, (g) => { const m = fit(g.scene, h); m.position.set(x, 0, z); m.rotation.y = who === 'phineas' ? -1.2 : who === 'merry' ? 1.24 : who === 'kit' ? -1.3 : 0; town.add(m); }, undefined, () => {}));
 [['cottage_new_green', 3.0, 6.8, -3.8, -1.45], ['cottage_new_blue', 3.0, 6.2, -7.2, -1.8], ['cottage_new_green', 3.0, -7.0, -6.8, 1.6], ['cottage_new_blue', 3.0, -7.4, 0.6, 1.2], ['cottage_new_green', 3.0, 5.0, 5.6, 2.6], ['cottage_new_blue', 3.0, -4.6, 6.2, 3.4]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 [[-8.5, -2.5], [-9.8, -7.0], [-8, -11], [8.5, -11], [10.2, -6], [9.6, -1.5], [-4.5, -11.5], [4.8, -12], [-9.5, 3.5], [-6, 7.5], [0, 9.5], [8, 6.5], [10.5, 3], [-12.5, -5], [12.5, -4], [-4.8, 2.2], [4.4, 2.8]].forEach(([x, z], i) => put(i % 2 ? 'tree_flowering' : 'tree_lush', 3.4 + rng() * 1.8, x, z, rng() * 6.28));
 const KEEP = [[0, -0.4, 2.7], [0, -7, 3.0], [3.5, -1.3, 2.9], [-3.2, -1.9, 2.6], [0, -4.3, 1.6], [-4.2, -2.8, 2.7]];   // keep the cobblestone and garden clear of shrubs
-for (let i = 0; i < 70; i++) { const a = rng() * 6.283, r = 2.8 + rng() * 11, x = Math.cos(a) * r, z = -3 + Math.sin(a) * r; if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; const k = ['shrub', 'bush', 'grassclump', 'grassclump'][i % 4]; put(k, k === 'grassclump' ? 0.35 + rng() * 0.3 : 0.6 + rng() * 0.7, x, z, rng() * 6.28); }
+// APPROVED MAP: hand-placed landscaping, never scatter bushes into NPCs or roads.
+const NPC_CLEAR = [[-1.1, -10.3], [1.1, -10.3], [5, -3.9], [-5.6, -1.5], [5.3, -2.1]];
+const SCENERY_SPOTS = [['shrub', 0.8, -10, -3], ['grassclump', 0.4, -11, -1], ['bush', 0.7, -10, 3], ['shrub', 0.8, -8, 4], ['grassclump', 0.4, -8, 7], ['bush', 0.7, -5, 9], ['shrub', 0.8, 9, 3], ['grassclump', 0.4, 11, 1], ['bush', 0.7, 11, -3], ['shrub', 0.8, 10, -9], ['grassclump', 0.4, 7, -11], ['bush', 0.7, 5, 9]];
+SCENERY_SPOTS.forEach(([k, h, x, z]) => { if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr + 0.6)) return; if (NPC_CLEAR.some(([nx, nz]) => Math.hypot(x - nx, z - nz) < 2.2)) return; put(k, h, x, z, 0); });
 [[-3, 5], [3.4, 7.5], [-8, 9], [7.5, 10], [0, 13], [-11, 6], [11, 8], [-14, -9], [14, -10], [-2, -15], [5, -15]].forEach(([x, z]) => put(rng() < 0.5 ? 'tree_lush' : 'tree_flowering', 3.6 + rng() * 1.6, x, z, rng() * 6.28));
 [['cottage_new_green', 3.0, 1.2, 4.6, 3.14], ['cottage_new_blue', 3.0, -9.5, 6.5, 2.2], ['cottage_new_blue', 3.0, 9.5, 6.8, -2.2]].forEach(([f, h, x, z, ry]) => put(f, h, x, z, ry));
 const FLW = [['marigold', 0.35], ['buttercup', 0.3], ['sunflower', 0.6], ['violet', 0.3], ['flax', 0.35], ['jonquil', 0.35], ['zinnia', 0.35], ['kopsia', 0.35], ['daisy_white', 0.3], ['rose_pink', 0.4], ['poppy_blue', 0.35], ['peony_pink', 0.35], ['lily_purple', 0.4]];
 for (let i = 0; i < 48; i++) { const a = rng() * 6.283, r = 2.6 + rng() * 9, x = Math.cos(a) * r, z = -2 + Math.sin(a) * r; if (KEEP.some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr)) continue; const [k, h] = FLW[i % FLW.length]; flowerModel(k, h * (0.8 + rng() * 0.5), (m) => { m.position.set(x, 0, z); m.rotation.y = rng() * 6.28; world.add(m); }); }
-for (let i = 0; i < 10; i++) { const a = i / 10 * 6.283; put('bush', 0.9, Math.cos(a) * 3.3, -7 + Math.sin(a) * 3.3, rng() * 6.28); }   // a ring of bushes around the fountain plaza
+// APPROVED MAP: the fountain plaza stays open, no ring of bushes.
 
 /* ---------- the community garden: twelve shared plots in the town square, and neighbors strolling through ---------- */
 const comm = new THREE.Group(); comm.position.set(-4.2, 0, -2.8); comm.rotation.y = 0.89; comm.visible = true; town.add(comm);
@@ -227,10 +300,11 @@ const CP = [], cTex = {}, cGlb = {};   // one little scene per community plot, r
 const cTexOf = (f) => cTex[f] || (cTex[f] = tex(`assets/blooms/${f}.png`));
 for (let i = 0; i < 12; i++) {
   const x = (i % 6 - 2.5) * 0.55, z = Math.floor(i / 6) * 0.6, g = new THREE.Group(); g.position.set(x, 0, z); comm.add(g);
-  const mound = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.23, 0.07, 20), new THREE.MeshLambertMaterial({ color: '#7a5236' })); mound.position.y = 0.035; mound.visible = false; g.add(mound); worldModel('stoneplot', (src) => { const m = fitW(src, 0.62); g.add(m); });
-  const ico = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); ico.position.y = 0.22; ico.visible = false; ico.name = 'garden-art-fallback'; g.add(ico);
+  const mound = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.07, 20), new THREE.MeshLambertMaterial({ color: '#5b3a24' })); mound.position.y = 0.035; mound.visible = true; g.add(mound); worldModel('stoneplot', (src) => { const m = fitW(src, 0.62); g.add(m); });
+  const ico = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.3), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.08, side: THREE.DoubleSide })); ico.position.y = 0.22; ico.visible = false; ico.name = 'garden-art-fallback'; g.add(ico);   // stays hidden until a picture is assigned, so no blank white card shows before the game starts
   CP.push({ g, ico, holder: new THREE.Group(), sig: '' }); CP[i].holder.position.y = 0.07; g.add(CP[i].holder);
 }
+CP.forEach((c, i) => { props.push({ holder: c.holder, kind: 'cplot:' + i, radius: 0.28, cy: 0.25 }); });   // point at or touch a neighbor-garden flower to pick it when it is ready
 function miniPlant(look) {   // a small 3D seed, sprout or bud for the community plots (no flat pictures)
   const g = new THREE.Group(), soil = new THREE.MeshLambertMaterial({ color: '#5b3a24' }), green = new THREE.MeshLambertMaterial({ color: '#5a9a48' }), leaf = new THREE.MeshLambertMaterial({ color: '#6fb45a' });
   if (look === 'seed') { const m = new THREE.Mesh(new THREE.SphereGeometry(0.07, 14, 10), soil); m.scale.y = 0.45; m.position.y = 0.02; g.add(m); return g; }
@@ -258,8 +332,19 @@ function drawCommunity() {
 for (let i = 0; i < 2; i++) worldModel('fence', (src) => { const m = fitW(src, 1.95); m.position.set((i - 0.5) * 1.95, 0, -0.62); comm.add(m); });   // fence along the back
 for (const sx of [-1, 1]) worldModel('fence', (src) => { const m = fitW(src, 1.5); m.rotation.y = Math.PI / 2; m.position.set(sx * 1.95, 0, 0.1); comm.add(m); });
 worldModel('fencepost', (src) => { for (const [sx, sz] of [[-1, -0.62], [1, -0.62], [-1, 0.86], [1, 0.86]]) { const m = fit(src.clone(true), 0.5); m.position.set(sx * 1.95, 0, sz); comm.add(m); } });
+gltfLoader.load('assets/models/community_board.glb', (g) => { const m = fit(g.scene, 1.15); m.position.set(1.55, 0, -0.85); m.rotation.y = -0.35; comm.add(m); });   // the Cozy Bulletin Board stands behind the community fence
+gltfLoader.load('assets/models/pink_cloud.glb', (g) => { [[-30, 7, -24, 15], [-10, 9, -38, 18], [18, 7, -34, 14], [34, 9, -10, 17], [-36, 8, 12, 16], [0, 8, 38, 17], [28, 8, 26, 15], [-24, 9, 30, 16], [44, 10, -30, 16], [-42, 9, -14, 17]].forEach(([x, y, z, w], i) => { const m = g.scene.clone(true); m.traverse((o) => { if (o.material) { o.material = o.material.clone(); o.material.fog = false; if (o.material.emissive) { o.material.emissive.set('#d9d0f2'); o.material.emissiveIntensity = 0.7; if (o.material.emissiveMap === null) o.material.emissiveMap = o.material.map; } } }); const h = new THREE.Group(); h.add(m); h.scale.setScalar(w / 0.96); h.position.set(x, y, z); h.rotation.y = i * 1.3; h.userData = { x, z, a: i * 1.1, bob: i }; scene.add(h); pinkClouds.push(h); }); });   // additive distant clouds at the town edge; the sky and fluffy clouds stay as they were
+const edgeScenery = new THREE.Group(); town.add(edgeScenery);   // the Librarian's world-edge kit: trees, shrubs, rocks and the bridge, placed from town_layout_v1.json
+fetch('assets/world_layout_v1.json').then((r) => r.json()).then((L) => { L.objects.filter((o) => ['tree_lush_edge', 'tree_flowering_edge', 'shrub_edge', 'rock_edge', 'bridge_edge'].includes(o.asset)).forEach((o) => { worldModel(o.asset, (m) => { const h = new THREE.Group(); h.add(m); h.position.set(o.x, o.y || 0, o.z); h.rotation.y = o.rotationY || 0; h.scale.setScalar(o.scale || 1); edgeScenery.add(h); }); }); }).catch(error => console.error('Town edge layout failed:', error));
+// APPROVED MAP: the south entrance. A continuous cobblestone road runs from the cottage and board path to the bridge; the welcome sign (the archway) stands over it, and Hudson lives beside it.
+cobblePatch(new THREE.PlaneGeometry(2.2, 27), 2.2, 27, 0, 17.5);
+addProp('archway', 3.2, 0, 0, 29.5, 0, { parent: town });
+gltfLoader.load('assets/models/hudson.glb', (g) => { const m = fit(g.scene, 1.0); m.position.set(2.2, 0, 29.2); m.rotation.y = -0.4; town.add(m); });
+// APPROVED MAP: the Librarian's river and twelve scenery panels. The panels replace the cone mountains (never both), and the river keeps the bright blue.
+gltfLoader.load('assets/models/world/river_ring_candidate.glb', (g) => { const mat = new THREE.MeshLambertMaterial({ color: '#6fb9ea', emissive: '#1d4f7a', emissiveIntensity: 0.25, side: THREE.DoubleSide }); g.scene.traverse((o) => { if (o.isMesh) o.material = mat; }); town.add(g.scene); if (window.__water) window.__water.visible = false; });
+fetch('assets/world_layout_v1.json').then((r) => r.json()).then((L) => { let left = 0; L.objects.filter((o) => o.asset === 'distant_hills_panel').forEach((o) => { left++; worldModel('distant_hills_panel', (m) => { m.traverse((c) => { if (c.material) { c.material = c.material.clone(); c.material.side = THREE.DoubleSide; c.material.fog = false; } if (c.isMesh && c.geometry && c.geometry.attributes.uv) { c.geometry = c.geometry.clone(); const uv = c.geometry.attributes.uv; for (let q = 0; q < uv.count; q++) uv.setY(q, 1 - uv.getY(q)); uv.needsUpdate = true; /* the panel art was authored upside down: flip it upright */ } }); const h = new THREE.Group(); h.add(m); h.position.set(o.x, 0, o.z); h.rotation.y = o.rotationY || 0; h.scale.setScalar(1.15); town.add(h); if (--left === 0) (window.__hills || []).forEach((x) => { x.visible = false; }); }); }); }).catch(error => console.error('Scenery layout failed:', error));
 const mixers = [], walkers = [], KIDS = ['anna', 'timmy', 'mary', 'billy', 'sally', 'joe'], KID_H = 1.15; let commOn = true, kidsLoaded = false;
-const CARTS = { word: [1.25, -1.35], flower: [2.1, -0.65] };   // where a neighbor stands to shop
+const CARTS = { word: [0.35, -1.75], flower: [2.7, -0.55] };   // where a neighbor stands to shop
 const SPOTS = [[0, -5.5], [-1.5, -6.2], [1.6, -6.4], [0, -8.4], [-2.2, -4.2], [2.0, -3.4], [-3.0, -0.6], [-2.4, -1.4], [3.2, -0.2], [0.6, -3.0]];   // places to stroll to on the cobblestones
 const DOORS = [[5.0, -0.7], [5.4, -3.8], [5.0, -7.0], [-5.6, -6.6], [-6.0, 0.6], [4.4, 4.5], [-3.8, 5.2], [0.2, 3.7], [0, -10.2], [-8.3, 5.4], [8.0, 5.7]];   // front steps of the cottages and the town hall
 const _desk = new THREE.Vector3();
@@ -299,7 +384,7 @@ function stepKids(dt) {
     w.x += (dx / d) * 0.6 * dt; w.z += (dz / d) * 0.6 * dt;
     const rx = w.x - _desk.x, rz = w.z - _desk.z, rd = Math.hypot(rx, rz), KO = 1.7; if (rd < KO) { w.x = _desk.x + (rx / (rd || 1)) * KO; w.z = _desk.z + (rz / (rd || 1)) * KO; }   // never through the desk
     w.m.position.x = w.x; w.m.position.z = w.z; const want = Math.atan2(dx, dz); w.m.rotation.y += Math.atan2(Math.sin(want - w.m.rotation.y), Math.cos(want - w.m.rotation.y)) * Math.min(1, dt * 4);
-    if (kidGround <= 0) { const bb = new THREE.Box3().setFromObject(w.m, true); if (isFinite(bb.min.y)) w.m.position.y -= bb.min.y * 0.9; }
+    if (kidGround <= 0) { const bb = new THREE.Box3().setFromObject(w.m, true); if (isFinite(bb.min.y)) w.m.position.y -= bb.min.y; w.m.position.y += 0.07; }
   });
   if (kidGround <= 0) kidGround = 0.4;
 }
@@ -310,7 +395,7 @@ const boardTex = new THREE.CanvasTexture(board); boardTex.colorSpace = THREE.SRG
 const BOARD_W = 1.16, BOARD_H = BOARD_W * BH / BW;
 const boardMesh = new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W, BOARD_H), new THREE.MeshBasicMaterial({ map: boardTex, transparent: true, depthWrite: false })); boardMesh.renderOrder = 5; stage.add(boardMesh);
 const dot = new THREE.Mesh(new THREE.SphereGeometry(0.008, 10, 8), new THREE.MeshBasicMaterial({ color: '#c8745a' })); dot.visible = false; stage.add(dot);
-function layout() { placeTray(); const set = S ? S.settings : { reach: 0.5, boardDist: 0.95, boardHeight: 0.6, boardScale: 1 }, reach = set.reach; boardMesh.position.set(0, TABLE + set.boardHeight, -set.boardDist); boardMesh.scale.setScalar(set.boardScale); boardSc = set.boardScale; plots.forEach((p) => { const a = THREE.MathUtils.degToRad(-45 + p.i * 12.857); p.g.position.set(Math.sin(a) * reach, TABLE, -Math.cos(a) * reach); p.g.rotation.y = Math.atan2(-p.g.position.x, -p.g.position.z); }); }
+function layout() { placeTray(); tableTop.visible = !(S && S.settings && S.settings.tableHidden); const set = S ? S.settings : { reach: 0.5, boardDist: 0.95, boardHeight: 0.6, boardScale: 1 }, reach = set.reach; /* comfort limits: the whole screen must sit in front of a seated player, never touching the headset (saved values from older sessions are corrected here) */ if (!(set.boardDist >= 0.8)) set.boardDist = 0.8; if (set.boardDist > 1.5) set.boardDist = 1.5; { const maxSc = Math.round((1.4 * set.boardDist / BOARD_W) * 100) / 100; if (!(set.boardScale > 0)) set.boardScale = 1; if (set.boardScale > maxSc) set.boardScale = maxSc; if (set.boardScale < 0.5) set.boardScale = 0.5; } if (!(set.boardHeight >= 0.3 && set.boardHeight <= 0.9)) set.boardHeight = 0.6; boardMesh.position.set(0, TABLE + set.boardHeight, -set.boardDist); boardMesh.scale.setScalar(set.boardScale); boardSc = set.boardScale; plots.forEach((p) => { const a = THREE.MathUtils.degToRad(-45 + p.i * 12.857); p.g.position.set(Math.sin(a) * reach, TABLE, -Math.cos(a) * reach); p.g.rotation.y = Math.atan2(-p.g.position.x, -p.g.position.z); }); }
 let boardSc = 1; const _bp = new THREE.Vector3();
 function boardUV(pt) { _bp.copy(pt).sub(boardMesh.position); return { x: (_bp.x / (BOARD_W * boardSc) + 0.5) * BW, y: (0.5 - _bp.y / (BOARD_H * boardSc)) * BH, z: _bp.z }; }
 function boardRay(ray) { if (Math.abs(ray.d.z) < 1e-5) return null; const t = (boardMesh.position.z - ray.o.z) / ray.d.z; if (t <= 0 || t > 5) return null; const p = ray.o.clone().addScaledVector(ray.d, t); const uv = boardUV(p); return (uv.x < 0 || uv.x > BW || uv.y < 0 || uv.y > BH) ? null : { uv, p, t }; }
@@ -373,7 +458,7 @@ function makeTool(kind, home, yaw, build) { const g = new THREE.Group(); build(g
 const PK = R.SPECIES_BY_TIER;
 const packetMat = new THREE.MeshLambertMaterial({ transparent: true, alphaTest: 0.1, side: THREE.DoubleSide }); let packetTier = '';
 function packetFor(tier) { if (tier === packetTier) return; packetTier = tier; const L = PK[tier] || PK.common, f = R.TIER_OF[tier] ? tier : L[Math.floor(Math.random() * L.length)]; packetMat.map = tex(`assets/seeds/${f}.png`); packetMat.needsUpdate = true; }
-makeTool('seeds', new THREE.Vector3(0, TABLE + 0.05, -0.2), 0, (g) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.096), packetMat); m.position.y = 0.01; g.add(m); const m2 = m.clone(); m2.position.z = -0.002; g.add(m2); packetFor('common'); });
+makeTool('seeds', new THREE.Vector3(0, TABLE + 0.05, -0.2), 0, (g) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.096), packetMat); m.position.y = 0.01; g.add(m); const m2 = m.clone(); m2.position.z = -0.002; m2.rotation.y = Math.PI; g.add(m2); { const hm = new THREE.MeshLambertMaterial({ color: '#7a4f24' }); const st = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.007, 0.05, 10), hm); st.position.y = -0.063; g.add(st); const kn = new THREE.Mesh(new THREE.SphereGeometry(0.013, 12, 8), hm); kn.position.y = -0.088; g.add(kn); } /* two-sided: the flower name reads correctly on both faces */ packetFor('common'); });
 const canTool = makeTool('can', new THREE.Vector3(0, TABLE + 0.045, -0.2), Math.PI / 2, (g) => {
   const mat = new THREE.MeshLambertMaterial({ color: '#8fb8d8' }); g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.046, 0.085, 18), mat));
   const a = new THREE.Vector3(0.035, -0.01, 0), b = new THREE.Vector3(0.115, 0.05, 0), d = b.clone().sub(a);
@@ -386,14 +471,15 @@ makeTool('shaker', new THREE.Vector3(0, TABLE + 0.05, -0.17), 0, (g) => { g.add(
 // a small tray the player can slide to the left or right side of the table; the three tools live on it
 const tray = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.03, 0.56), new THREE.MeshLambertMaterial({ color: '#c99a5b' })); stage.add(tray);
 const trayEdge = new THREE.Mesh(new THREE.BoxGeometry(0.27, 0.012, 0.59), new THREE.MeshLambertMaterial({ color: '#a87b43' })); stage.add(trayEdge);
-function placeTray() { const x = trayX(); tray.position.set(x, TABLE + 0.015, TRAY.z); trayEdge.position.set(x, TABLE + 0.006, TRAY.z); for (const t of tools) { t.home.set(x, TABLE + TRAY.y + (t.kind === 'can' ? 0.07 : 0.055), TRAY.z + TRAY.offs[t.kind]); if (!t.heldBy) { t.g.position.copy(t.home); } } }
+const trayHandle = new THREE.Group(); { const hm = new THREE.MeshLambertMaterial({ color: '#7a4f24' }); const bar = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.016, 0.018), hm); trayHandle.add(bar); [-0.06, 0.06].forEach((dx) => { const k = new THREE.Mesh(new THREE.SphereGeometry(0.014, 12, 8), hm); k.position.set(dx, 0, 0); trayHandle.add(k); }); const post = new THREE.MeshLambertMaterial({ color: '#a87b43' }); [-0.045, 0.045].forEach((dx) => { const l = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.016, 0.03), post); l.position.set(dx, -0.002, -0.02); trayHandle.add(l); }); } stage.add(trayHandle);   // a grab handle on the front edge so it is clear the tray slides left and right
+function placeTray() { const x = trayX(); tray.position.set(x, TABLE + 0.015, TRAY.z); trayEdge.position.set(x, TABLE + 0.006, TRAY.z); { const side = x > 0 ? -1 : 1; trayHandle.position.set(x + side * 0.15, TABLE + 0.042, TRAY.z); trayHandle.rotation.y = side * Math.PI / 2; } for (const t of tools) { t.home.set(x, TABLE + TRAY.y + (t.kind === 'can' ? 0.07 : 0.055), TRAY.z + TRAY.offs[t.kind]); if (!t.heldBy) { t.g.position.copy(t.home); } } }
 function moveTray(dir) { if (!S) return; S.settings.toolX = dir; placeTray(); save(); }
 tools.forEach((t) => { t.gp = new THREE.Vector3(); });
 tools.find((t) => t.kind === 'can').gp.set(-0.075, 0.015, 0);   // the can is lifted by its handle
 function skin(kind, file, width, yaw, lift) {
   const t = tools.find((x) => x.kind === kind); gltfLoader.load(`assets/models/${file}.glb`, (g) => { const m = g.scene; m.scale.setScalar(width / 0.95); m.rotation.y = yaw || 0; m.position.y = lift || 0; t.g.children.forEach((c) => { if (c.isMesh) c.visible = false; }); t.g.add(m); }, undefined, () => { /* keep the plain version */ });
 }
-skin('can', 'can', 0.2, Math.PI, 0.074); skin('shaker', 'supergrow', 0.11, 0, 0);
+skin('can', 'can', 0.2, Math.PI, 0.074); skin('shaker', 'supergrow', 0.11, Math.PI, 0);
 function sendHome(t) { t.heldBy = null; t.g.position.copy(t.home); t.g.quaternion.copy(t.homeQ); t.flips.length = 0; t.lastDir = null; }
 const bits = [], bitGeo = new THREE.SphereGeometry(0.006, 6, 5);
 function spawn(pos, vel, color, life) { let b = bits.find((x) => x.life <= 0); if (!b) { if (bits.length > 200) return; b = { m: new THREE.Mesh(bitGeo, new THREE.MeshBasicMaterial()), v: new THREE.Vector3(), life: 0 }; stage.add(b.m); bits.push(b); } b.m.material.color.set(color); b.m.position.copy(pos); b.v.copy(vel); b.life = life; b.m.visible = true; }
@@ -414,7 +500,7 @@ function stepBits(dt) { for (const b of bits) { if (b.life <= 0) continue; b.lif
 
 
 /* ---------- moving around: the town slides around you, so your table, tools and panel always stay in reach ---------- */
-const TP = { home: [-2.4, 2.3], hub: [0, 0], yard: [3.6, 3.4], carts: [2.2, 0.7], fountain: [0, -4.1], townhall: [0, -8.9], cottages: [4.8, -1.0], commgarden: [-2.7, -0.5], merry: [-3.6, -0.2] }, TP_LOOK = { home: [-4.2, 0.8], hub: [0, -2], yard: [3.6, 0], carts: [1.9, -1.6], fountain: [0, -7], townhall: [0, -12.5], cottages: [8.3, -2], commgarden: [-4.2, -2.8], merry: [-6.8, -2.8] };
+const TP = { home: [-2.4, 2.3], hub: [0, 0], yard: [3.6, 3.4], carts: [2.2, 0.7], fountain: [0, -4.1], townhall: [0, -8.9], cottages: [4.8, -1.0], commgarden: [-2.7, -0.5], merry: [-3.6, -0.2], gate: [0, 24.5], seedshop: [4.3, 0.6], phineas: [2.6, -3.0] }, TP_LOOK = { home: [-4.2, 0.8], hub: [0, -2], yard: [3.6, 0], carts: [1.9, -1.6], fountain: [0, -7], townhall: [0, -12.5], cottages: [8.3, -2], commgarden: [-4.2, -2.8], merry: [-6.8, -2.8], gate: [0, 29.5], seedshop: [6.2, -1.4], phineas: [5.0, -3.9] };
 let tpName = 'home'; const _tp = new THREE.Vector3();
 function placeTown(x, z, lx, lz) { const th = Math.atan2(lx - x, -(lz - z)); const c = Math.cos(th), sn = Math.sin(th); town.rotation.y = th; town.position.set(-(x * c + z * sn), 0, -(-x * sn + z * c)); }
 function teleportTo(k, quiet) { const a = TP[k]; if (!a) return; tpName = k; placeTown(a[0], a[1], TP_LOOK[k][0], TP_LOOK[k][1]); if (!quiet) beep(560, 0.06); }
@@ -422,6 +508,8 @@ function teleportPoint(x, z) { const th = town.rotation.y, c = Math.cos(th), sn 
 const tpRing = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.3, 32), new THREE.MeshBasicMaterial({ color: '#58c06a', transparent: true, opacity: 0.85, side: THREE.DoubleSide })); tpRing.rotation.x = -Math.PI / 2; tpRing.visible = false; stage.add(tpRing);
 /* ---------- hide the big panel to see the whole town; a round MENU button on the table brings it back ---------- */
 const menuBtn = new THREE.Mesh(new THREE.CircleGeometry(0.055, 32), new THREE.MeshBasicMaterial({ map: labelTexture(['MENU'], { w: 128, h: 128, bg: '#fbeed2', fg: '#7a3f6b', size: 30 }) })); menuBtn.rotation.x = -Math.PI / 2; menuBtn.position.set(-0.78, TABLE + 0.012, 0.08); stage.add(menuBtn);
+const tableBtn = new THREE.Mesh(new THREE.CircleGeometry(0.055, 32), new THREE.MeshBasicMaterial({ map: labelTexture(['TABLE'], { w: 128, h: 128, bg: '#e6f2d8', fg: '#3f6b4a', size: 28 }) })); tableBtn.rotation.x = -Math.PI / 2; tableBtn.position.set(-0.78, TABLE + 0.012, -0.08); stage.add(tableBtn);
+function toggleTable() { tableTop.visible = !tableTop.visible; tableBtn.material.opacity = 1; try { if (S) { S.settings.tableHidden = !tableTop.visible; save(); } } catch (e) {} beep(tableTop.visible ? 640 : 480, 0.05); }
 let panelOn = true;
 function setPanel(on) { panelOn = on; boardMesh.visible = on; if (!on) dot.visible = false; beep(on ? 640 : 480, 0.05); }
 function togglePanel() { setPanel(!panelOn); }
@@ -435,7 +523,7 @@ const G = {
   plant(i) { const r = R.plant(S, i, G.seedTier()); UI.note(r); if (r.ok) { beep(520, 0.08); UI.emit('planted'); } else if (r.code === 'noseed') UI.cue('M13'); return r; },
   water(i) { const r = R.water(S, i); UI.note(r); if (r.ok) { beep(660, 0.08); UI.emit('watered'); } return r; },
   boost(i) { const r = R.superGrow(S, i); UI.note(r); if (r.ok) { beep(880, 0.1); burst(plots[i], '#ffd34d', 10); UI.emit('boosted'); } return r; },
-  pick(i, id) { const r = R.harvest(S, i, id == null ? ++txn : id); if (r.code === 'dup') return r; UI.note(r); if (r.ok) { burst(plots[i], '#ff9ec4', 16); popTiles(plots[i], r.letters || []); beep(740, 0.07); setTimeout(() => beep(990, 0.1), 80); plots[i].bloomPos.copy(BLOOM_HOME); plots[i].heldBy = null; if (!S.usePractice) UI.cue(r.freed ? 'M16' : null); UI.emit('harvested'); } else if (r.code === 'growing' && !S.usePractice) UI.cue('M14'); return r; },
+  pick(i, id) { const r = R.harvest(S, i, id == null ? ++txn : id); if (r.code === 'dup') return r; UI.note(r); if (r.ok) { burst(plots[i], '#ff9ec4', 16); popTiles(plots[i], r.letters || []); beep(740, 0.07); setTimeout(() => beep(990, 0.1), 80); plots[i].bloomPos.copy(BLOOM_HOME); plots[i].heldBy = null; if (!S.usePractice) UI.cue(r.freed ? 'M16' : (S.heard && S.heard.M15 ? null : ((S.heard = S.heard || {}).M15 = true, 'M15'))); UI.emit('harvested'); } else if (r.code === 'growing' && !S.usePractice) UI.cue('M14'); return r; },
 };
 
 /* ---------- pointers (hands, controllers, pretend hands for checks) ---------- */
@@ -491,10 +579,54 @@ function readXR() {
     P.ray = { o: stage.worldToLocal(_a.clone()), d: _b.clone().applyQuaternion(stageQinv).normalize() };
   }
 }
+
+/* ---------- grab-and-place letter tiles for the Spelling Book ---------- */
+// One cream tile per letter you own (gold scrollwork, dark purple letter, a number for how many you have) sits on a wooden tray.
+// Pinch a tile, set it in the word row, lift it back out. The poke keyboard on the board still works.
+const LT = { z: -0.27, rowZ: -0.50, size: 0.056, rowSize: 0.07, cols: 13, gap: 0.064, rowGap: 0.077, max: 11 };
+const letterDock = new THREE.Group(); letterDock.visible = false; stage.add(letterDock);
+{ const wood = new THREE.MeshLambertMaterial({ color: '#8a5a32' }), rim = new THREE.MeshLambertMaterial({ color: '#5e3a1c' });
+  const tb = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.02, 0.24), wood); tb.position.set(0, TABLE + 0.01, LT.z); letterDock.add(tb);
+  [[0, -0.12, 0.88, 0.03], [0, 0.12, 0.88, 0.03]].forEach(([x, dz, w, h]) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.035, 0.012), rim); m.position.set(x, TABLE + 0.02, LT.z + dz); letterDock.add(m); });
+  [-0.44, 0.44].forEach((x) => { const m = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.035, 0.24), rim); m.position.set(x, TABLE + 0.02, LT.z); letterDock.add(m); });
+  const rail = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.01, 0.1), new THREE.MeshLambertMaterial({ color: '#e9d3a4' })); rail.position.set(0, TABLE + 0.005, LT.rowZ); letterDock.add(rail);
+  const rl = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.012, 0.008), rim); rl.position.set(0, TABLE + 0.011, LT.rowZ + 0.05); letterDock.add(rl); }
+const dockPool = new THREE.Group(), dockRow = new THREE.Group(); letterDock.add(dockPool); letterDock.add(dockRow);
+const lTileBase = new THREE.MeshLambertMaterial({ color: '#f7ecd2' }), lTileGold = new THREE.MeshStandardMaterial({ color: '#c99a3c', metalness: 0.35, roughness: 0.55 });
+function tileFace(ch, count) { const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); x.fillStyle = '#3b1a5a'; x.font = 'bold 170px Georgia, serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(ch, 128, 140);
+  if (count != null) { x.beginPath(); x.arc(206, 50, 34, 0, 6.283); x.fillStyle = '#c99a3c'; x.fill(); x.lineWidth = 4; x.strokeStyle = '#3b1a5a'; x.stroke(); x.fillStyle = '#3b1a5a'; x.font = 'bold 44px Georgia, serif'; x.fillText(String(count), 206, 53); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; }
+function makeLetterTile(ch, size, count) {
+  const g = new THREE.Group(), base = new THREE.Mesh(new THREE.BoxGeometry(size, size, size * 0.2), lTileBase); g.add(base);
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(size, size), new THREE.MeshBasicMaterial({ map: tileFace(ch, count), transparent: true, depthWrite: false })); face.position.z = size * 0.1 + size * 0.085; g.add(face);
+  const disc = new THREE.Mesh(new THREE.CircleGeometry(size * 0.33, 32), new THREE.MeshBasicMaterial({ color: '#f7ecd2' })); disc.position.z = size * 0.1 + size * 0.07; g.add(disc);   // a cream face over the middle of the gold scrollwork
+  worldModel('tile', (src) => { src.traverse((o) => { if (o.isMesh) o.material = lTileGold; }); src.scale.setScalar(size / 0.06); src.position.z = size * 0.1; g.add(src); });
+  return g;
+}
+const LT_TILT = -1.1, ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const dockOn = () => !!S && UI.state.screen === 'book' && UI.state.bookTab === 'spell';
+let dockSig = '';
+const rowX = (i, n) => (i - (n - 1) / 2) * LT.rowGap;
+function refreshLetterDock() {
+  const on = dockOn(); letterDock.visible = on; if (!on) { dockSig = ''; return; }
+  const bank = R.pouch(S).bank, tr = UI.state.tray || '', held = pointers.filter(q => q.held?.ltile).map(q => q.held.ltile.ch), sig = JSON.stringify([bank, tr, held]); if (sig === dockSig) return; dockSig = sig;
+  while (dockPool.children.length) dockPool.remove(dockPool.children[0]); while (dockRow.children.length) dockRow.remove(dockRow.children[0]);
+  const left = { ...bank }; for (const ch of tr + held.join('')) left[ch] = (left[ch] || 0) - 1;
+  [...ABC].forEach((ch, i) => { const n = left[ch] || 0; if (n <= 0) return; const t = makeLetterTile(ch, LT.size, n), col = i % LT.cols, row = Math.floor(i / LT.cols); t.position.set((col - (LT.cols - 1) / 2) * LT.gap, TABLE + 0.034, LT.z + (row ? 0.045 : -0.045)); t.rotation.x = LT_TILT; t.userData = { ch }; dockPool.add(t); });
+  [...tr].forEach((ch, i) => { const t = makeLetterTile(ch, LT.rowSize); t.position.set(rowX(i, tr.length), TABLE + 0.04, LT.rowZ); t.rotation.x = LT_TILT; t.userData = { ch, idx: i }; dockRow.add(t); });
+}
+function tileGrabAt(pos) {
+  if (!dockOn()) return null; let best = null, bd = 0.05 * (S.settings.pinch > 1 ? S.settings.pinch : 1);
+  for (const t of dockRow.children) { const d = t.position.distanceTo(pos); if (d < bd) { bd = d; best = { ltile: { ch: t.userData.ch, from: 'row', idx: t.userData.idx } }; } }
+  for (const t of dockPool.children) { const d = t.position.distanceTo(pos); if (d < bd) { bd = d; best = { ltile: { ch: t.userData.ch, from: 'pool' } }; } }
+  return best;
+}
+function overRow(pos) { return Math.abs(pos.x) < 0.46 && Math.abs(pos.z - LT.rowZ) < 0.1 && pos.y > TABLE - 0.05 && pos.y < TABLE + 0.3; }
 function plotUnder(pos, r) { let best = null, bd = r; for (const p of plots) { const d = Math.hypot(pos.x - p.g.position.x, pos.z - p.g.position.z); if (d < bd && pos.y > TABLE - 0.02 && pos.y < TABLE + 0.45) { bd = d; best = p; } } return best; }
 function bloomAt(p, out) { return out.copy(p.bloomPos).applyQuaternion(p.g.quaternion).add(p.g.position); }
 function nearestGrab(pos) {
-  if (menuBtn.position.distanceTo(pos) < 0.11) return { menu: true };
+  if (menuBtn.position.distanceTo(pos) < 0.11) return { menu: true }; if (tableBtn.position.distanceTo(pos) < 0.11) return { tableT: true };
+  { const tg = tileGrabAt(pos); if (tg) return tg; }
   if (UI.propsOn()) for (const pr of props) if (pr.kind && pr.holder.parent && pr.holder.parent.visible !== false && stage.worldToLocal(pr.holder.getWorldPosition(_c3)).add(_c3o.set(0, pr.cy, 0)).distanceTo(pos) < (pr.kind === 'carts' ? 0.5 : pr.radius + 0.09)) return { prop: pr.kind };
   let best = null, bd = HAND.grabReach * 1.4 * (S && S.settings.pinch > 1 ? S.settings.pinch : 1); if (!UI.gardenOpen()) return null;
   for (const t of tools) { if (t.heldBy) continue; const d = _gp.copy(t.gp).applyQuaternion(t.g.quaternion).add(t.g.position).distanceTo(pos); if (d < bd) { bd = d; best = { tool: t }; } }
@@ -503,7 +635,7 @@ function nearestGrab(pos) {
   return best;
 }
 function rayPick(ray) {
-  const mt = _a.copy(menuBtn.position).sub(ray.o), mtt = mt.dot(ray.d); if (mtt > 0 && mtt < 4 && mt.lengthSq() - mtt * mtt < 0.065 * 0.065) return { menu: true };
+  const mt = _a.copy(menuBtn.position).sub(ray.o), mtt = mt.dot(ray.d); if (mtt > 0 && mtt < 4 && mt.lengthSq() - mtt * mtt < 0.065 * 0.065) return { menu: true }; { const tt = _a.copy(tableBtn.position).sub(ray.o), ttd = tt.dot(ray.d); if (ttd > 0 && ttd < 4 && tt.lengthSq() - ttd * ttd < 0.065 * 0.065) return { tableT: true }; }
   const hit = panelOn ? boardRay(ray) : null; let best = hit ? { board: hit.uv, t: hit.t } : null, bt = hit ? hit.t : 4;
   if (UI.propsOn()) for (const pr of props) if (pr.kind && pr.holder.parent && pr.holder.parent.visible !== false) { const c = stage.worldToLocal(pr.holder.getWorldPosition(_c3)).add(_c3o.set(0, pr.cy || 0, 0)), t = _a.copy(c).sub(ray.o).dot(ray.d); if (t > 0 && t < bt) { const d2 = _b.copy(c).sub(ray.o).lengthSq() - t * t; if (d2 < pr.radius * pr.radius) { bt = t; best = { prop: pr.kind }; } } }
   if (!UI.gardenOpen()) return best;
@@ -513,9 +645,10 @@ function rayPick(ray) {
   return best;
 }
 function selectThing(hit) {
-  if (!hit) return; if (hit.menu) return togglePanel(); if (hit.board) return UI.press(hit.board.x, hit.board.y);
+  if (!hit) return; if (hit.tableT) return toggleTable(); if (hit.menu) return togglePanel(); if (hit.board) return UI.press(hit.board.x, hit.board.y);
+  if (hit.prop && /^cplot:/.test(hit.prop)) { const r = G.cPick(+hit.prop.slice(6)); if (r && r.ok) { const pp = CP[+hit.prop.slice(6)]; if (pp) pp.sig = ''; drawCommunity(); } return; }
   if (hit.prop && /^pick:|^vase$/.test(hit.prop)) { const a = UI.state.arr = UI.state.arr || {}, tot = Object.values(a).reduce((x, y) => x + y, 0); if (hit.prop === 'vase') { const ks = Object.keys(a).filter((k) => a[k] > 0); if (ks.length) a[ks[ks.length - 1]]--; beep(380, 0.05); } else if (tot < 9) { a[hit.prop.slice(5)] = (a[hit.prop.slice(5)] || 0) + 1; beep(660, 0.06); } else UI.say('The vase is full. Nine flowers is a bouquet.'); arrSig = ''; refreshArr(); return; }
-  if (hit.prop && ['shop', 'greenhouse', 'workshop'].includes(hit.prop)) { setPanel(true); const dest = { shop: ['cottages', 'shop'], greenhouse: ['merry', 'garden'], workshop: ['carts', 'carts'] }[hit.prop]; teleportTo(dest[0]); UI.go(dest[1]); return; }
+  if (hit.prop && ['shop', 'greenhouse', 'workshop'].includes(hit.prop)) { setPanel(true); const dest = { shop: ['seedshop', 'shop'], greenhouse: ['merry', 'garden'], workshop: ['phineas', 'carts'] }[hit.prop]; teleportTo(dest[0]); UI.go(dest[1]); return; }
   if (hit.prop) { beep(520, 0.05); setPanel(true); return UI.go(hit.prop === 'book' ? 'book' : hit.prop === 'carts' ? 'carts' : 'notice'); }
   if (hit.tool) { UI.state.tool = UI.state.tool === hit.tool.kind ? null : hit.tool.kind; UI.say(UI.state.tool ? `${{ seeds: 'Seeds', can: 'Watering can', shaker: 'Super Grow' }[UI.state.tool]} selected. Now choose a plot.` : 'Nothing selected.'); beep(500, 0.05); return; }
   const i = hit.plot.i, pl = plantAt(i);
@@ -524,8 +657,9 @@ function selectThing(hit) {
 }
 const relP = new THREE.Vector3(), _gp = new THREE.Vector3();
 function grab(P, hit) {
-  if (hit.menu) { togglePanel(); return; }
+  if (hit.tableT) { toggleTable(); return; } if (hit.menu) { togglePanel(); return; }
   if (hit.prop) { selectThing(hit); return; }
+  if (hit.ltile) { const L = hit.ltile, m = makeLetterTile(L.ch, LT.rowSize); stage.add(m); m.rotation.x = LT_TILT; if (L.from === 'row') { const tr = UI.state.tray || ''; UI.state.tray = tr.slice(0, L.idx) + tr.slice(L.idx + 1); } P.held = { ltile: L, mesh: m }; dockSig = ''; beep(620, 0.04); UI.say(L.from === 'row' ? `Picked ${L.ch} back up.` : `Holding ${L.ch}. Set it in the word row.`); return; }
   if (hit.tray) { P.held = { tray: true, dx: trayX() - P.pos.x }; UI.say('Slide the tool tray where you like, then let go.'); return; }
   if (hit.tool) { const t = hit.tool; t.heldBy = P; P.held = { tool: t, relQ: P.quat.clone().invert().multiply(t.g.quaternion), relP: _gp.copy(t.gp).applyQuaternion(t.g.quaternion).negate().applyQuaternion(P.quat.clone().invert()).clone() }; t.prev.copy(t.g.position); t.flips.length = 0; t.lastDir = null; UI.state.tool = null; UI.say({ seeds: 'Holding seeds. Let go over an empty plot.', can: 'Holding the can. Tilt the spout down over a plant.', shaker: 'Holding Super Grow. Shake it over a plant.' }[t.kind]); }
   else { hit.plot.heldBy = P; P.held = { plot: hit.plot, txn: ++txn }; UI.say('Got it. Pull!'); }
@@ -533,6 +667,10 @@ function grab(P, hit) {
 }
 function letGo(P, lost) {
   const h = P.held; if (!h) return; P.held = null;
+  if (h.ltile) { const L = h.ltile; stage.remove(h.mesh); dockSig = ''; const tr = UI.state.tray || '';
+    if (!lost && S && (R.pouch(S).bank[L.ch] || 0) > [...tr].filter(ch => ch === L.ch).length && overRow(P.pos) && tr.length < LT.max) { const n = tr.length + 1; let i = 0; while (i < tr.length && rowX(i, n) < P.pos.x) i++; UI.state.tray = tr.slice(0, i) + L.ch + tr.slice(i); beep(780, 0.06); UI.say(`${L.ch} is in your word.`); }
+    else if (L.from === 'row') { beep(300, 0.05); UI.say(`${L.ch} is back on the tray.`); } else UI.say('Set the tile in the word row to use it.');
+    return; }
   if (h.tray) { save(); return; }
   if (h.tool) { const t = h.tool; if (!lost && t.kind === 'seeds') { const p = plotUnder(t.g.position, 0.085); if (p) G.plant(p.i); else UI.say('Seeds go back to the tray. Let go right over a plot.'); } sendHome(t); }
   else { h.plot.heldBy = null; if (!lost) UI.say('Let go too soon. The flower is still there. Pull farther.'); }
@@ -577,13 +715,13 @@ function stepPointers(dt, tnow) {
     if (P.go && P.ray && P.down) { const tt = -P.ray.o.y / P.ray.d.y; if (P.ray.d.y < -0.06 && tt > 0 && tt < 16) { P.go.x = P.ray.o.x + P.ray.d.x * tt; P.go.z = P.ray.o.z + P.ray.d.z * tt; tpRing.position.set(P.go.x, 0.02, P.go.z); tpRing.visible = true; } }
     if (!P.down && P.was && P.go) { const gg = P.go; P.go = null; tpRing.visible = false; if (performance.now() - gg.t > 250 && performance.now() - gg.t < 8000) teleportPoint(gg.x, gg.z); }
     if (!P.down && P.was && P.pend) { const pd = P.pend; P.pend = null; const h = P.ray && boardRay(P.ray); if (h && Math.hypot(h.uv.x - pd.uv.x, h.uv.y - pd.uv.y) < 180) UI.press(pd.uv.x, pd.uv.y); }   // a board button fires when you let go of the pinch, so you can aim first
-    if (P.held && P.held.tool) useTool(P, dt, tnow); else if (P.held && P.held.tray) { if (S) { S.settings.toolX = Math.max(-0.9, Math.min(0.95, P.pos.x + P.held.dx)); placeTray(); } } else if (P.held) pullBloom(P);
+    if (P.held && P.held.tool) useTool(P, dt, tnow); else if (P.held && P.held.tray) { if (S) { S.settings.toolX = Math.max(-0.9, Math.min(0.95, P.pos.x + P.held.dx)); placeTray(); } } else if (P.held && P.held.ltile) { P.held.mesh.position.copy(P.pos); P.held.mesh.position.y += 0.02; } else if (P.held) pullBloom(P);
     if (!P.down && P.was && P.held) letGo(P, false);
     P.was = P.down;
   }
   dot.visible = !!cursor; if (cursor) { dot.position.copy(cursor).setZ(cursor.z + 0.004); const dn = pointers.some((q) => q.down); dot.material.color.set(dn ? '#4fbf6a' : '#c8745a'); dot.scale.setScalar(dn ? 1.7 : 1.3); }
   for (const p of plots) if (!p.heldBy && p.bloomPos.distanceTo(BLOOM_HOME) > 0.001) p.bloomPos.lerp(BLOOM_HOME, Math.min(1, dt * 12));
-  for (const t of tools) { t.g.scale.setScalar(UI.state.tool === t.kind ? 1.25 : 1); t.g.visible = UI.gardenOpen(); } tray.visible = trayEdge.visible = UI.gardenOpen();
+  for (const t of tools) { t.g.scale.setScalar(UI.state.tool === t.kind ? 1.25 : 1); t.g.visible = UI.gardenOpen(); } tray.visible = trayEdge.visible = UI.gardenOpen(); refreshLetterDock();
 }
 const caster = new THREE.Raycaster(), ndc = new THREE.Vector2();
 renderer.domElement.addEventListener('pointerdown', (e) => {
@@ -593,10 +731,12 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
 addEventListener('keydown', (e) => { if (UI.key(e.key)) e.preventDefault(); });
 
 /* ---------- VR session ---------- */
-let recenterAt = 0, needsRecenter = false, lastReset = 0; const head = new THREE.Vector3(), hq = new THREE.Quaternion(), he = new THREE.Euler();
-function recenter() { const cam = renderer.xr.getCamera(); cam.getWorldPosition(head); if (head.lengthSq() === 0) return false; cam.getWorldQuaternion(hq); he.setFromQuaternion(hq, 'YXZ'); stage.rotation.set(0, he.y, 0); stage.position.set(head.x, head.y - (S ? S.settings.tableDrop : 0.45) - TABLE, head.z); stage.updateMatrixWorld(true); return true; }
+let recenterAt = 0, needsRecenter = false, lastReset = 0, xrStartAt = 0; const head = new THREE.Vector3(), hq = new THREE.Quaternion(), he = new THREE.Euler();
+function recenter() { const cam = renderer.xr.getCamera(); cam.getWorldPosition(head); if (head.lengthSq() === 0) return false; if (head.y < 0.05 && performance.now() - xrStartAt < 4000) return false; cam.getWorldQuaternion(hq); he.setFromQuaternion(hq, 'YXZ'); stage.rotation.set(0, he.y, 0); stage.position.set(head.x, head.y - (S ? S.settings.tableDrop : 0.45) - TABLE, head.z); stage.updateMatrixWorld(true); return true; }
 function startRecenter() { recenterAt = performance.now() + 3000; UI.say('Recentering in 3 seconds. Sit comfortably and look straight ahead.'); }
 const vrBtn = document.getElementById('vr'), noteEl = document.getElementById('note');
+// after the headset session ends, put the camera, projection and canvas back to the normal flat view so the page is never left black
+function restoreFlatView() { try { renderer.setRenderTarget(null); renderer.setScissorTest(false); camera.position.set(0, TABLE + 0.66, 0.62); camera.up.set(0, 1, 0); camera.lookAt(0, TABLE + 0.33, -0.6); camera.fov = 60; camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight); renderer.setViewport(0, 0, innerWidth, innerHeight); } catch (e) { /* fine */ } }
 function exitVR() { const s = renderer.xr.getSession(); if (s) s.end(); else UI.say('You are not in VR right now.'); }
 let vrOK = false;
 const vrReady = (async () => {
@@ -611,13 +751,13 @@ function enterVR() {
 }
 renderer.xr.addEventListener('sessionstart', () => {
   vrBtn.textContent = 'Exit VR';
-  setTimeout(() => { needsRecenter = true; }, 600);
+  xrStartAt = performance.now(); for (const delay of [600, 1800, 3500]) setTimeout(() => { if (renderer.xr.isPresenting) needsRecenter = true; }, delay);
   const ref = renderer.xr.getReferenceSpace();
   ref?.addEventListener('reset', () => { const t = performance.now(); if (t - lastReset > 4000) needsRecenter = true; lastReset = t; });
 });
 renderer.xr.addEventListener('sessionend', () => {
   vrBtn.textContent = 'Enter VR'; stage.position.set(0, 0, 0); stage.rotation.set(0, 0, 0);
-  pointers.forEach((P) => { if (P.held) letGo(P, true); }); saveNow();
+  pointers.forEach((P) => { if (P.held) letGo(P, true); }); saveNow(); requestAnimationFrame(restoreFlatView);
 });
 vrBtn.onclick = enterVR;
 const barEl = document.getElementById('bar');
@@ -635,14 +775,14 @@ function playVideo(src, done) {
 /* ---------- screens and flow live in screens.js ---------- */
 const UI = makeScreens({ R, board, BW, BH, now, video: videoEl, playVideo, save, saveNow, beep, speak, hush, showPerson, setPlace, celebrate, G, startRecenter, recenter: () => { needsRecenter = true; }, exitVR, layout, hidePanel: () => setPanel(false), showPanel: () => setPanel(true), teleport: (k) => teleportTo(k),
   getS: () => S, moveTray, showGift, showWordObject, setCommunity, setS: (s) => { S = s; placeHome(); plots.forEach((p) => { p.lastStage = -1; }); layout(); }, load, clearSave: () => { try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* fine */ } }, newGame: () => R.newGame(now()),
-  setSign: (restored) => { signRestored.visible = restored; signBroken.visible = !restored; }, redraw: () => { boardTex.needsUpdate = true; }, inVR: () => renderer.xr.isPresenting });
+  setSign: (restored) => { signRestored.visible = restored; signBroken.visible = false; }, redraw: () => { boardTex.needsUpdate = true; }, inVR: () => renderer.xr.isPresenting });
 layout(); await UI.start();
 
 const clock = { elapsedTime: 0 }; let slow = 0;
 function tick(dt, simOnly) {
   placeHome();
   if (!simOnly) readXR();
-  stepPointers(dt, performance.now() / 1000); stepBits(dt); stepWordObj(dt); stepTiles(dt); stepKids(dt); stepSky(dt); packetFor(G.seedTier()); if (giftHolder.visible) { giftHolder.rotation.y += dt * 0.8; giftHolder.position.y = TABLE + 0.02 + Math.abs(Math.sin(clock.elapsedTime * 2)) * 0.03; }
+  stepPointers(dt, performance.now() / 1000); stepBits(dt); stepWordObj(dt); stepTiles(dt); stepKids(dt); walkers.forEach((w) => { if (w.m) w.m.visible = !!w.on && !vigWho; }); stepSky(dt); packetFor(G.seedTier()); { const sT = tools.find((t) => t.kind === 'seeds'); if (sT && !sT.heldBy) { const hp = stage.worldToLocal(camera.getWorldPosition(new THREE.Vector3())); sT.g.rotation.set(-0.35, Math.atan2(hp.x - sT.g.position.x, hp.z - sT.g.position.z), 0, 'YXZ'); sT.homeQ.copy(sT.g.quaternion); } } if (giftHolder.visible) { giftHolder.rotation.y += dt * 0.8; giftHolder.position.y = TABLE + 0.02 + Math.abs(Math.sin(clock.elapsedTime * 2)) * 0.03; }
   const t = clock.elapsedTime; plots.forEach((p) => drawPlot(p, t, dt));
   if (vig.visible) { const v = VIG[vigWho]; if (v && v.char) { const talking = !voice.paused && !voice.ended; v.char.position.y = Math.abs(Math.sin(t * (talking ? 7 : 1.6))) * (talking ? 0.014 : 0.004); v.char.rotation.y = Math.sin(t * 0.9) * (talking ? 0.16 : 0.07); } }
   slow += dt; if (slow > 0.5 && S) { slow = 0; refreshStock(); refreshArr(); { const evn = R.advance(S, now()); kidBuys(evn); UI.everyHalfSecond(evn); } }
@@ -661,5 +801,5 @@ class LetterTownSystem extends createSystem({}) {
 }
 sdkWorld.registerSystem(LetterTownSystem, { priority: 10 });
 window.__lettertownSDK = sdkWorld;
-window.__lt = { teleportTo, get destination() { return tpName; }, town, CP, seedShop, greenhouse, workshop, get homeObj() { return homeObj; }, HOME_MODEL, vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; placeHome(); plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, stage, assetErrors, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
+window.__lt = { VIG, showPerson, selectThing, props, dockPool, dockRow, refreshLetterDock, LT, tableBtn, tableTop, toggleTable, teleportTo, get destination() { return tpName; }, town, CP, seedShop, greenhouse, workshop, get homeObj() { return homeObj; }, HOME_MODEL, vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; placeHome(); plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, stage, assetErrors, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
   sim(i, pos, quat, down) { const P = pointers[2 + i]; if (!pos) { P.valid = false; return; } P.valid = true; P.pos.fromArray(pos); if (quat) P.quat.fromArray(quat); else P.quat.identity(); P.down = !!down; } };

@@ -1,4 +1,4 @@
-import * as R from '../../lettertown-chapter-one-r8/rules/game.js';
+import * as R from '../rules/game.js';
 import { existsSync } from 'node:fs';
 const root=new URL('../../lettertown-chapter-one-r8/assets/',import.meta.url);
 const overrides=new URL('../asset-overrides/assets/',import.meta.url);
@@ -9,4 +9,9 @@ for(const key of ['seed_magic','sprout_seedling',...['black','blue','pink','purp
 for(const key of ['can','supergrow'])paths.push(`models/${key}.glb`);
 for(const key of ['pink_cottage','white_cottage','flower_box_cottage','forest_green_cottage','seed_shop','merry_greenhouse','cottage_green'])paths.push(`models/${key}.glb`);
 for(const key of ['pink','white','flowerbox','forest'])paths.push(`houses/${key}.png`);
+for(const key of ['community_board','pink_cloud','townbook'])paths.push(`models/${key}.glb`);
+for(const key of ['vase_orange','vase_fluted'])paths.push(`models/flowers/${key}.glb`);
+for(const key of ['river_ring_candidate','distant_hills_panel','bridge_edge','tree_lush_edge','tree_flowering_edge','rock_edge','shrub_edge'])paths.push(`models/world/${key}.glb`);
+for(const key of ['pink_cottage','white_cottage','flower_box_cottage','forest_green_cottage','seed_shop'])paths.push(`scene/facade_${key}.png`);
+paths.push('world_layout_v1.json');
 const missing=paths.filter(p=>!existsSync(assetPath(p)));console.log(JSON.stringify({species:R.CFG.species.length,requiredAssetPaths:paths.length,missing},null,2));if(missing.length)process.exitCode=1;

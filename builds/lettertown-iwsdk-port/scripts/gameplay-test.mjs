@@ -109,7 +109,7 @@ await run('Book crafting and dictionary rejection through screen actions',()=>pa
 await run('Flower arranging, vase selection and Flower Cart sale',()=>page.evaluate(()=>{
  const L=window.__lt,U=L.UI;U.go('carts');U.state.cartSel='flower';U.frame();
  const sp=Object.keys(L.S.real.flowers).find(k=>L.S.real.flowers[k]>0);if(!sp)throw Error('No harvested flower');
- U.tap('Blue vase');U.state.arr={[sp]:1};U.frame();if(!U.tap('Sell on the flower cart'))throw Error('Cannot stock bouquet');
+ if(!U.tap('Blue'))throw Error('Blue vase choice missing');U.state.arr={[sp]:1};U.frame();if(!U.tap('Sell on the flower cart'))throw Error('Cannot stock bouquet');
  const before=L.S.real.coins,ev=L.R.advance(L.S,L.S.real.flowerCart.nextAt+1);U.everyHalfSecond(ev);U.frame();
  if(L.S.real.coins<=before||ev.flowerSales.length!==1)throw Error('Bouquet sale failed');
  return {vase:U.state.vase,coinsEarned:L.S.real.coins-before};

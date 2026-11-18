@@ -3,3 +3,7 @@ public/
 dist/
 test-results/
 .asset-revision
+
+release/
+
+__pycache__/

@@ -29,7 +29,7 @@ await check('Old cottage save aliases and clearing selected model',async()=>{
 await check('Map-only travel, scene props and stable workspace',()=>page.evaluate(()=>{
  const L=__lt,U=L.UI,s=L.R.newGame(Date.now());s.tutorialDone=true;s.home.cottage='forest';s.settings.mute=true;L.setS(s);U.go('map');U.frame();
  const stage=L.stage.position.toArray();U.tap('Home');U.frame();if(L.destination!=='home')throw Error('Home does not travel');U.tap('Garden');U.frame();if(L.destination!=='merry')throw Error('Desk route wrong');U.tap('Map');U.tap("Player's Garden");U.frame();if(L.destination!=='commgarden')throw Error('Player Garden route wrong');
- for(const [prop,dest,screen] of [[L.seedShop,'cottages','shop'],[L.greenhouse,'merry','garden'],[L.workshop,'carts','carts']]){
+ for(const [prop,dest,screen] of [[L.seedShop,'seedshop','shop'],[L.greenhouse,'merry','garden'],[L.workshop,'phineas','carts']]){
   U.go('map');U.frame();L.stage.updateMatrixWorld(true);const pos=L.stage.worldToLocal(prop.holder.getWorldPosition(new L.THREE.Vector3())).add(new L.THREE.Vector3(0,prop.cy,0));L.sim(0,pos.toArray(),[0,0,0,1],true);L.tick(.016,true);L.sim(0,pos.toArray(),[0,0,0,1],false);L.tick(.016,true);if(U.state.screen!==screen||L.destination!==dest)throw Error('Prop interaction failed '+prop.kind);if(!prop.holder.children.length)throw Error('Model absent '+prop.kind);
  }
  const before=L.town.position.toArray();const P=L.pointers[2];L.sim(0,[0,1,0],[0,0,0,1],true);P.ray={o:new L.THREE.Vector3(0,1,0),d:new L.THREE.Vector3(.8,-.6,0)};L.tick(.016,true);L.sim(0,[0,1,0],[0,0,0,1],false);L.tick(.016,true);L.sim(0,null);
