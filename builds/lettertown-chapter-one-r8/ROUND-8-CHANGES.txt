@@ -57,3 +57,6 @@ R8-17p
 - Approved map: the random shrub scatter and the fountain bush ring are gone. Landscaping is hand-placed with clear space around the residents (the Librarian's branch, applied to this build).
 - South entrance: a continuous cobblestone road runs from the board path to the bridge, the welcome sign (the archway) stands over it at the south entrance, and Hudson stands beside it, one metre tall. There is a new 'gate' teleport spot.
 - Not done yet: the river replacement, the background panels, and moving the board and workshop to the map.
+
+R8-17q
+- No code changes to the town beyond 17p. I tried the Librarian's river and the twelve background panels and took both back out: the panels showed as floating painted pieces in the sky and the new river rendered dark slate. The existing river and hills stay.
