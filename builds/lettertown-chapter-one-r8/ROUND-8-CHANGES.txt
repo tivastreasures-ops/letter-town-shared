@@ -10,3 +10,8 @@ R8-17
 - Not done in R8-17: Hudson by the sign, Kit through her front door, the misplaced tree, a Meshy-quality community board and extra 3D vases (blue and clay are the only two besides glass).
 - Town book: new thinned model (1.5 MB, 2,384 triangles), resized to sit flat on the table.
 - Fix: leaving VR (Exit button) could leave the screen black. The flat view (camera, projection, canvas size) is now restored when the headset session ends, and a failed step in the exit handler can no longer stop the rest.
+
+R8-17e (Nov 17, evening)
+- Screen placement safety: saved screen distance and size are corrected on load and at every layout. Distance is kept between 80 cm and 150 cm, and size is limited so the whole screen fits in view (about 97% at 80 cm). Settings sliders now use the same limits. Artwork unchanged.
+- Recenter now retries at 0.6, 1.8 and 3.5 seconds after entering VR, and waits for a real head pose before placing the stage, so a stale first reading can no longer leave the screen on top of you.
+- Shovel hidden for now (the trowel model line is commented out, to bring back later).

@@ -186,7 +186,8 @@ cobblePatch(new THREE.PlaneGeometry(5.2, 1.7), 5.2, 1.7, 3.5, -1.3);            
 cobblePatch(new THREE.PlaneGeometry(1.9, 1.5), 1.9, 1.5, -2.35, -1.5);            // the road to the community garden
 cobblePatch(new THREE.CircleGeometry(0.9, 32), 1.8, 1.8, -2.7, -1.5);              // the little pad in front of the garden
 put('fountain', 2.3, 0, -7.0, 0);
-worldModel('trowel', (src) => { src.updateMatrixWorld(true); const bb = new THREE.Box3().setFromObject(src), sz = bb.getSize(new THREE.Vector3()); src.scale.setScalar(0.15 / Math.max(sz.x, sz.y, sz.z, 1e-3)); src.updateMatrixWorld(true); bb.setFromObject(src); const c = bb.getCenter(new THREE.Vector3()); src.position.x -= c.x; src.position.z -= c.z; src.position.y -= bb.min.y; const w = new THREE.Group(); w.add(src); w.position.set(0.8, TABLE, 0.02); w.rotation.y = 0.5; stage.add(w); });   // a small trowel left on the table
+// shovel removed for now (Director, Nov 17)
+// worldModel('trowel', (src) => { src.updateMatrixWorld(true); const bb = new THREE.Box3().setFromObject(src), sz = bb.getSize(new THREE.Vector3()); src.scale.setScalar(0.15 / Math.max(sz.x, sz.y, sz.z, 1e-3)); src.updateMatrixWorld(true); bb.setFromObject(src); const c = bb.getCenter(new THREE.Vector3()); src.position.x -= c.x; src.position.z -= c.z; src.position.y -= bb.min.y; const w = new THREE.Group(); w.add(src); w.position.set(0.8, TABLE, 0.02); w.rotation.y = 0.5; stage.add(w); });   // a small trowel left on the table
 addProp('townhall', 6.0, 0, 0, -12.5, 0, { parent: town });
 /* the edge of town: a river all the way around, grass beyond it, then hills and mountains, so it is clear where the town ends */
 { const water = new THREE.Mesh(new THREE.RingGeometry(31, 35, 64), new THREE.MeshLambertMaterial({ color: '#6fb9ea', emissive: '#1d4f7a', emissiveIntensity: 0.25 })); water.rotation.x = -Math.PI / 2; water.position.y = 0.03; town.add(water);
@@ -306,7 +307,7 @@ const boardTex = new THREE.CanvasTexture(board); boardTex.colorSpace = THREE.SRG
 const BOARD_W = 1.16, BOARD_H = BOARD_W * BH / BW;
 const boardMesh = new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W, BOARD_H), new THREE.MeshBasicMaterial({ map: boardTex, transparent: true, depthWrite: false })); boardMesh.renderOrder = 5; stage.add(boardMesh);
 const dot = new THREE.Mesh(new THREE.SphereGeometry(0.008, 10, 8), new THREE.MeshBasicMaterial({ color: '#c8745a' })); dot.visible = false; stage.add(dot);
-function layout() { placeTray(); const set = S ? S.settings : { reach: 0.5, boardDist: 0.95, boardHeight: 0.6, boardScale: 1 }, reach = set.reach; boardMesh.position.set(0, TABLE + set.boardHeight, -set.boardDist); boardMesh.scale.setScalar(set.boardScale); boardSc = set.boardScale; plots.forEach((p) => { const a = THREE.MathUtils.degToRad(-45 + p.i * 12.857); p.g.position.set(Math.sin(a) * reach, TABLE, -Math.cos(a) * reach); p.g.rotation.y = Math.atan2(-p.g.position.x, -p.g.position.z); }); }
+function layout() { placeTray(); const set = S ? S.settings : { reach: 0.5, boardDist: 0.95, boardHeight: 0.6, boardScale: 1 }, reach = set.reach; /* comfort limits: the whole screen must sit in front of a seated player, never touching the headset (saved values from older sessions are corrected here) */ if (!(set.boardDist >= 0.8)) set.boardDist = 0.8; if (set.boardDist > 1.5) set.boardDist = 1.5; { const maxSc = Math.round((1.4 * set.boardDist / BOARD_W) * 100) / 100; if (!(set.boardScale > 0)) set.boardScale = 1; if (set.boardScale > maxSc) set.boardScale = maxSc; if (set.boardScale < 0.5) set.boardScale = 0.5; } if (!(set.boardHeight >= 0.3 && set.boardHeight <= 0.9)) set.boardHeight = 0.6; boardMesh.position.set(0, TABLE + set.boardHeight, -set.boardDist); boardMesh.scale.setScalar(set.boardScale); boardSc = set.boardScale; plots.forEach((p) => { const a = THREE.MathUtils.degToRad(-45 + p.i * 12.857); p.g.position.set(Math.sin(a) * reach, TABLE, -Math.cos(a) * reach); p.g.rotation.y = Math.atan2(-p.g.position.x, -p.g.position.z); }); }
 let boardSc = 1; const _bp = new THREE.Vector3();
 function boardUV(pt) { _bp.copy(pt).sub(boardMesh.position); return { x: (_bp.x / (BOARD_W * boardSc) + 0.5) * BW, y: (0.5 - _bp.y / (BOARD_H * boardSc)) * BH, z: _bp.z }; }
 function boardRay(ray) { if (Math.abs(ray.d.z) < 1e-5) return null; const t = (boardMesh.position.z - ray.o.z) / ray.d.z; if (t <= 0 || t > 5) return null; const p = ray.o.clone().addScaledVector(ray.d, t); const uv = boardUV(p); return (uv.x < 0 || uv.x > BW || uv.y < 0 || uv.y > BH) ? null : { uv, p, t }; }
@@ -635,8 +636,8 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
 addEventListener('keydown', (e) => { if (UI.key(e.key)) e.preventDefault(); });
 
 /* ---------- VR session ---------- */
-let recenterAt = 0, needsRecenter = false, lastReset = 0; const head = new THREE.Vector3(), hq = new THREE.Quaternion(), he = new THREE.Euler();
-function recenter() { const cam = renderer.xr.getCamera(); cam.getWorldPosition(head); if (head.lengthSq() === 0) return false; cam.getWorldQuaternion(hq); he.setFromQuaternion(hq, 'YXZ'); stage.rotation.set(0, he.y, 0); stage.position.set(head.x, head.y - (S ? S.settings.tableDrop : 0.45) - TABLE, head.z); stage.updateMatrixWorld(true); return true; }
+let recenterAt = 0, needsRecenter = false, lastReset = 0, xrStartAt = 0; const head = new THREE.Vector3(), hq = new THREE.Quaternion(), he = new THREE.Euler();
+function recenter() { const cam = renderer.xr.getCamera(); cam.getWorldPosition(head); if (head.lengthSq() === 0) return false; if (head.y < 0.05 && performance.now() - xrStartAt < 4000) return false; cam.getWorldQuaternion(hq); he.setFromQuaternion(hq, 'YXZ'); stage.rotation.set(0, he.y, 0); stage.position.set(head.x, head.y - (S ? S.settings.tableDrop : 0.45) - TABLE, head.z); stage.updateMatrixWorld(true); return true; }
 function startRecenter() { recenterAt = performance.now() + 3000; UI.say('Recentering in 3 seconds. Sit comfortably and look straight ahead.'); }
 const vrBtn = document.getElementById('vr'), noteEl = document.getElementById('note');
 // after the headset session ends, put the camera, projection and canvas back to the normal flat view so the page is never left black
@@ -651,7 +652,7 @@ const vrReady = (async () => {
 async function enterVR() {
   if (!vrOK) return; if (renderer.xr.isPresenting) return exitVR(); beep(440, 0.01);
   try { const s = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['local-floor', 'hand-tracking'] }); renderer.xr.setReferenceSpaceType('local-floor'); await renderer.xr.setSession(s);
-    vrBtn.textContent = 'Exit VR'; setTimeout(() => { needsRecenter = true; }, 600); const ref = renderer.xr.getReferenceSpace(); if (ref && ref.addEventListener) ref.addEventListener('reset', () => { const t = performance.now(); if (t - lastReset > 4000) needsRecenter = true; lastReset = t; });
+    vrBtn.textContent = 'Exit VR'; xrStartAt = performance.now(); setTimeout(() => { needsRecenter = true; }, 600); setTimeout(() => { needsRecenter = true; }, 1800); setTimeout(() => { needsRecenter = true; }, 3500); const ref = renderer.xr.getReferenceSpace(); if (ref && ref.addEventListener) ref.addEventListener('reset', () => { const t = performance.now(); if (t - lastReset > 4000) needsRecenter = true; lastReset = t; });
     s.addEventListener('end', () => { vrBtn.textContent = 'Enter VR'; try { stage.position.set(0, 0, 0); stage.rotation.set(0, 0, 0); pointers.forEach((P) => { if (P.held) letGo(P, true); }); } catch (e) { /* keep going so the screen always comes back */ } try { saveNow(); } catch (e) { /* fine */ } restoreFlatView(); setTimeout(restoreFlatView, 250); setTimeout(restoreFlatView, 1000); });
   } catch (e) { noteEl.textContent = 'Could not start VR: ' + e.message; }
 }
