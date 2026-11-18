@@ -37,8 +37,12 @@ with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as arch
         archive.write(path, path.relative_to(root / 'dist').as_posix())
     archive.writestr('UPLOAD-INSTRUCTIONS.txt', instructions)
     archive.writestr('BUILD-INFO.json', json.dumps({'commit': sha, 'upstream_commit': upstream['commit'], 'additional_sources': upstream.get('additional_code_sources', []), 'built_at_utc': datetime.now(timezone.utc).isoformat(), 'physical_quest_tested': False}, indent=2))
+    for entry in archive.infolist():
+        entry.create_system = 3
+        entry.external_attr = 0o100644 << 16
 with zipfile.ZipFile(output) as archive:
     assert 'index.html' in archive.namelist()
+    assert all((entry.external_attr >> 16) & 0o777 == 0o644 for entry in archive.infolist())
     assert all(not name.startswith('/') and '..' not in Path(name).parts for name in archive.namelist())
     bad = archive.testzip()
     if bad: raise SystemExit('ZIP integrity failed: ' + bad)
