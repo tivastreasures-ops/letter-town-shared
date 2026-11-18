@@ -1,0 +1,9 @@
+source: cozy_bulletin_board_orig.glb
+output: cozy_bulletin_board_v2.glb
+triangles before: 603424
+triangles after: 4750
+glTF Y-up dimensions X x Y x Z: 1.77990 x 1.90695 x 0.53137
+base y: 0.00000
+texture: 1024x1024 color atlas baked from high-poly source
+UV: new smart-project atlas
+status: visual review REQUIRED; source and v1 preserved
