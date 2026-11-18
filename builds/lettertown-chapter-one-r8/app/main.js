@@ -192,12 +192,12 @@ put('fountain', 2.3, 0, -7.0, 0);
 // worldModel('trowel', (src) => { src.updateMatrixWorld(true); const bb = new THREE.Box3().setFromObject(src), sz = bb.getSize(new THREE.Vector3()); src.scale.setScalar(0.15 / Math.max(sz.x, sz.y, sz.z, 1e-3)); src.updateMatrixWorld(true); bb.setFromObject(src); const c = bb.getCenter(new THREE.Vector3()); src.position.x -= c.x; src.position.z -= c.z; src.position.y -= bb.min.y; const w = new THREE.Group(); w.add(src); w.position.set(0.8, TABLE, 0.02); w.rotation.y = 0.5; stage.add(w); });   // a small trowel left on the table
 addProp('townhall', 6.0, 0, 0, -12.5, 0, { parent: town });
 /* the edge of town: a river all the way around, grass beyond it, then hills and mountains, so it is clear where the town ends */
-{ const water = new THREE.Mesh(new THREE.RingGeometry(31, 35, 64), new THREE.MeshLambertMaterial({ color: '#6fb9ea', emissive: '#1d4f7a', emissiveIntensity: 0.25 })); water.rotation.x = -Math.PI / 2; water.position.y = 0.03; town.add(water);
+{ const water = new THREE.Mesh(new THREE.RingGeometry(31, 35, 64), new THREE.MeshLambertMaterial({ color: '#6fb9ea', emissive: '#1d4f7a', emissiveIntensity: 0.25 })); water.rotation.x = -Math.PI / 2; water.position.y = 0.03; town.add(water); window.__water = water;
   for (const [r0, r1, col] of [[30.4, 31, '#d9c58f'], [35, 35.6, '#d9c58f']]) { const bank = new THREE.Mesh(new THREE.RingGeometry(r0, r1, 64), new THREE.MeshLambertMaterial({ color: col })); bank.rotation.x = -Math.PI / 2; bank.position.y = 0.025; town.add(bank); }
-  const hr = (() => { let a = 7; return () => { a = (a * 9301 + 49297) % 233280; return a / 233280; }; })();
+  window.__hills = []; const hr = (() => { let a = 7; return () => { a = (a * 9301 + 49297) % 233280; return a / 233280; }; })();
   for (let i = 0; i < 44; i++) { const ang = (i / 44) * Math.PI * 2 + hr() * 0.1, big = i % 3 === 0, r = 46 + hr() * 8 + (big ? 6 : 0), h = big ? 9 + hr() * 6 : 3.5 + hr() * 3, w = big ? 9 + hr() * 4 : 7 + hr() * 4;
-    const m = new THREE.Mesh(big ? new THREE.ConeGeometry(w, h * 2, 7) : new THREE.SphereGeometry(w, 14, 10), new THREE.MeshLambertMaterial({ color: big ? (i % 2 ? '#8e9aa8' : '#7f8f9c') : (i % 2 ? '#78b36a' : '#8cc47a') })); if (!big) m.scale.y = h / w; m.position.set(Math.cos(ang) * r, big ? h : 0, Math.sin(ang) * r); town.add(m);
-    if (big) { const cap = new THREE.Mesh(new THREE.ConeGeometry(w * 0.32, h * 0.5, 7), new THREE.MeshLambertMaterial({ color: '#f4f7fb' })); cap.position.set(m.position.x, h * 1.78, m.position.z); town.add(cap); } } }
+    const m = new THREE.Mesh(big ? new THREE.ConeGeometry(w, h * 2, 7) : new THREE.SphereGeometry(w, 14, 10), new THREE.MeshLambertMaterial({ color: big ? (i % 2 ? '#8e9aa8' : '#7f8f9c') : (i % 2 ? '#78b36a' : '#8cc47a') })); if (!big) m.scale.y = h / w; m.position.set(Math.cos(ang) * r, big ? h : 0, Math.sin(ang) * r); town.add(m); window.__hills.push(m);
+    if (big) { const cap = new THREE.Mesh(new THREE.ConeGeometry(w * 0.32, h * 0.5, 7), new THREE.MeshLambertMaterial({ color: '#f4f7fb' })); cap.position.set(m.position.x, h * 1.78, m.position.z); town.add(cap); window.__hills.push(cap); } } }
 
 // Kit's seed shop, where the first cottage used to be
 gltfLoader.load('assets/models/seed_shop.glb', (g) => { const m = fit(g.scene, 2.7); m.position.set(6.6, 0, -0.8); m.rotation.y = -1.3; town.add(m); }, undefined, () => {});
@@ -269,6 +269,9 @@ fetch('assets/world_layout_v1.json').then((r) => r.json()).then((L) => { L.objec
 cobblePatch(new THREE.PlaneGeometry(2.2, 27), 2.2, 27, 0, 17.5);
 addProp('archway', 3.2, 0, 0, 29.5, 0, { parent: town });
 gltfLoader.load('assets/models/hudson.glb', (g) => { const m = fit(g.scene, 1.0); m.position.set(2.2, 0, 29.2); m.rotation.y = -0.4; town.add(m); });
+// APPROVED MAP: the Librarian's river and twelve scenery panels. The panels replace the cone mountains (never both), and the river keeps the bright blue.
+gltfLoader.load('assets/models/world/river_ring_candidate.glb', (g) => { const mat = new THREE.MeshLambertMaterial({ color: '#6fb9ea', emissive: '#1d4f7a', emissiveIntensity: 0.25, side: THREE.DoubleSide }); g.scene.traverse((o) => { if (o.isMesh) o.material = mat; }); town.add(g.scene); if (window.__water) window.__water.visible = false; });
+fetch('assets/world_layout_v1.json').then((r) => r.json()).then((L) => { let left = 0; L.objects.filter((o) => o.asset === 'distant_hills_panel').forEach((o) => { left++; worldModel('distant_hills_panel', (m) => { m.traverse((c) => { if (c.material) { c.material = c.material.clone(); c.material.side = THREE.DoubleSide; c.material.fog = false; } }); const h = new THREE.Group(); h.add(m); h.position.set(o.x, 0, o.z); h.rotation.y = o.rotationY || 0; h.scale.setScalar(1.15); town.add(h); if (--left === 0) (window.__hills || []).forEach((x) => { x.visible = false; }); }); }); }).catch(() => {});
 const mixers = [], walkers = [], KIDS = ['anna', 'timmy', 'mary', 'billy', 'sally', 'joe'], KID_H = 1.15; let commOn = true, kidsLoaded = false;
 const CARTS = { word: [0.35, -1.75], flower: [2.7, -0.55] };   // where a neighbor stands to shop
 const SPOTS = [[0, -5.5], [-1.5, -6.2], [1.6, -6.4], [0, -8.4], [-2.2, -4.2], [2.0, -3.4], [-3.0, -0.6], [-2.4, -1.4], [3.2, -0.2], [0.6, -3.0]];   // places to stroll to on the cobblestones

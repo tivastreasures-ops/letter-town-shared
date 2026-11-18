@@ -63,3 +63,7 @@ R8-17q
 
 R8-17r
 - Six new voice lines wired: Kit K15 (keep shopping or check out), Hudson H28, H29 and X01, Merry M17, Phineas P14. Each plays in its own character's voice.
+
+R8-18 (final)
+- World edge: the Librarian's river replaces the flat ring (same bright blue), and her twelve scenery panels replace the cone mountains. The panels are scaled to meet without gaps.
+- Not changed: board and workshop positions, extra cottages, and the Quest session test (yours).
