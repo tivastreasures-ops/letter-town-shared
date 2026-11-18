@@ -92,7 +92,7 @@ export function makeScreens(c) {
     B(x + 86 + bw, y, 70, h, '▶', () => cyc(1), { size, style: 'cream', off: keys.length < 2 });
   }
   function frameBg() { g.fillStyle = COL.paper; g.fillRect(0, 0, BW, BH); g.strokeStyle = COL.edge; g.lineWidth = 12; g.strokeRect(6, 6, BW - 12, BH - 12); }
-  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-22', BW - 40, 872, 16, COL.soft, 'right'); }
+  function footer() { rr(24, 806, BW - 48, 76, 16, '#fbeed2', COL.edge, 3); wrap(st.msg || '', BW / 2, 830, BW - 110, 27, COL.plum, 'center', 2); text('Build R8-23', BW - 40, 872, 16, COL.soft, 'right'); }
   function header(title) {
     if (S.lesson) { text(title, 40, 52, 40, COL.ink, 'left', true); const free = st.wait && st.wait.free; if (free) B(BW - 760, 20, 300, 64, "I'm finished", finishPractice, { style: 'green', size: 30 }); B(BW - 440, 20, 100, 64, 'Hide', () => c.hidePanel && c.hidePanel(), { style: 'blue', size: 26 }); B(BW - 330, 20, 300, 64, 'Back to Hudson', () => ask('Leave this lesson? You can repeat it any time.', leaveLesson), { style: 'rose', size: 28 }); if (S.usePractice && !free) text('Practice: nothing here uses your real coins or letters', BW / 2 + 60, 52, 24, COL.soft, 'center'); return; }
     const tabs = [['map', 'Map'], ['garden', 'Garden'], ['book', 'Book'], ['dict', 'Dictionary'], ['shop', 'Shop'], ['carts', 'Carts'], ['home', 'Home'], ['story', 'Story'], ['settings', 'Settings']];

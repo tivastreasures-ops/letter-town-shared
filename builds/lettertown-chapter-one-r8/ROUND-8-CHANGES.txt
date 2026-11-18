@@ -75,3 +75,5 @@ R8-19
 R8-20: tutorial vignette homes fixed. Snowy now stands in front of the town hall (was Phineas's workshop cottage); Phineas gets the workshop cottage. Footer Build R8-20; cache tag v=20.
 R8-21: screen-draw errors are now always caught (logged, board falls back to the loading screen) instead of freezing the render loop when a save exists. Per Dean's review. Footer Build R8-21.
 R8-22: real residents at their real places for lessons (no miniature scenes); old white clouds removed, 10 pink clouds; town book larger; tool tray handle on the long side; Super Grow faces the player; TABLE button hides/shows the wooden planks; seed shop teleport spot moved off the flower cart.
+
+R8-23: Distant hills panels flipped upright (art was upside down). Flower arranging area (vase and flower rows) moved to the front-middle of the table, within easy reach.

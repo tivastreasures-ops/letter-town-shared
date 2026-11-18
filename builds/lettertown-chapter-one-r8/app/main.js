@@ -3,8 +3,8 @@
 // The story board in front of you can be poked with a fingertip or pointed at and pinched. Mouse and touch work too.
 import * as THREE from '../vendor/three/three.module.min.js';
 import * as R from '../rules/game.js';
-import { makeScreens } from './screens.js?v=22';
-import { runIntro } from './intro.js?v=22';
+import { makeScreens } from './screens.js?v=23';
+import { runIntro } from './intro.js?v=23';
 import { GLTFLoader } from '../vendor/three/jsm/loaders/GLTFLoader.js';
 
 const Q = new URLSearchParams(location.search);
@@ -106,7 +106,7 @@ const plaqueTex = {}; function plaque(txt, bg) { const k = txt + bg; if (plaqueT
 const FCOL = { rose: '#e88aa5', daisy: '#fffdf4', poppy: '#e8453c', peony: '#f2a6c4', lily: '#f6b5d8', sunflower: '#ffc928', violet: '#8a63d2', marigold: '#ff9a1f', buttercup: '#ffe14a', zinnia: '#e2557a', chrysanthemum: '#f4d36b', kopsia: '#f08bb0', jonquil: '#ffd84a', flax: '#6d8fe8', plumeria: '#fff0c7' };
 /* real 3D arranging: pick cut flowers from the shelf, they stand in the vase; touch the vase to take the last one out */
 const arrG = new THREE.Group(); arrG.visible = false; stage.add(arrG);
-const vase = new THREE.Group(); { const v = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.04, 0.14, 20, 1, true), new THREE.MeshLambertMaterial({ color: '#cfe6f2', transparent: true, opacity: 0.8, side: THREE.DoubleSide })); v.position.y = 0.07; vase.add(v); const bt = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.01, 20), new THREE.MeshLambertMaterial({ color: '#9dc3d8' })); bt.position.y = 0.005; vase.add(bt); } vase.position.set(0.58, TABLE, 0.02); arrG.add(vase);
+const vase = new THREE.Group(); { const v = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.04, 0.14, 20, 1, true), new THREE.MeshLambertMaterial({ color: '#cfe6f2', transparent: true, opacity: 0.8, side: THREE.DoubleSide })); v.position.y = 0.07; vase.add(v); const bt = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.01, 20), new THREE.MeshLambertMaterial({ color: '#9dc3d8' })); bt.position.y = 0.005; vase.add(bt); } vase.position.set(0.0, TABLE, -0.2); arrG.add(vase);
 const vaseRec = { holder: vase, kind: 'vase', radius: 0.09, cy: 0.1 }; props.push(vaseRec);
 const vaseFl = new THREE.Group(); vase.add(vaseFl); const pickRecs = []; const SPKEY = { poppy: 'poppy_blue', rose: 'rose_pink', daisy: 'daisy_white', peony: 'peony_pink', lily: 'lily_pink' }; const THIN = { flax: 1, violet: 1, jonquil: 1, plumeria: 1 }; let arrSig = '';
 const vaseFluted = new THREE.Group(); vase.add(vaseFluted); let vaseLoaded = false; const vaseGlass = vase.children.filter((c) => c.isMesh);
@@ -120,7 +120,7 @@ function refreshArr() {
   const PP = R.pouch(S), arr = UI.state.arr || {}, sig = JSON.stringify([PP.flowers, PP.basket, arr, vaseKey()]); if (sig === arrSig) return; arrSig = sig;
   pickRecs.splice(0).forEach((r) => { arrG.remove(r.holder); const i = props.indexOf(r); if (i >= 0) props.splice(i, 1); });
   while (vaseFl.children.length) vaseFl.remove(vaseFl.children[0]);
-  let row = 0; R.CFG.species.forEach((k) => { const have = (PP.flowers[k] || 0) + (PP.basket[k] || 0) - (arr[k] || 0); if (have <= 0) return; const h = new THREE.Group(), i = row++; h.position.set(0.2 + (i % 8) * 0.1, TABLE, 0.18 + Math.floor(i / 8) * 0.09); arrG.add(h);
+  let row = 0; R.CFG.species.forEach((k) => { const have = (PP.flowers[k] || 0) + (PP.basket[k] || 0) - (arr[k] || 0); if (have <= 0) return; const h = new THREE.Group(), i = row++; h.position.set(-0.4 + (i % 9) * 0.1, TABLE, 0.04 - Math.floor(i / 9) * 0.09); arrG.add(h);
     flowerModel(SPKEY[k] || k, 0.13, (m) => { h.add(m); }); const rec = { holder: h, kind: 'pick:' + k, radius: 0.055, cy: 0.07 }; props.push(rec); pickRecs.push(rec); });
   let n = 0; Object.keys(arr).forEach((k) => { for (let j = 0; j < arr[k]; j++) { const a = n * 2.4, VF = VASE_FIT[vaseKey()], r = 0.012 * VF.r * (1 + (n % 4)), idx = n++; flowerModel(SPKEY[k] || k, 0.2, (m) => { m.position.set(Math.cos(a) * r, VF.y, Math.sin(a) * r); m.rotation.z = Math.cos(a) * 0.12 * (1 + idx % 3); m.rotation.x = Math.sin(a) * 0.12 * (1 + idx % 3); m.rotation.y = idx * 1.7; vaseFl.add(m); if (THIN[k]) { const m2 = m.clone(); m2.rotation.y += Math.PI / 2; vaseFl.add(m2); } }); } });
 }
@@ -272,7 +272,7 @@ addProp('archway', 3.2, 0, 0, 29.5, 0, { parent: town });
 gltfLoader.load('assets/models/hudson.glb', (g) => { const m = fit(g.scene, 1.0); m.position.set(2.2, 0, 29.2); m.rotation.y = -0.4; town.add(m); });
 // APPROVED MAP: the Librarian's river and twelve scenery panels. The panels replace the cone mountains (never both), and the river keeps the bright blue.
 gltfLoader.load('assets/models/world/river_ring_candidate.glb', (g) => { const mat = new THREE.MeshLambertMaterial({ color: '#6fb9ea', emissive: '#1d4f7a', emissiveIntensity: 0.25, side: THREE.DoubleSide }); g.scene.traverse((o) => { if (o.isMesh) o.material = mat; }); town.add(g.scene); if (window.__water) window.__water.visible = false; });
-fetch('assets/world_layout_v1.json').then((r) => r.json()).then((L) => { let left = 0; L.objects.filter((o) => o.asset === 'distant_hills_panel').forEach((o) => { left++; worldModel('distant_hills_panel', (m) => { m.traverse((c) => { if (c.material) { c.material = c.material.clone(); c.material.side = THREE.DoubleSide; c.material.fog = false; } }); const h = new THREE.Group(); h.add(m); h.position.set(o.x, 0, o.z); h.rotation.y = o.rotationY || 0; h.scale.setScalar(1.15); town.add(h); if (--left === 0) (window.__hills || []).forEach((x) => { x.visible = false; }); }); }); }).catch(() => {});
+fetch('assets/world_layout_v1.json').then((r) => r.json()).then((L) => { let left = 0; L.objects.filter((o) => o.asset === 'distant_hills_panel').forEach((o) => { left++; worldModel('distant_hills_panel', (m) => { m.traverse((c) => { if (c.material) { c.material = c.material.clone(); c.material.side = THREE.DoubleSide; c.material.fog = false; } if (c.isMesh && c.geometry && c.geometry.attributes.uv) { c.geometry = c.geometry.clone(); const uv = c.geometry.attributes.uv; for (let q = 0; q < uv.count; q++) uv.setY(q, 1 - uv.getY(q)); uv.needsUpdate = true; /* the panel art was authored upside down: flip it upright */ } }); const h = new THREE.Group(); h.add(m); h.position.set(o.x, 0, o.z); h.rotation.y = o.rotationY || 0; h.scale.setScalar(1.15); town.add(h); if (--left === 0) (window.__hills || []).forEach((x) => { x.visible = false; }); }); }); }).catch(() => {});
 const mixers = [], walkers = [], KIDS = ['anna', 'timmy', 'mary', 'billy', 'sally', 'joe'], KID_H = 1.15; let commOn = true, kidsLoaded = false;
 const CARTS = { word: [0.35, -1.75], flower: [2.7, -0.55] };   // where a neighbor stands to shop
 const SPOTS = [[0, -5.5], [-1.5, -6.2], [1.6, -6.4], [0, -8.4], [-2.2, -4.2], [2.0, -3.4], [-3.0, -0.6], [-2.4, -1.4], [3.2, -0.2], [0.6, -3.0]];   // places to stroll to on the cobblestones
