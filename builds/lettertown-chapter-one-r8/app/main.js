@@ -153,7 +153,48 @@ const noticeProp = (() => {
 
 /* ---------- a present for the player, shown on the table while a gift is opened ---------- */
 const giftHolder = new THREE.Group(); giftHolder.position.set(0, TABLE + 0.02, -0.32); giftHolder.visible = false; stage.add(giftHolder);
-gltfLoader.load('assets/models/giftbag.glb', (g) => { giftHolder.add(fit(g.scene, 0.26)); }, undefined, () => { /* no box model: the tiles still show */ });
+// Director hotfix: replace the perforated Meshy giftbag with a closed, lightweight
+// storybook gift bag until the original GLB can be repaired and validated.
+// Keep giftHolder, position, visibility and gameplay triggers unchanged.
+{
+  const bag = new THREE.Group();
+  const paper = new THREE.MeshStandardMaterial({ color: 0xf4c9d8, roughness: 0.88, side: THREE.DoubleSide });
+  const side = new THREE.MeshStandardMaterial({ color: 0xd990ad, roughness: 0.9, side: THREE.DoubleSide });
+  const trim = new THREE.MeshStandardMaterial({ color: 0xfff2c9, roughness: 0.85 });
+  const W = 0.19, H = 0.21, D = 0.105;
+  const panel = (w,h,d,x,y,z,mat) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.position.set(x,y,z); bag.add(m); return m; };
+  // Solid front, back, sides and bottom: no open polygon edges or transparency.
+  panel(W,H,0.006,0,H/2,D/2,paper);
+  panel(W,H,0.006,0,H/2,-D/2,paper);
+  panel(0.006,H,D,-W/2,H/2,0,side);
+  panel(0.006,H,D,W/2,H/2,0,side);
+  panel(W,0.007,D,0,0.0035,0,paper);
+  // Folded top rim gives the bag an intentional open top, not missing faces.
+  panel(W+0.012,0.012,0.012,0,H, D/2,trim);
+  panel(W+0.012,0.012,0.012,0,H,-D/2,trim);
+  panel(0.012,0.012,D, W/2,H,0,trim);
+  panel(0.012,0.012,D,-W/2,H,0,trim);
+  const cord = new THREE.MeshStandardMaterial({ color: 0x9e6581, roughness: 0.75 });
+  // Rope handles are simple curved tubes with endpoints attached to the panels.
+  for (const z of [-D/2-0.005,D/2+0.005]) {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.047,H-0.014,z),
+      new THREE.Vector3(-0.044,H+0.043,z),
+      new THREE.Vector3(0,H+0.056,z),
+      new THREE.Vector3(0.044,H+0.043,z),
+      new THREE.Vector3(0.047,H-0.014,z)
+    ]);
+    bag.add(new THREE.Mesh(new THREE.TubeGeometry(curve,16,0.005,6,false),cord));
+  }
+  // Center on the table and keep the same 0.26m overall display height.
+  const bounds = new THREE.Box3().setFromObject(bag);
+  const size = bounds.getSize(new THREE.Vector3());
+  const center = bounds.getCenter(new THREE.Vector3());
+  bag.position.set(-center.x,-bounds.min.y,-center.z);
+  const wrap = new THREE.Group(); wrap.add(bag);
+  wrap.scale.setScalar(0.26/size.y);
+  giftHolder.add(wrap);
+}
 // a crafted word becomes an object on the table: her item art when she has it, otherwise an emoji (a stopgap until each word has 3D art)
 const EMO = { cat: '🐱', dog: '🐶', sun: '☀️', moon: '🌙', star: '⭐', tree: '🌳', bird: '🐦', fish: '🐟', rose: '🌹', rain: '🌧️', leaf: '🍃', seed: '🌱', bell: '🔔', cake: '🍰', door: '🚪', nest: '🪹', tea: '🍵', hat: '🎩', bee: '🐝', bear: '🐻', bunny: '🐰', duck: '🦆', frog: '🐸', crab: '🦀', cow: '🐮', pig: '🐷', owl: '🦉', fox: '🦊', heart: '❤️', kite: '🪁', boat: '⛵', ship: '🚢', car: '🚗', bus: '🚌', key: '🔑', gift: '🎁', ring: '💍', shoe: '👟', sock: '🧦', apple: '🍎', pear: '🍐', plum: '🍑', corn: '🌽', milk: '🥛', flower: '🌸', cloud: '☁️', snow: '❄️', fire: '🔥', wind: '💨', rock: '🪨', shell: '🐚', bread: '🍞', egg: '🥚', pie: '🥧', jam: '🍓', bed: '🛏️', chair: '🪑', lamp: '💡', book: '📖', cup: '☕', mug: '☕', clock: '⏰', drum: '🥁', bat: '🦇', ant: '🐜', lion: '🦁', horse: '🐴', mouse: '🐭', snail: '🐌', camel: '🐫' };
 let wordObj = null;
