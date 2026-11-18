@@ -1,0 +1,49 @@
+name: Render optimized GLB previews
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/render_staged_previews.py'
+      - '.github/workflows/render-staged-previews.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lettertown-preview-render
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender renderer
+        run: |
+          sudo apt-get update -o Acquire::Retries=3 -o Acquire::http::Timeout=20
+          sudo apt-get install -y blender python3-numpy
+      - name: Render each model from two views
+        run: |
+          set -o pipefail
+          blender --background --factory-startup --python tools/render_staged_previews.py 2>&1 | tee preview-log.txt
+          test "$(grep -c '^RENDERED ' preview-log.txt)" -eq 16
+          ! grep -q '^FAILED ' preview-log.txt
+      - name: Commit preview images
+        run: |
+          git config user.name "Letter Town Asset Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/staging/previews/*.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Assets: rendered previews for eight optimized models"
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                break
+              fi
+              if [ "$attempt" = 5 ]; then exit 1; fi
+              sleep 3
+            done
+          fi
