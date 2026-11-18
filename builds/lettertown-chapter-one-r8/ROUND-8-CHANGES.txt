@@ -72,3 +72,4 @@ R8-19
 - Cache: index.html and the script imports carry a version tag and a no-cache header, so the Quest browser fetches the new files. (Your video footer showed an older build, not R8-18.)
 - Neighbors (kids) hide while a resident is speaking, so nobody stands in front of Phineas's house during his lesson.
 - Letter tray: moved 16 cm farther from you (the tile row 16 cm too). Garden tray handle: moved to the near end of the tray.
+R8-20: tutorial vignette homes fixed. Snowy now stands in front of the town hall (was Phineas's workshop cottage); Phineas gets the workshop cottage. Footer Build R8-20; cache tag v=20.

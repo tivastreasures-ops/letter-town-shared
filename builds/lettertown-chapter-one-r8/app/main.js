@@ -3,8 +3,8 @@
 // The story board in front of you can be poked with a fingertip or pointed at and pinched. Mouse and touch work too.
 import * as THREE from '../vendor/three/three.module.min.js';
 import * as R from '../rules/game.js';
-import { makeScreens } from './screens.js?v=19';
-import { runIntro } from './intro.js?v=19';
+import { makeScreens } from './screens.js?v=20';
+import { runIntro } from './intro.js?v=20';
 import { GLTFLoader } from '../vendor/three/jsm/loaders/GLTFLoader.js';
 
 const Q = new URLSearchParams(location.search);
@@ -62,8 +62,8 @@ cutout('assets/scene/word_cart.png', 0.95, 0.95, 1.4, TABLE + 0.5, -1.75, -0.5).
 cutout('assets/scene/flower_cart.png', 0.8, 0.8, 2.1, TABLE + 0.42, -1.0, -0.95).name = 'flatFlower';
 const PEOPLE = ['hudson', 'snowy', 'merry', 'kit', 'phineas', 'mayor'];
 // each resident stands in front of their home, on a little grass stage behind the story board
-const HOMES = { hudson: 'archway', snowy: 'cozycottage', merry: 'merry_greenhouse', kit: 'seed_shop', phineas: 'cottage_green', mayor: 'townhall' };
-const HOME_H = { hudson: 0.95, snowy: 0.85, merry: 0.95, kit: 0.95, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.62, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
+const HOMES = { hudson: 'archway', snowy: 'townhall', merry: 'merry_greenhouse', kit: 'seed_shop', phineas: 'cozycottage', mayor: 'townhall' };
+const HOME_H = { hudson: 0.95, snowy: 0.95, merry: 0.95, kit: 0.95, phineas: 0.8, mayor: 0.95 }, CHAR_H = { hudson: 0.62, snowy: 0.44, merry: 0.4, kit: 0.42, phineas: 0.46, mayor: 0.5 };
 const gltfLoader = new GLTFLoader(), vig = new THREE.Group(); vig.visible = false; stage.add(vig);
 const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.33, 0.03, 40), new THREE.MeshLambertMaterial({ color: '#a8d08a' })); stand.position.y = -0.015; stand.visible = false; vig.add(stand);   // no platform: people stand on the town's own ground now
 const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.34, 3, 32), new THREE.MeshLambertMaterial({ color: '#b98a55' })); plinth.position.y = -1.53; plinth.visible = false; vig.add(plinth);   // a wooden pedestal down to the ground, so nobody floats
@@ -709,5 +709,5 @@ renderer.setAnimationLoop(() => {
   if (renderer.xr.isPresenting) { if (needsRecenter && recenter()) needsRecenter = false; if (recenterAt && performance.now() >= recenterAt) { recenterAt = 0; if (recenter()) UI.say('All set. Everything is in front of you.'); } }
   tick(dt, false); renderer.render(scene, camera);
 });
-window.__lt = { pc: () => pinkClouds.map((h) => [h.position.toArray().map((n) => +n.toFixed(1)), h.visible]), vig: () => [vig.visible, vig.position.toArray(), vig.scale.x, vigWho, Object.keys(VIG).map((k) => [k, VIG[k].ready, !!VIG[k].char, VIG[k].failed])], selectThing, props, teleportTo, dockPool, dockRow, refreshLetterDock, LT, vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
+window.__lt = { showPerson, pc: () => pinkClouds.map((h) => [h.position.toArray().map((n) => +n.toFixed(1)), h.visible]), vig: () => [vig.visible, vig.position.toArray(), vig.scale.x, vigWho, Object.keys(VIG).map((k) => [k, VIG[k].ready, !!VIG[k].char, VIG[k].failed])], selectThing, props, teleportTo, dockPool, dockRow, refreshLetterDock, LT, vaseFl: () => vaseFl, dbg: () => [arrSig, arrG.visible, pickRecs.length], refreshArr, refreshStock, setS: (s) => { S = s; plots.forEach((p) => { p.lastStage = -1; }); layout(); }, camera, world, comm, walkers, kidBuys, get S() { return S; }, R, UI, plots, tools, pointers, TABLE, tick, THREE, board, HAND,
   sim(i, pos, quat, down) { const P = pointers[2 + i]; if (!pos) { P.valid = false; return; } P.valid = true; P.pos.fromArray(pos); if (quat) P.quat.fromArray(quat); else P.quat.identity(); P.down = !!down; } };
