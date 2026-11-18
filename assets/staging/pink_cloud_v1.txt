@@ -1,15 +1,15 @@
 asset: pink_cloud_v1.glb
 source: assets/staging/originals/pink_cloud_orig.glb
 units: Blender imported scene units (typically metres for glTF)
-bounding box X x Y x Z: 0.95850 x 0.58887 x 0.43750
+bounding box X x Y x Z: 0.95850 x 0.43750 x 0.58887
 base min y: 0.00000
-target height: 0.58887 scene units
+target height: 0.43750 scene units (glTF Y-up)
 triangle count: 10303
 original triangle count: 10303
 watertight: no
 original watertight: no
 texture format: embedded glTF/GLB (source format preserved or Blender re-encoded)
-textures: none detected
-textures resized to max 1024: 0
-changes: mesh decimation where over budget; packed textures; scene base translated to y=0
+textures: Image_0 1024x1024
+textures resized to max 1024: 1
+changes: mesh decimation where over budget; packed textures; Blender Z base translated to zero; exported glTF Y-up
 review: AUTOMATED PASS ONLY. Visual appearance/UV fidelity and gameplay scale require review before integration.

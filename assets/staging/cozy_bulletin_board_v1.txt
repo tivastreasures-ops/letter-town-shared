@@ -1,15 +1,15 @@
 asset: cozy_bulletin_board_v1.glb
 source: assets/staging/originals/cozy_bulletin_board_orig.glb
 units: Blender imported scene units (typically metres for glTF)
-bounding box X x Y x Z: 1.77990 x 0.53137 x 1.90695
+bounding box X x Y x Z: 1.77990 x 1.90695 x 0.53137
 base min y: 0.00000
-target height: 0.53137 scene units
+target height: 1.90695 scene units (glTF Y-up)
 triangle count: 4750
 original triangle count: 603424
 watertight: no
 original watertight: no
 texture format: embedded glTF/GLB (source format preserved or Blender re-encoded)
-textures: none detected
-textures resized to max 1024: 0
-changes: mesh decimation where over budget; packed textures; scene base translated to y=0
+textures: Image_0 1024x1024; Image_1 1024x1024; Image_2 1024x1024
+textures resized to max 1024: 3
+changes: mesh decimation where over budget; packed textures; Blender Z base translated to zero; exported glTF Y-up
 review: AUTOMATED PASS ONLY. Visual appearance/UV fidelity and gameplay scale require review before integration.
