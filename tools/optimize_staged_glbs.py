@@ -21,7 +21,7 @@ JOBS = [
     ("flower_teacup", 5000),
     ("grocery_bag", 5000),
     ("blue_gift_bag", 5000),
-    ("pink_cloud", 5000),
+    ("pink_cloud", 12000),
 ]
 
 def tris(mesh):
