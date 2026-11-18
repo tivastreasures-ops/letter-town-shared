@@ -3,8 +3,8 @@
 // The story board in front of you can be poked with a fingertip or pointed at and pinched. Mouse and touch work too.
 import * as THREE from '../vendor/three/three.module.min.js';
 import * as R from '../rules/game.js';
-import { makeScreens } from './screens.js';
-import { runIntro } from './intro.js';
+import { makeScreens } from './screens.js?v=19';
+import { runIntro } from './intro.js?v=19';
 import { GLTFLoader } from '../vendor/three/jsm/loaders/GLTFLoader.js';
 
 const Q = new URLSearchParams(location.search);
@@ -401,7 +401,7 @@ makeTool('shaker', new THREE.Vector3(0, TABLE + 0.05, -0.17), 0, (g) => { g.add(
 const tray = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.03, 0.56), new THREE.MeshLambertMaterial({ color: '#c99a5b' })); stage.add(tray);
 const trayEdge = new THREE.Mesh(new THREE.BoxGeometry(0.27, 0.012, 0.59), new THREE.MeshLambertMaterial({ color: '#a87b43' })); stage.add(trayEdge);
 const trayHandle = new THREE.Group(); { const hm = new THREE.MeshLambertMaterial({ color: '#7a4f24' }); const bar = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.016, 0.018), hm); trayHandle.add(bar); [-0.06, 0.06].forEach((dx) => { const k = new THREE.Mesh(new THREE.SphereGeometry(0.014, 12, 8), hm); k.position.set(dx, 0, 0); trayHandle.add(k); }); const post = new THREE.MeshLambertMaterial({ color: '#a87b43' }); [-0.045, 0.045].forEach((dx) => { const l = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.016, 0.03), post); l.position.set(dx, -0.002, -0.02); trayHandle.add(l); }); } stage.add(trayHandle);   // a grab handle on the front edge so it is clear the tray slides left and right
-function placeTray() { const x = trayX(); tray.position.set(x, TABLE + 0.015, TRAY.z); trayEdge.position.set(x, TABLE + 0.006, TRAY.z); trayHandle.position.set(x, TABLE + 0.042, TRAY.z + 0.29); for (const t of tools) { t.home.set(x, TABLE + TRAY.y + (t.kind === 'can' ? 0.07 : 0.055), TRAY.z + TRAY.offs[t.kind]); if (!t.heldBy) { t.g.position.copy(t.home); } } }
+function placeTray() { const x = trayX(); tray.position.set(x, TABLE + 0.015, TRAY.z); trayEdge.position.set(x, TABLE + 0.006, TRAY.z); trayHandle.position.set(x, TABLE + 0.042, TRAY.z + 0.2); for (const t of tools) { t.home.set(x, TABLE + TRAY.y + (t.kind === 'can' ? 0.07 : 0.055), TRAY.z + TRAY.offs[t.kind]); if (!t.heldBy) { t.g.position.copy(t.home); } } }
 function moveTray(dir) { if (!S) return; S.settings.toolX = dir; placeTray(); save(); }
 tools.forEach((t) => { t.gp = new THREE.Vector3(); });
 tools.find((t) => t.kind === 'can').gp.set(-0.075, 0.015, 0);   // the can is lifted by its handle
@@ -508,7 +508,7 @@ function readXR() {
 /* ---------- grab-and-place letter tiles for the Spelling Book ---------- */
 // One cream tile per letter you own (gold scrollwork, dark purple letter, a number for how many you have) sits on a wooden tray.
 // Pinch a tile, set it in the word row, lift it back out. The poke keyboard on the board still works.
-const LT = { z: -0.11, rowZ: -0.34, size: 0.056, rowSize: 0.07, cols: 13, gap: 0.064, rowGap: 0.077, max: 11 };
+const LT = { z: -0.27, rowZ: -0.50, size: 0.056, rowSize: 0.07, cols: 13, gap: 0.064, rowGap: 0.077, max: 11 };
 const letterDock = new THREE.Group(); letterDock.visible = false; stage.add(letterDock);
 { const wood = new THREE.MeshLambertMaterial({ color: '#8a5a32' }), rim = new THREE.MeshLambertMaterial({ color: '#5e3a1c' });
   const tb = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.02, 0.24), wood); tb.position.set(0, TABLE + 0.01, LT.z); letterDock.add(tb);
@@ -698,7 +698,7 @@ const clock = new THREE.Clock(); let slow = 0;
 function tick(dt, simOnly) {
   placeHome();
   if (!simOnly) readXR();
-  stepPointers(dt, performance.now() / 1000); stepBits(dt); stepWordObj(dt); stepTiles(dt); stepKids(dt); stepSky(dt); packetFor(G.seedTier()); { const sT = tools.find((t) => t.kind === 'seeds'); if (sT && !sT.heldBy) { const hp = stage.worldToLocal(camera.getWorldPosition(new THREE.Vector3())); sT.g.rotation.set(-0.35, Math.atan2(hp.x - sT.g.position.x, hp.z - sT.g.position.z), 0, 'YXZ'); sT.homeQ.copy(sT.g.quaternion); } } if (giftHolder.visible) { giftHolder.rotation.y += dt * 0.8; giftHolder.position.y = TABLE + 0.02 + Math.abs(Math.sin(clock.elapsedTime * 2)) * 0.03; }
+  stepPointers(dt, performance.now() / 1000); stepBits(dt); stepWordObj(dt); stepTiles(dt); stepKids(dt); walkers.forEach((w) => { if (w.m) w.m.visible = !vig.visible; }); stepSky(dt); packetFor(G.seedTier()); { const sT = tools.find((t) => t.kind === 'seeds'); if (sT && !sT.heldBy) { const hp = stage.worldToLocal(camera.getWorldPosition(new THREE.Vector3())); sT.g.rotation.set(-0.35, Math.atan2(hp.x - sT.g.position.x, hp.z - sT.g.position.z), 0, 'YXZ'); sT.homeQ.copy(sT.g.quaternion); } } if (giftHolder.visible) { giftHolder.rotation.y += dt * 0.8; giftHolder.position.y = TABLE + 0.02 + Math.abs(Math.sin(clock.elapsedTime * 2)) * 0.03; }
   const t = clock.elapsedTime; plots.forEach((p) => drawPlot(p, t, dt));
   if (vig.visible) { const v = VIG[vigWho]; if (v && v.char) { const talking = !voice.paused && !voice.ended; v.char.position.y = Math.abs(Math.sin(t * (talking ? 7 : 1.6))) * (talking ? 0.014 : 0.004); v.char.rotation.y = Math.sin(t * 0.9) * (talking ? 0.16 : 0.07); } }
   slow += dt; if (slow > 0.5 && S) { slow = 0; refreshStock(); refreshArr(); { const evn = R.advance(S, now()); kidBuys(evn); UI.everyHalfSecond(evn); } }
