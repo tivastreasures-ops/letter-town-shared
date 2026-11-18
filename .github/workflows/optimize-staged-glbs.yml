@@ -25,6 +25,7 @@ jobs:
           persist-credentials: true
       - name: Install Blender
         run: |
+          sudo apt-get update -o Acquire::Retries=3 -o Acquire::http::Timeout=20
           sudo apt-get install -y blender python3-numpy
           /usr/bin/python3 -c 'import numpy; print(numpy.__version__)'
       - name: Optimize and audit
