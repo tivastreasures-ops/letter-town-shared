@@ -49,3 +49,6 @@ R8-17m
 
 R8-17n
 - Seed shop screen: the seed shop artwork now shows at the left with Kit standing in front, and the seed packets sit on the shelf rows.
+
+R8-17o
+- World edge: the Librarian's kit is placed from town_layout_v1.json: 32 low-poly trees, 24 shrubs, 12 rocks and the bridge, in a ring 16 m or more from every teleport spot. Not yet integrated, by design: the distant panels, the replacement roads and the replacement river, because of seams and double rendering.

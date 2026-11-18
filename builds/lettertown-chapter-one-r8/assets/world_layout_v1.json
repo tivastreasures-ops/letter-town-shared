@@ -1,0 +1,853 @@
+{
+  "version": "v1",
+  "coordinate_system": "Three.js Y up, +Z toward player at start; positions in town local coordinates",
+  "policy": "Preserve current core positions and gameplay teleports. Replace random peripheral scenery only. No objects within 2m of NPCs or 3m of roads. Existing river ring radii 31-35 preserved.",
+  "core": [
+    {
+      "name": "Town Hall",
+      "x": 0,
+      "z": -12.5,
+      "type": "townhall"
+    },
+    {
+      "name": "Fountain",
+      "x": 0,
+      "z": -7,
+      "type": "fountain"
+    },
+    {
+      "name": "Community Garden",
+      "x": -4.2,
+      "z": -2.8,
+      "type": "garden"
+    },
+    {
+      "name": "Merry Greenhouse",
+      "x": -7,
+      "z": -2.9,
+      "type": "greenhouse"
+    },
+    {
+      "name": "Seed Shop",
+      "x": 6.6,
+      "z": -0.8,
+      "type": "shop"
+    },
+    {
+      "name": "Workshop & Carts",
+      "x": 5,
+      "z": -3.9,
+      "type": "workshop"
+    },
+    {
+      "name": "Player Cottage",
+      "x": -2.6,
+      "z": 2.6,
+      "type": "home"
+    },
+    {
+      "name": "Player Board",
+      "x": 0,
+      "z": -0.4,
+      "type": "board"
+    },
+    {
+      "name": "Snowy",
+      "x": -1.1,
+      "z": -10.3,
+      "type": "resident"
+    },
+    {
+      "name": "Mayor Ren",
+      "x": 1.1,
+      "z": -10.3,
+      "type": "resident"
+    },
+    {
+      "name": "Merry",
+      "x": -5.6,
+      "z": -1.5,
+      "type": "resident"
+    },
+    {
+      "name": "Phineas",
+      "x": 5,
+      "z": -3.9,
+      "type": "resident"
+    },
+    {
+      "name": "Shopkeeper",
+      "x": 5.3,
+      "z": -2.1,
+      "type": "resident"
+    }
+  ],
+  "existing_river": {
+    "inner_radius": 31,
+    "outer_radius": 35,
+    "center": [
+      0,
+      0
+    ],
+    "note": "current Round 8 code has a river ring already; keep it until new river geometry is approved"
+  },
+  "objects": [
+    {
+      "id": "outer_tree_01",
+      "asset": "tree_flowering_edge",
+      "x": 0.0,
+      "y": 0,
+      "z": 21.0,
+      "rotationY": 0.0,
+      "scale": 0.9
+    },
+    {
+      "id": "outer_tree_02",
+      "asset": "tree_lush_edge",
+      "x": 4.8,
+      "y": 0,
+      "z": 22.13,
+      "rotationY": 0.196,
+      "scale": 0.99
+    },
+    {
+      "id": "outer_tree_03",
+      "asset": "tree_lush_edge",
+      "x": 10.03,
+      "y": 0,
+      "z": 22.21,
+      "rotationY": 0.393,
+      "scale": 1.08
+    },
+    {
+      "id": "outer_tree_04",
+      "asset": "tree_lush_edge",
+      "x": 12.78,
+      "y": 0,
+      "z": 17.12,
+      "rotationY": 0.589,
+      "scale": 1.17
+    },
+    {
+      "id": "outer_tree_05",
+      "asset": "tree_lush_edge",
+      "x": 17.39,
+      "y": 0,
+      "z": 15.39,
+      "rotationY": 0.785,
+      "scale": 0.9
+    },
+    {
+      "id": "outer_tree_06",
+      "asset": "tree_flowering_edge",
+      "x": 21.78,
+      "y": 0,
+      "z": 12.56,
+      "rotationY": 0.982,
+      "scale": 0.99
+    },
+    {
+      "id": "outer_tree_07",
+      "asset": "tree_lush_edge",
+      "x": 21.25,
+      "y": 0,
+      "z": 6.8,
+      "rotationY": 1.178,
+      "scale": 1.08
+    },
+    {
+      "id": "outer_tree_08",
+      "asset": "tree_lush_edge",
+      "x": 24.13,
+      "y": 0,
+      "z": 2.8,
+      "rotationY": 1.374,
+      "scale": 1.17
+    },
+    {
+      "id": "outer_tree_09",
+      "asset": "tree_lush_edge",
+      "x": 26.2,
+      "y": 0,
+      "z": -2.0,
+      "rotationY": 1.571,
+      "scale": 0.9
+    },
+    {
+      "id": "outer_tree_10",
+      "asset": "tree_lush_edge",
+      "x": 22.56,
+      "y": 0,
+      "z": -6.49,
+      "rotationY": 1.767,
+      "scale": 0.99
+    },
+    {
+      "id": "outer_tree_11",
+      "asset": "tree_flowering_edge",
+      "x": 22.73,
+      "y": 0,
+      "z": -11.41,
+      "rotationY": 1.963,
+      "scale": 1.08
+    },
+    {
+      "id": "outer_tree_12",
+      "asset": "tree_lush_edge",
+      "x": 21.78,
+      "y": 0,
+      "z": -16.56,
+      "rotationY": 2.16,
+      "scale": 1.17
+    },
+    {
+      "id": "outer_tree_13",
+      "asset": "tree_lush_edge",
+      "x": 16.26,
+      "y": 0,
+      "z": -18.26,
+      "rotationY": 2.356,
+      "scale": 0.9
+    },
+    {
+      "id": "outer_tree_14",
+      "asset": "tree_lush_edge",
+      "x": 13.67,
+      "y": 0,
+      "z": -22.45,
+      "rotationY": 2.553,
+      "scale": 0.99
+    },
+    {
+      "id": "outer_tree_15",
+      "asset": "tree_lush_edge",
+      "x": 10.03,
+      "y": 0,
+      "z": -26.21,
+      "rotationY": 2.749,
+      "scale": 1.08
+    },
+    {
+      "id": "outer_tree_16",
+      "asset": "tree_flowering_edge",
+      "x": 4.49,
+      "y": 0,
+      "z": -24.56,
+      "rotationY": 2.945,
+      "scale": 1.17
+    },
+    {
+      "id": "outer_tree_17",
+      "asset": "tree_lush_edge",
+      "x": 0.0,
+      "y": 0,
+      "z": -26.6,
+      "rotationY": 3.142,
+      "scale": 0.9
+    },
+    {
+      "id": "outer_tree_18",
+      "asset": "tree_lush_edge",
+      "x": -5.11,
+      "y": 0,
+      "z": -27.7,
+      "rotationY": 3.338,
+      "scale": 0.99
+    },
+    {
+      "id": "outer_tree_19",
+      "asset": "tree_lush_edge",
+      "x": -8.8,
+      "y": 0,
+      "z": -23.25,
+      "rotationY": 3.534,
+      "scale": 1.08
+    },
+    {
+      "id": "outer_tree_20",
+      "asset": "tree_lush_edge",
+      "x": -13.67,
+      "y": 0,
+      "z": -22.45,
+      "rotationY": 3.731,
+      "scale": 1.17
+    },
+    {
+      "id": "outer_tree_21",
+      "asset": "tree_flowering_edge",
+      "x": -18.53,
+      "y": 0,
+      "z": -20.53,
+      "rotationY": 3.927,
+      "scale": 0.9
+    },
+    {
+      "id": "outer_tree_22",
+      "asset": "tree_lush_edge",
+      "x": -19.12,
+      "y": 0,
+      "z": -14.78,
+      "rotationY": 4.123,
+      "scale": 0.99
+    },
+    {
+      "id": "outer_tree_23",
+      "asset": "tree_lush_edge",
+      "x": -22.73,
+      "y": 0,
+      "z": -11.41,
+      "rotationY": 4.32,
+      "scale": 1.08
+    },
+    {
+      "id": "outer_tree_24",
+      "asset": "tree_lush_edge",
+      "x": -25.7,
+      "y": 0,
+      "z": -7.11,
+      "rotationY": 4.516,
+      "scale": 1.17
+    },
+    {
+      "id": "outer_tree_25",
+      "asset": "tree_lush_edge",
+      "x": -23.0,
+      "y": 0,
+      "z": -2.0,
+      "rotationY": 4.712,
+      "scale": 0.9
+    },
+    {
+      "id": "outer_tree_26",
+      "asset": "tree_flowering_edge",
+      "x": -24.13,
+      "y": 0,
+      "z": 2.8,
+      "rotationY": 4.909,
+      "scale": 0.99
+    },
+    {
+      "id": "outer_tree_27",
+      "asset": "tree_lush_edge",
+      "x": -24.21,
+      "y": 0,
+      "z": 8.03,
+      "rotationY": 5.105,
+      "scale": 1.08
+    },
+    {
+      "id": "outer_tree_28",
+      "asset": "tree_lush_edge",
+      "x": -19.12,
+      "y": 0,
+      "z": 10.78,
+      "rotationY": 5.301,
+      "scale": 1.17
+    },
+    {
+      "id": "outer_tree_29",
+      "asset": "tree_lush_edge",
+      "x": -17.39,
+      "y": 0,
+      "z": 15.39,
+      "rotationY": 5.498,
+      "scale": 0.9
+    },
+    {
+      "id": "outer_tree_30",
+      "asset": "tree_lush_edge",
+      "x": -14.56,
+      "y": 0,
+      "z": 19.78,
+      "rotationY": 5.694,
+      "scale": 0.99
+    },
+    {
+      "id": "outer_tree_31",
+      "asset": "tree_flowering_edge",
+      "x": -8.8,
+      "y": 0,
+      "z": 19.25,
+      "rotationY": 5.89,
+      "scale": 1.08
+    },
+    {
+      "id": "outer_tree_32",
+      "asset": "tree_lush_edge",
+      "x": -4.8,
+      "y": 0,
+      "z": 22.13,
+      "rotationY": 6.087,
+      "scale": 1.17
+    },
+    {
+      "id": "outer_shrub_01",
+      "asset": "shrub_edge",
+      "x": 2.77,
+      "y": 0,
+      "z": 24.35,
+      "rotationY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "outer_shrub_02",
+      "asset": "shrub_edge",
+      "x": 9.68,
+      "y": 0,
+      "z": 23.21,
+      "rotationY": 0,
+      "scale": 0.92
+    },
+    {
+      "id": "outer_shrub_03",
+      "asset": "shrub_edge",
+      "x": 16.16,
+      "y": 0,
+      "z": 20.25,
+      "rotationY": 0,
+      "scale": 1.04
+    },
+    {
+      "id": "outer_shrub_04",
+      "asset": "shrub_edge",
+      "x": 20.59,
+      "y": 0,
+      "z": 14.68,
+      "rotationY": 0,
+      "scale": 1.16
+    },
+    {
+      "id": "outer_shrub_05",
+      "asset": "shrub_edge",
+      "x": 24.67,
+      "y": 0,
+      "z": 8.98,
+      "rotationY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "outer_shrub_06",
+      "asset": "shrub_edge",
+      "x": 27.16,
+      "y": 0,
+      "z": 2.3,
+      "rotationY": 0,
+      "scale": 0.92
+    },
+    {
+      "id": "outer_shrub_07",
+      "asset": "shrub_edge",
+      "x": 26.35,
+      "y": 0,
+      "z": -4.77,
+      "rotationY": 0,
+      "scale": 1.04
+    },
+    {
+      "id": "outer_shrub_08",
+      "asset": "shrub_edge",
+      "x": 25.21,
+      "y": 0,
+      "z": -11.68,
+      "rotationY": 0,
+      "scale": 1.16
+    },
+    {
+      "id": "outer_shrub_09",
+      "asset": "shrub_edge",
+      "x": 22.25,
+      "y": 0,
+      "z": -18.16,
+      "rotationY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "outer_shrub_10",
+      "asset": "shrub_edge",
+      "x": 16.68,
+      "y": 0,
+      "z": -22.59,
+      "rotationY": 0,
+      "scale": 0.92
+    },
+    {
+      "id": "outer_shrub_11",
+      "asset": "shrub_edge",
+      "x": 10.98,
+      "y": 0,
+      "z": -26.67,
+      "rotationY": 0,
+      "scale": 1.04
+    },
+    {
+      "id": "outer_shrub_12",
+      "asset": "shrub_edge",
+      "x": 4.3,
+      "y": 0,
+      "z": -29.16,
+      "rotationY": 0,
+      "scale": 1.16
+    },
+    {
+      "id": "outer_shrub_13",
+      "asset": "shrub_edge",
+      "x": -2.77,
+      "y": 0,
+      "z": -28.35,
+      "rotationY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "outer_shrub_14",
+      "asset": "shrub_edge",
+      "x": -9.68,
+      "y": 0,
+      "z": -27.21,
+      "rotationY": 0,
+      "scale": 0.92
+    },
+    {
+      "id": "outer_shrub_15",
+      "asset": "shrub_edge",
+      "x": -16.16,
+      "y": 0,
+      "z": -24.25,
+      "rotationY": 0,
+      "scale": 1.04
+    },
+    {
+      "id": "outer_shrub_16",
+      "asset": "shrub_edge",
+      "x": -20.59,
+      "y": 0,
+      "z": -18.68,
+      "rotationY": 0,
+      "scale": 1.16
+    },
+    {
+      "id": "outer_shrub_17",
+      "asset": "shrub_edge",
+      "x": -24.67,
+      "y": 0,
+      "z": -12.98,
+      "rotationY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "outer_shrub_18",
+      "asset": "shrub_edge",
+      "x": -27.16,
+      "y": 0,
+      "z": -6.3,
+      "rotationY": 0,
+      "scale": 0.92
+    },
+    {
+      "id": "outer_shrub_19",
+      "asset": "shrub_edge",
+      "x": -26.35,
+      "y": 0,
+      "z": 0.77,
+      "rotationY": 0,
+      "scale": 1.04
+    },
+    {
+      "id": "outer_shrub_20",
+      "asset": "shrub_edge",
+      "x": -25.21,
+      "y": 0,
+      "z": 7.68,
+      "rotationY": 0,
+      "scale": 1.16
+    },
+    {
+      "id": "outer_shrub_21",
+      "asset": "shrub_edge",
+      "x": -22.25,
+      "y": 0,
+      "z": 14.16,
+      "rotationY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "outer_shrub_22",
+      "asset": "shrub_edge",
+      "x": -16.68,
+      "y": 0,
+      "z": 18.59,
+      "rotationY": 0,
+      "scale": 0.92
+    },
+    {
+      "id": "outer_shrub_23",
+      "asset": "shrub_edge",
+      "x": -10.98,
+      "y": 0,
+      "z": 22.67,
+      "rotationY": 0,
+      "scale": 1.04
+    },
+    {
+      "id": "outer_shrub_24",
+      "asset": "shrub_edge",
+      "x": -4.3,
+      "y": 0,
+      "z": 25.16,
+      "rotationY": 0,
+      "scale": 1.16
+    },
+    {
+      "id": "river_rock_01",
+      "asset": "rock_edge",
+      "x": 4.54,
+      "y": 0,
+      "z": 28.64,
+      "rotationY": 0,
+      "scale": 0.6
+    },
+    {
+      "id": "river_rock_02",
+      "asset": "rock_edge",
+      "x": 18.25,
+      "y": 0,
+      "z": 22.54,
+      "rotationY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "river_rock_03",
+      "asset": "rock_edge",
+      "x": 27.07,
+      "y": 0,
+      "z": 10.39,
+      "rotationY": 0,
+      "scale": 1.0
+    },
+    {
+      "id": "river_rock_04",
+      "asset": "rock_edge",
+      "x": 28.64,
+      "y": 0,
+      "z": -4.54,
+      "rotationY": 0,
+      "scale": 0.6
+    },
+    {
+      "id": "river_rock_05",
+      "asset": "rock_edge",
+      "x": 22.54,
+      "y": 0,
+      "z": -18.25,
+      "rotationY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "river_rock_06",
+      "asset": "rock_edge",
+      "x": 10.39,
+      "y": 0,
+      "z": -27.07,
+      "rotationY": 0,
+      "scale": 1.0
+    },
+    {
+      "id": "river_rock_07",
+      "asset": "rock_edge",
+      "x": -4.54,
+      "y": 0,
+      "z": -28.64,
+      "rotationY": 0,
+      "scale": 0.6
+    },
+    {
+      "id": "river_rock_08",
+      "asset": "rock_edge",
+      "x": -18.25,
+      "y": 0,
+      "z": -22.54,
+      "rotationY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "river_rock_09",
+      "asset": "rock_edge",
+      "x": -27.07,
+      "y": 0,
+      "z": -10.39,
+      "rotationY": 0,
+      "scale": 1.0
+    },
+    {
+      "id": "river_rock_10",
+      "asset": "rock_edge",
+      "x": -28.64,
+      "y": 0,
+      "z": 4.54,
+      "rotationY": 0,
+      "scale": 0.6
+    },
+    {
+      "id": "river_rock_11",
+      "asset": "rock_edge",
+      "x": -22.54,
+      "y": 0,
+      "z": 18.25,
+      "rotationY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "river_rock_12",
+      "asset": "rock_edge",
+      "x": -10.39,
+      "y": 0,
+      "z": 27.07,
+      "rotationY": 0,
+      "scale": 1.0
+    },
+    {
+      "id": "southern_bridge",
+      "asset": "bridge_edge",
+      "x": 0,
+      "y": 0,
+      "z": 32.5,
+      "rotationY": 0,
+      "scale": 1.6,
+      "note": "visual only until walkable crossing is implemented"
+    },
+    {
+      "id": "far_hills_01",
+      "asset": "distant_hills_panel",
+      "x": 0.0,
+      "y": 0,
+      "z": 47.0,
+      "rotationY": 3.1416,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_02",
+      "asset": "distant_hills_panel",
+      "x": 23.5,
+      "y": 0,
+      "z": 40.7,
+      "rotationY": 3.6652,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_03",
+      "asset": "distant_hills_panel",
+      "x": 40.7,
+      "y": 0,
+      "z": 23.5,
+      "rotationY": 4.1888,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_04",
+      "asset": "distant_hills_panel",
+      "x": 47.0,
+      "y": 0,
+      "z": 0.0,
+      "rotationY": 4.7124,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_05",
+      "asset": "distant_hills_panel",
+      "x": 40.7,
+      "y": 0,
+      "z": -23.5,
+      "rotationY": 5.236,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_06",
+      "asset": "distant_hills_panel",
+      "x": 23.5,
+      "y": 0,
+      "z": -40.7,
+      "rotationY": 5.7596,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_07",
+      "asset": "distant_hills_panel",
+      "x": 0.0,
+      "y": 0,
+      "z": -47.0,
+      "rotationY": 6.2832,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_08",
+      "asset": "distant_hills_panel",
+      "x": -23.5,
+      "y": 0,
+      "z": -40.7,
+      "rotationY": 6.8068,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_09",
+      "asset": "distant_hills_panel",
+      "x": -40.7,
+      "y": 0,
+      "z": -23.5,
+      "rotationY": 7.3304,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_10",
+      "asset": "distant_hills_panel",
+      "x": -47.0,
+      "y": 0,
+      "z": -0.0,
+      "rotationY": 7.854,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_11",
+      "asset": "distant_hills_panel",
+      "x": -40.7,
+      "y": 0,
+      "z": 23.5,
+      "rotationY": 8.3776,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    },
+    {
+      "id": "far_hills_12",
+      "asset": "distant_hills_panel",
+      "x": -23.5,
+      "y": 0,
+      "z": 40.7,
+      "rotationY": 8.9012,
+      "scale": 1.35,
+      "note": "visual only; billboard facing town center; inspect horizon seam in Quest"
+    }
+  ],
+  "asset_triangle_counts": {
+    "tree_lush_edge": 280,
+    "tree_flowering_edge": 280,
+    "shrub_edge": 240,
+    "rock_edge": 80,
+    "fence_edge": 48,
+    "bridge_edge": 228,
+    "distant_hills_panel": 2,
+    "river_scenery_panel": 2,
+    "road_main_cobble": 1044,
+    "road_east_cobble": 396,
+    "road_west_cobble": 468,
+    "road_home_cobble": 216,
+    "river_ring_candidate": 576
+  }
+}
